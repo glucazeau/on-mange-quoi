@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: On mange quoi
+  datasource:
+    url: jdbc:postgresql://localhost:5432/onmangequoi
+    username: omq
+    password: password

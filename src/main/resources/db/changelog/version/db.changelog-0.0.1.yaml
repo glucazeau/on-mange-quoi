@@ -1,0 +1,48 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: Guillaume
+      changes:
+        - createTable:
+            tableName: dish
+            columns:
+              - column:
+                  name: dish_id
+                  type: INTEGER
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: label
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_slow
+                  type: BOOLEAN
+                  constraints:
+                    nullable: true
+              - column:
+                  name: is_quick
+                  type: BOOLEAN
+                  constraints:
+                    nullable: true
+              - column:
+                  name: is_from_restaurant
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_vegan
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
