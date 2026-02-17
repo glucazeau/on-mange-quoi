@@ -22,5 +22,44 @@ jobs:
           java-version: '21'
           cache: 'maven'
 
-      - name: Build with Maven
+      - name: Build
         run: mvn -B clean verify -Pcheck-code-format
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: onmangequoi-jar
+          path: target/*.jar
+
+  deploy:
+    name: Deploy to server
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v6
+        with:
+          name: onmangequoi-jar
+          path: .
+
+      - name: Deploy JAR to Server VM
+        uses: appleboy/scp-action@v1
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_KEY }}
+          source: "onmangequoi-0.0.1-SNAPSHOT.jar"
+          target: "/home/${{ secrets.SERVER_USER }}"
+
+      - name: Restart Spring Boot Service
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_KEY }}
+          script: |
+            sudo systemctl daemon-reload
+            sudo systemctl restart onmangequoi.service
+            sudo systemctl status onmangequoi.service --no-pager
