@@ -1,11 +1,10 @@
 package com.sasagui.onmangequoi;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 @Getter
 @AllArgsConstructor

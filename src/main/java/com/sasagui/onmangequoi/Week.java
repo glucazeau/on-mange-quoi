@@ -1,14 +1,13 @@
 package com.sasagui.onmangequoi;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-
 import java.time.LocalDate;
 import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @ToString(onlyExplicitlyIncluded = true)

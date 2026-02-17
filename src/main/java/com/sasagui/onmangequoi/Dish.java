@@ -3,7 +3,14 @@ package com.sasagui.onmangequoi;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-public record Dish(Long id, @ToString.Include @EqualsAndHashCode.Include String label, boolean slow, boolean quick,
-                   boolean fromRestaurant, boolean vegan) {
+public record Dish(
+        @ToString.Include @EqualsAndHashCode.Include String label,
+        boolean slow,
+        boolean quick,
+        boolean fromRestaurant,
+        boolean vegan) {
 
+    public static Dish from(DishEntity dish) {
+        return new Dish(dish.getLabel(), dish.isSlow(), dish.isQuick(), dish.isFromRestaurant(), dish.isVegan());
+    }
 }

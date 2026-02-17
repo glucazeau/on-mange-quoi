@@ -1,0 +1,17 @@
+INSERT INTO dish (label, is_slow, is_quick, is_from_restaurant, is_vegan) VALUES
+('Dish 1', false, false, false, false),
+('Dish 2', false, false, false, true),
+('Dish 3', false, false, true, false),
+('Dish 4', false, false, true, true),
+('Dish 5', false, true, false, false),
+('Dish 6', false, true, false, true),
+('Dish 7', false, true, true, false),
+('Dish 8', false, true, true, true),
+('Dish 9', true, false, false, false),
+('Dish 10', true, false, false, true),
+('Dish 11', true, false, true, false),
+('Dish 12', true, false, true, true),
+('Dish 13', true, true, false, false),
+('Dish 14', true, true, false, true),
+('Dish 15', true, true, true, false),
+('Dish 16', true, true, true, true);
