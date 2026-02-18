@@ -6,11 +6,13 @@ import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
 @Getter
 @ToString(onlyExplicitlyIncluded = true)
+@RequiredArgsConstructor
 public class Week {
 
     @ToString.Include
@@ -27,13 +29,6 @@ public class Week {
 
     @Setter
     private String season;
-
-    public Week(final Year year, final int number, final LocalDate start, final LocalDate end) {
-        this.year = year;
-        this.number = number;
-        this.start = start;
-        this.end = end;
-    }
 
     @JsonIgnore
     public List<Meal> getMeals() {
