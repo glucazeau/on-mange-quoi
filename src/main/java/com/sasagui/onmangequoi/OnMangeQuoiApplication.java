@@ -6,8 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class OnMangeQuoiApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(OnMangeQuoiApplication.class, args);
-	}
-
+    public static void main(String[] args) {
+        SpringApplication.run(OnMangeQuoiApplication.class, args);
+    }
 }

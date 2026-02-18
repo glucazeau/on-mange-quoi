@@ -1,0 +1,11 @@
+spring:
+  jpa:
+    show-sql: true
+    defer-datasource-initialization: true
+    hibernate:
+      ddl-auto: create-drop
+  sql:
+    init:
+      mode: always
+  liquibase:
+    enabled: false
