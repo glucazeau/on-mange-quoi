@@ -1,6 +1,9 @@
 spring:
   application:
     name: On mange quoi
+  liquibase:
+    change-log: classpath:/db/changelog/db.changelog-master.yaml
+    enabled: true
 management:
   endpoint:
     health:
