@@ -15,6 +15,10 @@
     <description>Planificateur de menu</description>
     <properties>
         <java.version>21</java.version>
+        <sonar.sources>src/main/java</sonar.sources>
+        <sonar.tests>src/test/groovy</sonar.tests>
+        <sonar.exclusions>.github/**</sonar.exclusions>
+        <sonar.test.inclusions>**/*Spec.groovy</sonar.test.inclusions>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -106,6 +110,11 @@
                     <groupId>com.diffplug.spotless</groupId>
                     <artifactId>spotless-maven-plugin</artifactId>
                     <version>3.1.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.sonarsource.scanner.maven</groupId>
+                    <artifactId>sonar-maven-plugin</artifactId>
+                    <version>5.5.0.6356</version>
                 </plugin>
             </plugins>
         </pluginManagement>
