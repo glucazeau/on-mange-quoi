@@ -21,7 +21,7 @@ class DishControllerSpec extends MvcSpecification {
                 .contentType(MediaType.APPLICATION_JSON))
 
         then: "calls service to get dishes"
-        1 * dishServiceMock.listDishes(_) >> [dish1, dish2]
+        1 * dishServiceMock.listDishes(null) >> [dish1, dish2]
 
         and:
         response.andExpect(status().isOk())

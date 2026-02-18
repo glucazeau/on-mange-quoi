@@ -9,6 +9,17 @@ class DishServiceSpec extends OnMangeQuoiSpec {
 
     def service = new DishService(repositoryMock)
 
+    def "listDishes - null criteria given - calls repository an empty criteria instance"() {
+        when:
+        def result = service.listDishes(null)
+
+        then:
+        1 * repositoryMock.findAll(_ as Specification, _) >> [dishEntity1, dishEntity2]
+
+        and:
+        result == [Dish.from(dishEntity1), Dish.from(dishEntity2)]
+    }
+
     def "listDishes - criteria given - calls repository with Specification from criteria and returns result"() {
         given:
         def criteriaSpy = Spy(new DishSearchCriteria())

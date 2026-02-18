@@ -13,8 +13,9 @@ public class DishService {
 
     private final DishRepository dishRepository;
 
-    public List<Dish> listDishes(final DishSearchCriteria criteria) {
+    public List<Dish> listDishes(DishSearchCriteria criteria) {
         log.info("Loading dishes with criteria {}", criteria);
+        criteria = criteria == null ? new DishSearchCriteria() : criteria;
         return dishRepository.findAll(criteria.toSpec(), Sort.by(Sort.Direction.ASC, "label")).stream()
                 .map(Dish::from)
                 .toList();
