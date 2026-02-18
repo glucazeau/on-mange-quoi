@@ -1,7 +1,11 @@
 spring:
   application:
     name: On mange quoi
-  datasource:
-    url: jdbc:postgresql://localhost:5432/onmangequoi
-    username: omq
-    password: password
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: health
