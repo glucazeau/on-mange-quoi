@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/db.changelog-master.yaml
+
+  - changeSet:
+      id: test-data
+      author: Guillaume
+      context: test
+      changes:
+        - sqlFile:
+            path: db/changelog/test-data.sql
