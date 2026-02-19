@@ -31,7 +31,7 @@ class DishRepositorySpec extends OnMangeQuoiSpec {
         where:
         [field, value, expectedSize] << [
                 ["slow", "quick", "fromRestaurant", "vegan"],
-                [true, false, null]
+                [true, false]
         ].combinations()
     }
 

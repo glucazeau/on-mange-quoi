@@ -26,7 +26,12 @@ jobs:
 
       - name: Build
         run: |
-          mvn -B clean verify sonar:sonar -Pcheck-code-format  \
+          mvn -B clean verify -Pcheck-code-format
+
+      - name: SonarQube Scan
+        if: github.actor != 'dependabot[bot]'
+        run: |
+          mvn -B sonar:sonar -Pcheck-code-format  \
             -Dsonar.projectKey=glucazeau_on-mange-quoi \
             -Dsonar.organization=glucazeau \
             -Dsonar.host.url=https://sonarcloud.io \

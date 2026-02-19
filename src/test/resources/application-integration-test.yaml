@@ -1,0 +1,12 @@
+spring:
+  jpa:
+    show-sql: true
+    defer-datasource-initialization: false
+    hibernate:
+      ddl-auto: none
+  sql:
+    init:
+      mode: never
+  liquibase:
+    enabled: true
+    change-log: classpath:/db/changelog/db.changelog-test.yaml

@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>Menus de la semaine</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+  <!-- Favicons -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍕</text></svg>">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600;1,700&family=Amatic+SC:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="assets/vendor/aos/aos.css" rel="stylesheet">
+
+  <!-- Template Main CSS File -->
+  <link href="assets/css/main.css" rel="stylesheet">
+
+  <!-- =======================================================
+  * Template Name: Yummy
+  * Updated: Sep 18 2023 with Bootstrap v5.3.2
+  * Template URL: https://bootstrapmade.com/yummy-bootstrap-restaurant-website-template/
+  * Author: BootstrapMade.com
+  * License: https://bootstrapmade.com/license/
+  ======================================================== -->
+</head>
+
+<body x-data="manageMenus()">
+
+  <!-- ======= Header ======= -->
+  <header id="header" class="header fixed-top d-flex align-items-center">
+    <div class="container d-flex align-items-center justify-content-between">
+
+      <a href="index.html" class="logo d-flex align-items-center me-auto me-lg-0">
+        <!-- Uncomment the line below if you also wish to use an image logo -->
+        <!-- <img src="assets/img/logo.png" alt=""> -->
+        <h1 >Menus de la <span>semaine</span></h1>
+      </a>
+
+      <nav id="navbar" class="navbar">
+        <ul>
+          <li><a href="#menus">Menus</a></li>
+          <li><a href="#dishes">Plats</a></li>
+        </ul>
+      </nav><!-- .navbar -->
+
+      <i class="mobile-nav-toggle mobile-nav-show bi bi-list"></i>
+      <i class="mobile-nav-toggle mobile-nav-hide d-none bi bi-x"></i>
+
+    </div>
+  </header><!-- End Header -->
+
+
+  <main id="main">
+
+    <!-- ======= Menus Section ======= -->
+    <section id="menus" class="week-menu section-bg">
+      <div class="container" data-aos="fade-up">
+
+        <div class="section-header">
+          <h2 x-show="displayedWeek.is_current">semaine courante</h2>
+          <p>
+            <i class="bi bi-arrow-left-short"></i>
+            Semaine <span x-text="displayedWeek.number"></span>
+            <i class="bi bi-arrow-right-short"></i>
+          </p>
+        </div>
+
+        <div class="row gy-1">
+
+          <div class="col-lg-12 d-flex">
+            <div class="row gy-4">
+              <div class="col-xl-3" data-aos="fade-up" data-aos-delay="200">
+                <div class="icon-box week-infos">
+                  <div class="season-img w-100">
+                    <img :src="getSeasonPicture()" class="img-fluid">
+                  </div>
+                  <div class="btn-actions">
+                    <button class="btn btn-sm btn-action" x-show="displayedWeek.status == 'DRAFT' && !displayedWeek.is_finished" x-on:click="generateWeek(displayedWeek.year, displayedWeek.number)"><span class="bi-arrow-clockwise"></span> Regénérer</button>
+
+                    <button class="btn btn-sm btn-action" x-show="displayedWeek.status == 'DRAFT' && !displayedWeek.is_finished" x-on:click="changeWeekStatus(displayedWeek.year, displayedWeek.number, 'save')"><span class="bi-check-circle"></span> Enregistrer</button>
+
+                    <button class="btn btn-sm btn-action" x-show="displayedWeek.status == 'SAVED' && !displayedWeek.is_finished" href="#"  x-on:click="changeWeekStatus(displayedWeek.year, displayedWeek.number, 'edit')"><span class="bi-pen"></span> Modifier</button>
+                  </div>
+                </div>
+              </div>
+
+              <template x-for="day in displayedWeek.days.sort((a, b) => a.number > b.number)" :key="day.number">
+                <div class="col-xl-3" data-aos="fade-up" data-aos-delay="200">
+                  <div class="icon-box align-items-center" :class="{ 'today': day.is_today }">
+                    <h4 x-text="day.name">{{ day.name }}</h4>
+                    <template x-for="meal in day.meals" :key="meal.type">
+                      <div>
+                        <p x-show="day.meals.length == 1">&nbsp;</p>
+                        <p>
+                          <hr x-show="meal.type == 'Soir'" class="dotted">
+                          <span x-text="meal.dish.name"></span>
+                          <span x-show="meal.dish.vegan">🌱</span>
+                          <span x-show="meal.dish.fromRestaurant">💸</span>
+                          <span x-show="meal.dish.quick">🚀</span>
+                          <span x-show="meal.dish.slow">🐌</span>
+                        </p>
+                      </div>
+                    </template>
+                  </div>
+                </div>
+              </template>
+            </div>
+          </div>
+      </div>
+    </section><!-- End Menus Section -->
+
+
+    <!-- ======= Dishes Section ======= -->
+    <section id="dishes" class="dishes">
+      <div class="container" data-aos="fade-up">
+
+        <div class="section-header">
+          <p>
+            Plats <span>disponibles</span>
+          </p>
+        </div>
+        <div class="row gy-1">
+          <div class="col-lg-12 d-flex">
+            <div class="col-md-2">
+              <div class="row">
+                <div class="col-md-12 py-3">
+                  <div class="card mb-4 box-shadow reservation-form-bg">
+                    <div class="card-body">
+                      <div class="input-group py-2">
+                        <span class="input-group-text" id="basic-addon1">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                          </svg>
+                        </span>
+                        <input type="text" class="form-control" placeholder="Filtrer" x-model="searchDish" aria-describedby="basic-addon1">
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="currentMonth">
+                        <label class="form-check-label" for="currentMonth" x-text="getMonthLabel(new Date().getMonth())"></label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="veganFilter">
+                        <label class="form-check-label" for="veganFilter">🌱 Végétariens</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="quickFilter">
+                        <label class="form-check-label" for="quickFilter">🚀 Rapides</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="longFilter">
+                        <label class="form-check-label" for="longFilter">🐌 Longs</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="restaurantFilter">
+                        <label class="form-check-label" for="restaurantFilter">💸 Restaurants</label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-12">
+                  <div class="card mb-4 box-shadow reservation-form-bg">
+                    <div class="card-body" x-data="newDishForm()">
+                      <h5 class="card-title">Ajouter un plat</h5>
+                      <div class="input-group py-2">
+                        <input type="text" class="form-control" placeholder="Nom" aria-describedby="basic-addon1" x-model="newDishFormData.name">
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" x-model="newDishFormData.vegetarian" id="veganDish">
+                        <label class="form-check-label" for="veganDish">🌱 Végétarien</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="quickDish">
+                        <label class="form-check-label" for="quickDish">🚀 Rapide</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" x-model="newDishFormData.is_long_to_prepare" id="longDish">
+                        <label class="form-check-label" for="longDish">🐌 Long</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" x-model="newDishFormData.from_restaurant" id="restaurantDish">
+                        <label class="form-check-label" for="restaurantDish">💸 Restaurant</label>
+                      </div>
+                      <hr class="dotted">
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" x-model="newDishFormData.seasons" value="1" id="springDish">
+                        <label class="form-check-label" for="springDish">🍃 Printemps</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" x-model="newDishFormData.seasons" value="2" id="summerDish">
+                        <label class="form-check-label" for="summerDish">☀️ Été</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" x-model="newDishFormData.seasons" value="3" id="autumnDish">
+                        <label class="form-check-label" for="autumnDish">🍂 Automne</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" x-model="newDishFormData.seasons" value=4 id="winterDish">
+                        <label class="form-check-label" for="winterDish">❄️ Hiver</label>
+                      </div>
+
+                      <button class="btn btn-sm btn-action" x-on:click="addDish()"><span class="bi-check-circle"></span> Enregistrer</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <template x-for="(half, index) in [
+      filteredDishes.slice(0, Math.ceil(filteredDishes.length / 2)),
+      filteredDishes.slice(Math.ceil(filteredDishes.length / 2))
+    ]" :key="index">
+              <div class="col-md-5 px-3 py-3">
+                <div class="card mb-4">
+                  <div class="card-body">
+                    <table class="table">
+                      <tbody>
+                      <template x-for="dish in half" :key="dish.label">
+                        <tr>
+                          <td class="text-right">
+                            <span x-show="dish.vegan">🌱</span>
+                            <span x-show="dish.fromRestaurant">💸</span>
+                            <span x-show="dish.quick">🚀</span>
+                            <span x-show="dish.slow">🐌</span>
+                          </td>
+                          <td x-text="dish.label"></td>
+                        </tr>
+                      </template>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </template>
+          </div>
+        </div>
+      </div>
+    </section><!-- End Dishes Section -->
+
+  </main><!-- End #main -->
+
+  <!-- ======= Footer ======= -->
+  <footer id="footer" class="footer">
+
+    <div class="container">
+      <div class="row gy-3">
+        <div class="col-lg-3 col-md-6 footer-links">
+          <div class="social-links d-flex">
+            <a href="https://github.com/glucazeau/gestionnaire-menus" class="twitter"><i class="bi bi-github"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="copyright">
+        &copy; Copyright <strong><span>Yummy</span></strong>. All Rights Reserved
+      </div>
+      <div class="credits">
+        <!-- All the links in the footer should remain intact. -->
+        <!-- You can delete the links only if you purchased the pro version. -->
+        <!-- Licensing information: https://bootstrapmade.com/license/ -->
+        <!-- Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/yummy-bootstrap-restaurant-website-template/ -->
+        Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
+      </div>
+    </div>
+
+  </footer><!-- End Footer -->
+  <!-- End Footer -->
+
+  <a href="#" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <div id="preloader"></div>
+
+  <!-- Vendor JS Files -->
+  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/vendor/aos/aos.js"></script>
+  <script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
+
+  <!-- Template Main JS File -->
+  <script src="assets/js/main.js"></script>
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script src="https://unpkg.com/mustache@latest"></script>
+  <script>
+
+  const manageMenus = () => ({
+      baseUrl: 'https://sasagui.fr/onmangequoi/api',
+      days: ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi' ,'vendredi', 'samedi'],
+      months: ['janvier', 'février', 'mars', 'avril', 'mai' ,'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'],
+      displayedWeek: {
+        days: []
+      },
+      dishes: [],
+      searchDish: '',
+      newDishFormData: null,
+
+      async init() {
+          await this.getCurrentWeek()
+          await this.getDishes()
+      },
+
+      getDishes() {
+        fetch(this.baseUrl + '/dishes', {
+          method: 'POST'
+        })
+          .then((response) => response.json())
+          .then((json) => this.dishes = json);
+      },
+
+      newDishForm() {
+        return {
+          newDishFormData: {
+            name: '',
+            from_restaurant: false,
+            vegetarian: false,
+            is_long_to_prepare: false,
+            seasons: []
+          }
+        };
+      },
+
+      async addDish() {
+        await fetch(this.baseUrl + '/dish', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            'name': this.newDishFormData.name,
+            'from_restaurant': this.newDishFormData.from_restaurant,
+            'vegetarian': this.newDishFormData.vegetarian,
+            'is_long_to_prepare': this.newDishFormData.is_long_to_prepare,
+            'seasons': this.newDishFormData.seasons
+          })
+        })
+        .then((response) => response.json())
+        .then((json) =>  {
+          this.getDishes()
+        });
+      },
+
+      get filteredDishes() {
+        return this.dishes.filter(
+          d => d.label.toLowerCase().includes(this.searchDish.toLowerCase())
+        )
+      },
+
+      async getCurrentWeek() {
+        await fetch(this.baseUrl + '/week/current')
+          .then((response) => response.json())
+          .then((json) => this.displayedWeek = json);
+      },
+
+      setDisplayedWeek(json) {
+        this.displayedWeek = json;
+      },
+
+      async generateWeek(year, number) {
+        await fetch(this.baseUrl + '/week/' + year + '/' + number + '?generate=true')
+          .then((response) => response.json())
+          .then((json) =>  {
+            this.setDisplayedWeek(json)
+          });
+      },
+
+      async changeWeekStatus(year, number, action) {
+        await fetch(this.baseUrl + '/week/' + year + '/' + number, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            action: action,
+          })
+        })
+        .then((response) => response.json())
+        .then((json) =>  {
+          this.setDisplayedWeek(json)
+        });
+      },
+
+      getWeekLabel(week) {
+        weekLabel = 'Semaine ' + week.number
+        if (week.is_finished) {
+          weekLabel += ' ✔️'
+        }
+        return weekLabel
+      },
+
+      getMealTypeLabel(meals, meal) {
+        if (meals.length > 1 && meal.type == 'Soir') {
+            return ' 🌜'
+        } else {
+            return ''
+        }
+      },
+
+      getSeasonEmoji() {
+        getSeason = d => Math.floor((d.getMonth() / 12 * 4)) % 4;
+        return ['❄️', '🍃', '☀️', '🍂'][getSeason(new Date())];
+      },
+
+
+      getSeasonPicture() {
+        getSeason = d => Math.floor((d.getMonth() / 12 * 4)) % 4;
+        return 'assets/img/' + ['winter.jpg', 'spring.jpg', 'summer.webp', 'autumn.avif'][getSeason(new Date())];
+      },
+
+      getDateTitle() {
+          d = new Date();
+          return this.days[d.getDay()] + ' ' + d.getDate() + ' ' + this.months[d.getMonth()]
+      },
+
+      getMonthLabel(month) {
+        return this.months[month];
+      },
+
+      renderDay(day) {
+          const template = document.getElementById('day-template').innerHTML;
+          const rendered = Mustache.render(template, { day: day });
+          document.getElementById('target').innerHTML = rendered;
+      },
+  })
+  </script>
+
+</body>
+
+</html>
