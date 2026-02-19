@@ -46,3 +46,15 @@ databaseChangeLog:
                   defaultValueComputed: CURRENT_TIMESTAMP
                   constraints:
                     nullable: false
+  - changeSet:
+      id: 2
+      author: Guillaume
+      changes:
+        - addNotNullConstraint:
+            tableName: dish
+            columnName: is_slow
+            defaultNullValue: false
+        - addNotNullConstraint:
+            tableName: dish
+            columnName: is_quick
+            defaultNullValue: false
