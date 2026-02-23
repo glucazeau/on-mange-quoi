@@ -13,7 +13,7 @@ public class DishEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "dish_id")
-    private Long id;
+    private long id;
 
     @ToString.Include
     @EqualsAndHashCode.Include
