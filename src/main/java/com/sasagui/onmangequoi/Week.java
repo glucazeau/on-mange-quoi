@@ -67,7 +67,7 @@ public class Week {
                     .plusWeeks(weekNumber - 1);
         }
 
-        public WeekRef getPreviousWeek(Year year, long weekNumber) {
+        private WeekRef getPreviousWeek(Year year, long weekNumber) {
             LocalDate firstDayOfGivenWeek = getFirstDayOfWeek(year, weekNumber);
             LocalDate firstDayOfPreviousWeek = firstDayOfGivenWeek.minusWeeks(1);
 
@@ -77,7 +77,7 @@ public class Week {
             return new WeekRef(Year.of(previousYear), previousWeekNumber);
         }
 
-        public WeekRef getNextWeek(Year year, long weekNumber) {
+        private WeekRef getNextWeek(Year year, long weekNumber) {
             LocalDate firstDayOfGivenWeek = getFirstDayOfWeek(year, weekNumber);
             LocalDate firstDayOfNextWeek = firstDayOfGivenWeek.plusWeeks(1);
 
