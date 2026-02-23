@@ -21,7 +21,7 @@ public class WeekService {
         return getWeek(Year.of(weekYear), weekNumber);
     }
 
-    public Week getWeek(Year year, long weekNumber) {
+    public Week getWeek(Year year, int weekNumber) {
         log.info("Computing week #{} of {}", weekNumber, year);
         return Week.builder().year(year).number(weekNumber).build();
     }

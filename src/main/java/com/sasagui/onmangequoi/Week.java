@@ -17,7 +17,7 @@ public class Week {
     private final Year year;
 
     @ToString.Include
-    private final long number;
+    private final int number;
 
     private final LocalDate start;
 
@@ -29,7 +29,7 @@ public class Week {
 
     private Season season;
 
-    public record WeekRef(Year year, long number) {}
+    public record WeekRef(Year year, int number) {}
 
     public static WeekBuilder builder() {
         return new WeekBuilder();
@@ -41,7 +41,7 @@ public class Week {
 
         private Year year;
 
-        private long number;
+        private int number;
 
         public Week build() {
             LocalDate firstDayOfWeek = getFirstDayOfWeek(year, number);
