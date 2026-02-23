@@ -1,5 +1,11 @@
 package com.sasagui.onmangequoi
 
+import com.sasagui.onmangequoi.calendar.Week
+import com.sasagui.onmangequoi.dish.Dish
+import com.sasagui.onmangequoi.dish.DishEntity
+import com.sasagui.onmangequoi.meal.MealEntity
+import com.sasagui.onmangequoi.meal.MealId
+import com.sasagui.onmangequoi.meal.MealType
 import java.time.DayOfWeek
 import java.time.Year
 import spock.lang.Specification
