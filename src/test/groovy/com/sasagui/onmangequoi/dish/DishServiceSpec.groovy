@@ -10,7 +10,7 @@ class DishServiceSpec extends OnMangeQuoiSpec {
 
     def service = new DishService(repositoryMock)
 
-    def "listDishes - null criteria given - calls repository an empty criteria instance"() {
+    def "listDishes - null criteria given - calls repository with an empty criteria instance and returns results"() {
         when:
         def result = service.listDishes(null)
 

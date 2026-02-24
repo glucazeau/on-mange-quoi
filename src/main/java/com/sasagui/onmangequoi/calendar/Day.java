@@ -8,11 +8,14 @@ import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.ToString;
 
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
+@ToString(onlyExplicitlyIncluded = true)
 public class Day {
 
+    @ToString.Include
     private final DayOfWeek dayOfWeek;
 
     private final List<Meal> meals;
