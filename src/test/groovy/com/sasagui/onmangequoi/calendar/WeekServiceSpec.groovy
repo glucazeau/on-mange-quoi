@@ -13,7 +13,7 @@ class WeekServiceSpec extends OnMangeQuoiSpec {
         def result = manager.getCurrentWeek()
 
         then:
-        result.year == Year.of(LocalDate.now().year)
+        result.year == LocalDate.now().getYear()
 
         and:
         result.number > 0 && result.number < 53
@@ -21,10 +21,10 @@ class WeekServiceSpec extends OnMangeQuoiSpec {
 
     def "getWeek - week number is #givenWeekNumber and year is #givenYear - returns week instance with expected values"() {
         when:
-        def result = manager.getWeek(Year.of(givenYear), givenWeekNumber)
+        def result = manager.getWeek(givenYear, givenWeekNumber)
 
         then:
-        result.year == Year.of(givenYear)
+        result.year == givenYear
 
         and:
         result.number == givenWeekNumber
@@ -39,13 +39,13 @@ class WeekServiceSpec extends OnMangeQuoiSpec {
         result.season == expectedSeason
 
         and:
-        result.nextWeek.year() == Year.of(nextWeekYear)
+        result.nextWeek.year() == nextWeekYear
 
         and:
         result.nextWeek.number() == nextWeekNumber
 
         and:
-        result.previousWeek.year() == Year.of(previousWeekYear)
+        result.previousWeek.year() == previousWeekYear
 
         and:
         result.previousWeek.number() == previousWeekNumber

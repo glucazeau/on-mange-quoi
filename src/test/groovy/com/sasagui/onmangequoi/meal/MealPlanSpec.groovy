@@ -11,7 +11,7 @@ class MealPlanSpec extends OnMangeQuoiSpec {
     def "schoolWeek - week given - returns a meal plan with given week, expected days and meals"() {
         given:
         def weekMock = Mock(Week) {
-            getYear() >> Year.of(2026)
+            getYear() >> 2026
             getNumber() >> 2
         }
 

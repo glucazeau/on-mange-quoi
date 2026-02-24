@@ -5,7 +5,6 @@ import com.sasagui.onmangequoi.calendar.Week;
 import com.sasagui.onmangequoi.calendar.WeekService;
 import com.sasagui.onmangequoi.dish.DishEntity;
 import com.sasagui.onmangequoi.dish.DishRepository;
-import java.time.Year;
 import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +21,7 @@ public class MealPlanService {
 
     private final DishRepository dishRepository;
 
-    public MealPlan getOrGenerateMealPlan(Year year, int weekNumber) {
+    public MealPlan getOrGenerateMealPlan(int year, int weekNumber) {
         log.info("Searching for a meal plan for week #{} of #{}", weekNumber, year);
         Week week = weekService.getWeek(year, weekNumber);
         MealPlanId mealPlanId = new MealPlanId(week.getYear(), week.getNumber());
@@ -39,7 +38,7 @@ public class MealPlanService {
     public MealPlanEntity from(MealPlan mealPlan) {
         Week week = mealPlan.getWeek();
         log.info("Building MealPlan entity for week {}", week);
-        MealPlanId mealPlanId = new MealPlanId(week.getYear().getValue(), week.getNumber());
+        MealPlanId mealPlanId = new MealPlanId(week.getYear(), week.getNumber());
 
         MealPlanEntity mealPlanEntity = new MealPlanEntity(mealPlanId);
 
@@ -52,7 +51,7 @@ public class MealPlanService {
     }
 
     private MealEntity buildMealEntity(Week week, Day day, Meal meal) {
-        MealId mealId = new MealId(week.getYear().getValue(), week.getNumber(), day.getDayOfWeek(), meal.getType());
+        MealId mealId = new MealId(week.getYear(), week.getNumber(), day.getDayOfWeek(), meal.getType());
 
         DishEntity dishEntity = dishRepository.getReferenceById(meal.getDish().id());
         return new MealEntity(mealId, dishEntity);

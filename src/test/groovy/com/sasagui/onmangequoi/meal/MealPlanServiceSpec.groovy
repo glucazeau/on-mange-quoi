@@ -19,13 +19,13 @@ class MealPlanServiceSpec extends OnMangeQuoiSpec {
         mealPlanEntity.addMeal(mealEntity1)
 
         when:
-        def result = service.getOrGenerateMealPlan(Year.of(2026), 12)
+        def result = service.getOrGenerateMealPlan(2026, 12)
 
         then: "meal plan repository is called with year and week number"
         1 * mealPlanRepositoryMock.findById(new MealPlanId(2026, 12)) >> Optional.of(mealPlanEntity)
 
         and: "week is correctly built"
-        result.getWeek().getYear() == Year.of(2026)
+        result.getWeek().getYear() == 2026
         result.getWeek().getNumber() == 12
 
         and: "days and meals are correctly set"
@@ -34,7 +34,7 @@ class MealPlanServiceSpec extends OnMangeQuoiSpec {
 
     def "getOrGenerateMealPlan - no meal plan exist for the given year and week - returns null"() {
         when:
-        def result = service.getOrGenerateMealPlan(Year.of(2026), 12)
+        def result = service.getOrGenerateMealPlan(2026, 12)
 
         then: "meal plan repository is called with year and week number"
         1 * mealPlanRepositoryMock.findById(new MealPlanId(2026, 12)) >> Optional.empty()
