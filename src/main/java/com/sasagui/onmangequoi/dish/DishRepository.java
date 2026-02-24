@@ -1,4 +1,4 @@
-package com.sasagui.onmangequoi;
+package com.sasagui.onmangequoi.dish;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;

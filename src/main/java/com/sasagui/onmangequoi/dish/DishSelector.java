@@ -1,0 +1,34 @@
+package com.sasagui.onmangequoi.dish;
+
+import com.sasagui.onmangequoi.calendar.Day;
+import com.sasagui.onmangequoi.meal.Meal;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
+
+@Slf4j
+@Component
+@AllArgsConstructor
+public class DishSelector {
+
+    private final List<DishScorer> scorers;
+
+    public Dish selectDish(
+            List<Dish> dishes, Day day, Meal meal, List<Meal> currentWeekMeals, List<Meal> previousWeeksMeals) {
+        log.info("Scoring {} dishes for {} of {}", dishes.size(), day, meal);
+        List<ScoredDish> scoredDishes = dishes.stream().map(ScoredDish::new).collect(Collectors.toList());
+        for (ScoredDish scoredDish : scoredDishes) {
+            for (DishScorer scorer : scorers) {
+                scoredDish.adjustScore(
+                        scorer.score(scoredDish.getDish(), day, meal, currentWeekMeals, previousWeeksMeals));
+            }
+        }
+        scoredDishes.sort(Collections.reverseOrder());
+        ScoredDish highestScoredDish = scoredDishes.getFirst();
+        log.info("Dish with highest score is {}", highestScoredDish);
+        return highestScoredDish.getDish();
+    }
+}

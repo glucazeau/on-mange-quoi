@@ -1,4 +1,4 @@
-package com.sasagui.onmangequoi;
+package com.sasagui.onmangequoi.dish;
 
 import java.util.ArrayList;
 import java.util.List;

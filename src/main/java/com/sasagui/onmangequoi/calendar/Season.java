@@ -1,4 +1,4 @@
-package com.sasagui.onmangequoi;
+package com.sasagui.onmangequoi.calendar;
 
 import java.time.Month;
 

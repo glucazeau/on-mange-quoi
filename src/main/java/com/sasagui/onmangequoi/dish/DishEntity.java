@@ -1,4 +1,4 @@
-package com.sasagui.onmangequoi;
+package com.sasagui.onmangequoi.dish;
 
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
@@ -13,7 +13,7 @@ public class DishEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "dish_id")
-    private Long id;
+    private long id;
 
     @ToString.Include
     @EqualsAndHashCode.Include

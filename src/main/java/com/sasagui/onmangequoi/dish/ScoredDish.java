@@ -1,4 +1,4 @@
-package com.sasagui.onmangequoi;
+package com.sasagui.onmangequoi.dish;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -13,9 +13,12 @@ public class ScoredDish implements Comparable<ScoredDish> {
     @EqualsAndHashCode.Include
     private final Dish dish;
 
-    @Setter
     @ToString.Include
-    private int score;
+    private int score = 0;
+
+    public void adjustScore(int score) {
+        this.score = this.score + score;
+    }
 
     @Override
     public int compareTo(@NotNull ScoredDish other) {

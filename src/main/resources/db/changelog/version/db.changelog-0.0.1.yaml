@@ -58,3 +58,82 @@ databaseChangeLog:
             tableName: dish
             columnName: is_quick
             defaultNullValue: false
+
+  - changeSet:
+      id: 3-create-meal-plan-table
+      author: your-name
+      changes:
+        - createTable:
+            tableName: meal_plan
+            columns:
+              - column:
+                  name: plan_year
+                  type: SMALLINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: week_number
+                  type: SMALLINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: status
+                  type: TINYINT
+                  constraints:
+                    nullable: false
+                    checkConstraint: "status in (0,1)"
+
+        - addPrimaryKey:
+            tableName: meal_plan
+            columnNames: plan_year, week_number
+            constraintName: pk_meal_plan
+
+  - changeSet:
+      id: 002-create-meal-table
+      author: Guillaume
+      changes:
+        - createTable:
+            tableName: meal
+            columns:
+              - column:
+                  name: plan_year
+                  type: SMALLINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: week_number
+                  type: SMALLINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: day_of_week
+                  type: SMALLINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: meal_type
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: dish_id
+                  type: SMALLINT
+                  constraints:
+                    nullable: false
+        - addPrimaryKey:
+            tableName: meal
+            columnNames: plan_year, week_number, day_of_week, meal_type
+            constraintName: pk_meal
+        - addForeignKeyConstraint:
+            baseTableName: meal
+            baseColumnNames: plan_year, week_number
+            referencedTableName: meal_plan
+            referencedColumnNames: plan_year, week_number
+            constraintName: fk_meals_meal_plan
+            onDelete: CASCADE
+        - addForeignKeyConstraint:
+            baseTableName: meal
+            baseColumnNames: dish_id
+            referencedTableName: dish
+            referencedColumnNames: dish_id
+            constraintName: fk_meal_dish

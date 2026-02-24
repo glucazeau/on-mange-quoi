@@ -1,9 +1,10 @@
-package com.sasagui.onmangequoi
+package com.sasagui.onmangequoi.dish
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
+import com.sasagui.onmangequoi.MvcSpecification
 import org.spockframework.spring.SpringBean
 import org.springframework.http.MediaType
 import org.springframework.test.context.ContextConfiguration

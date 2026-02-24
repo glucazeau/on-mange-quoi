@@ -1,0 +1,76 @@
+package com.sasagui.onmangequoi.meal
+
+import com.sasagui.onmangequoi.OnMangeQuoiSpec
+import com.sasagui.onmangequoi.calendar.WeekService
+import com.sasagui.onmangequoi.dish.DishRepository
+
+class MealPlanServiceSpec extends OnMangeQuoiSpec {
+
+    def mealPlanRepositoryMock = Mock(MealPlanRepository)
+
+    def dishRepositoryMock = Mock(DishRepository)
+
+    def service = new MealPlanService(new WeekService(), mealPlanRepositoryMock, dishRepositoryMock)
+
+    def "getOrGenerateMealPlan - a meal plan exists for the given year and week - returns meal plan found"() {
+        given:
+        def mealPlanEntity = new MealPlanEntity(new MealPlanId(year: 2026, weekNumber: 12))
+        mealPlanEntity.addMeal(mealEntity1)
+
+        when:
+        def result = service.getOrGenerateMealPlan(2026, 12)
+
+        then: "meal plan repository is called with year and week number"
+        1 * mealPlanRepositoryMock.findById(new MealPlanId(2026, 12)) >> Optional.of(mealPlanEntity)
+
+        and: "week is correctly built"
+        result.getWeek().getYear() == 2026
+        result.getWeek().getNumber() == 12
+
+        and: "days and meals are correctly set"
+        result.getDays()[0].getMeals()[0].getDish().getId() == 1
+    }
+
+    def "getOrGenerateMealPlan - no meal plan exist for the given year and week - returns null"() {
+        when:
+        def result = service.getOrGenerateMealPlan(2026, 12)
+
+        then: "meal plan repository is called with year and week number"
+        1 * mealPlanRepositoryMock.findById(new MealPlanId(2026, 12)) >> Optional.empty()
+
+        and: "result is null"
+        result == null
+    }
+
+    def "from - DTO given - returns entity"() {
+        given:
+        def mealPlan = MealPlan.schoolWeek(weekMock)
+        mealPlan.getDays()[0].getMeals()[0].setDish(dish1)
+        mealPlan.getDays()[1].getMeals()[0].setDish(dish1)
+        mealPlan.getDays()[2].getMeals()[0].setDish(dish1)
+        mealPlan.getDays()[2].getMeals()[1].setDish(dish2)
+        mealPlan.getDays()[3].getMeals()[0].setDish(dish1)
+        mealPlan.getDays()[4].getMeals()[0].setDish(dish1)
+        mealPlan.getDays()[5].getMeals()[0].setDish(dish1)
+        mealPlan.getDays()[5].getMeals()[1].setDish(dish2)
+        mealPlan.getDays()[6].getMeals()[0].setDish(dish1)
+        mealPlan.getDays()[6].getMeals()[1].setDish(dish2)
+
+        when:
+        def result = service.from(mealPlan)
+
+        then: "dish repository called to load dish references"
+        7 * dishRepositoryMock.getReferenceById(1) >> dishEntity1
+        3 * dishRepositoryMock.getReferenceById(2) >> dishEntity2
+
+        and:
+        result.getMeals().size() == 10
+
+        and: "dish entities are loaded in meals"
+        result.getMeals().every({ it.getDish() in [dishEntity1, dishEntity2]})
+
+        and: "meal ids are correctly created"
+        result.getMeals().every({it -> it.getId().year == 2026 && it.getId().weekNumber == 12 })
+    }
+
+}

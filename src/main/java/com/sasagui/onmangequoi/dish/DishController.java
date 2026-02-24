@@ -1,4 +1,4 @@
-package com.sasagui.onmangequoi;
+package com.sasagui.onmangequoi.dish;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 

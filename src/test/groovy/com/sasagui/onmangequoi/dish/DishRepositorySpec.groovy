@@ -1,5 +1,6 @@
-package com.sasagui.onmangequoi
+package com.sasagui.onmangequoi.dish
 
+import com.sasagui.onmangequoi.OnMangeQuoiSpec
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest
 
