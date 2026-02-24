@@ -3,7 +3,6 @@ package com.sasagui.onmangequoi.meal
 import com.sasagui.onmangequoi.OnMangeQuoiSpec
 import com.sasagui.onmangequoi.calendar.WeekService
 import com.sasagui.onmangequoi.dish.DishRepository
-import java.time.Year
 
 class MealPlanServiceSpec extends OnMangeQuoiSpec {
 
@@ -29,7 +28,7 @@ class MealPlanServiceSpec extends OnMangeQuoiSpec {
         result.getWeek().getNumber() == 12
 
         and: "days and meals are correctly set"
-        result.getDays()[0].getMeals()[0].getDish().id() == 1
+        result.getDays()[0].getMeals()[0].getDish().getId() == 1
     }
 
     def "getOrGenerateMealPlan - no meal plan exist for the given year and week - returns null"() {

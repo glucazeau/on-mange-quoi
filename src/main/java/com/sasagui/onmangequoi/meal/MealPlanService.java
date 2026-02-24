@@ -53,7 +53,7 @@ public class MealPlanService {
     private MealEntity buildMealEntity(Week week, Day day, Meal meal) {
         MealId mealId = new MealId(week.getYear(), week.getNumber(), day.getDayOfWeek(), meal.getType());
 
-        DishEntity dishEntity = dishRepository.getReferenceById(meal.getDish().id());
+        DishEntity dishEntity = dishRepository.getReferenceById(meal.getDish().getId());
         return new MealEntity(mealId, dishEntity);
     }
 }
