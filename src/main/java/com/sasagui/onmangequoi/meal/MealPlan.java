@@ -1,5 +1,6 @@
 package com.sasagui.onmangequoi.meal;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sasagui.onmangequoi.calendar.Day;
 import com.sasagui.onmangequoi.calendar.Week;
 import com.sasagui.onmangequoi.dish.Dish;
@@ -50,6 +51,7 @@ public class MealPlan {
         return new MealPlan(week, days);
     }
 
+    @JsonIgnore
     public Set<Dish> getDishes() {
         return days.stream()
                 .map(Day::getMeals)
