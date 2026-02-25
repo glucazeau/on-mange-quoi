@@ -2,7 +2,6 @@ package com.sasagui.onmangequoi.meal;
 
 import com.sasagui.onmangequoi.calendar.Day;
 import com.sasagui.onmangequoi.calendar.Week;
-import com.sasagui.onmangequoi.calendar.WeekService;
 import com.sasagui.onmangequoi.dish.DishEntity;
 import com.sasagui.onmangequoi.dish.DishRepository;
 import java.util.Optional;
@@ -15,24 +14,19 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public class MealPlanService {
 
-    private final WeekService weekService;
-
     private final MealPlanRepository mealPlanRepository;
 
     private final DishRepository dishRepository;
 
-    public MealPlan getOrGenerateMealPlan(int year, int weekNumber) {
-        log.info("Searching for a meal plan for week #{} of #{}", weekNumber, year);
-        Week week = weekService.getWeek(year, weekNumber);
+    public Optional<MealPlan> getMealPlan(Week week) {
+        log.info("Searching for a meal plan for week {}", week);
         MealPlanId mealPlanId = new MealPlanId(week.getYear(), week.getNumber());
         Optional<MealPlanEntity> optionalMealPlanEntity = mealPlanRepository.findById(mealPlanId);
         if (optionalMealPlanEntity.isPresent()) {
             log.info("Meal plan found for {}", week);
-            return MealPlan.from(week, optionalMealPlanEntity.get());
-        } else {
-            log.info("No meal plan found for {}", week);
-            return null;
+            return Optional.of(MealPlan.from(week, optionalMealPlanEntity.get()));
         }
+        return Optional.empty();
     }
 
     public MealPlanEntity from(MealPlan mealPlan) {
