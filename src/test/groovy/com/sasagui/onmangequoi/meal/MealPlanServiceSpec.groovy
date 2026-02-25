@@ -1,7 +1,6 @@
 package com.sasagui.onmangequoi.meal
 
 import com.sasagui.onmangequoi.OnMangeQuoiSpec
-import com.sasagui.onmangequoi.calendar.WeekService
 import com.sasagui.onmangequoi.dish.DishRepository
 
 class MealPlanServiceSpec extends OnMangeQuoiSpec {
@@ -10,36 +9,40 @@ class MealPlanServiceSpec extends OnMangeQuoiSpec {
 
     def dishRepositoryMock = Mock(DishRepository)
 
-    def service = new MealPlanService(new WeekService(), mealPlanRepositoryMock, dishRepositoryMock)
+    def service = new MealPlanService(mealPlanRepositoryMock, dishRepositoryMock)
 
-    def "getOrGenerateMealPlan - a meal plan exists for the given year and week - returns meal plan found"() {
+    def "getMealPlan - a meal plan exists for the given year and week - returns meal plan found"() {
         given:
         def mealPlanEntity = new MealPlanEntity(new MealPlanId(year: 2026, weekNumber: 12))
         mealPlanEntity.addMeal(mealEntity1)
 
         when:
-        def result = service.getOrGenerateMealPlan(2026, 12)
+        def result = service.getMealPlan(weekMock)
 
         then: "meal plan repository is called with year and week number"
         1 * mealPlanRepositoryMock.findById(new MealPlanId(2026, 12)) >> Optional.of(mealPlanEntity)
 
+        and: "result is not empty"
+        result.isPresent()
+        def mealPlan = result.get()
+
         and: "week is correctly built"
-        result.getWeek().getYear() == 2026
-        result.getWeek().getNumber() == 12
+        mealPlan.getWeek().getYear() == 2026
+        mealPlan.getWeek().getNumber() == 12
 
         and: "days and meals are correctly set"
-        result.getDays()[0].getMeals()[0].getDish().getId() == 1
+        mealPlan.getDays()[0].getMeals()[0].getDish().getId() == 1
     }
 
-    def "getOrGenerateMealPlan - no meal plan exist for the given year and week - returns null"() {
+    def "getMealPlan - no meal plan exist for the given year and week - returns Optional empty"() {
         when:
-        def result = service.getOrGenerateMealPlan(2026, 12)
+        def result = service.getMealPlan(weekMock)
 
         then: "meal plan repository is called with year and week number"
         1 * mealPlanRepositoryMock.findById(new MealPlanId(2026, 12)) >> Optional.empty()
 
-        and: "result is null"
-        result == null
+        and: "result is empty"
+        result.isEmpty()
     }
 
     def "from - DTO given - returns entity"() {

@@ -32,6 +32,15 @@ public class MealPlan {
         return new MealPlan(week, days);
     }
 
+    public static MealPlan empty(Week week) {
+        MealPlan mealPlan = schoolWeek(week);
+        mealPlan.getDays().stream()
+                .map(Day::getMeals)
+                .flatMap(Collection::stream)
+                .forEach(m -> m.setDish(Dish.empty()));
+        return mealPlan;
+    }
+
     public static MealPlan from(Week week, MealPlanEntity mealPlanEntity) {
         Map<DayOfWeek, List<MealEntity>> mealsPerDay =
                 mealPlanEntity.getMeals().stream().collect(Collectors.groupingBy(MealEntity::getDayOfWeek));
