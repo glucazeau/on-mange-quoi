@@ -16,9 +16,13 @@ public class Dish {
     private final long id;
 
     private final String label;
+
     private final boolean slow;
+
     private final boolean quick;
+
     private final boolean fromRestaurant;
+
     private final boolean vegan;
 
     public static Dish from(DishEntity dish) {

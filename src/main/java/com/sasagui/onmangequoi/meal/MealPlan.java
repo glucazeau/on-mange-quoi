@@ -2,9 +2,9 @@ package com.sasagui.onmangequoi.meal;
 
 import com.sasagui.onmangequoi.calendar.Day;
 import com.sasagui.onmangequoi.calendar.Week;
+import com.sasagui.onmangequoi.dish.Dish;
 import java.time.DayOfWeek;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import lombok.*;
 
@@ -39,5 +39,14 @@ public class MealPlan {
                 .map(e -> Day.from(e.getKey(), e.getValue()))
                 .toList();
         return new MealPlan(week, days);
+    }
+
+    public Set<Dish> getDishes() {
+        return days.stream()
+                .map(Day::getMeals)
+                .flatMap(Collection::stream)
+                .map(Meal::getDish)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
     }
 }
