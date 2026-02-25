@@ -18,6 +18,8 @@ public class Week {
     @ToString.Include
     private final int number;
 
+    private boolean current;
+
     private final LocalDate start;
 
     private final LocalDate end;
@@ -46,12 +48,15 @@ public class Week {
             LocalDate firstDayOfWeek = getFirstDayOfWeek(year, number);
             LocalDate lastDayOfWeek = getLastDayOfWeek(year, number);
 
+            LocalDate today = LocalDate.now();
+            boolean currentWeek = !today.isBefore(firstDayOfWeek) && !today.isAfter(lastDayOfWeek);
+
             WeekRef previousWeek = getPreviousWeek(year, number);
             WeekRef nextWeek = getNextWeek(year, number);
 
             Season season = Season.fromMonth(firstDayOfWeek.getMonth());
 
-            return new Week(year, number, firstDayOfWeek, lastDayOfWeek, previousWeek, nextWeek, season);
+            return new Week(year, number, currentWeek, firstDayOfWeek, lastDayOfWeek, previousWeek, nextWeek, season);
         }
 
         private LocalDate getFirstDayOfWeek(int year, long weekNumber) {
