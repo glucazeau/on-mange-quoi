@@ -21,6 +21,10 @@ public class Day {
     @Setter
     private LocalDate date;
 
+    public boolean isToday() {
+        return LocalDate.now().equals(date);
+    }
+
     public static Day dinner(DayOfWeek dayOfWeek) {
         return new Day(dayOfWeek, List.of(new Meal(MealType.DINNER)));
     }

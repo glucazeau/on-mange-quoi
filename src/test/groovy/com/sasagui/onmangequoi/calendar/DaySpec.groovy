@@ -3,8 +3,23 @@ package com.sasagui.onmangequoi.calendar
 import com.sasagui.onmangequoi.OnMangeQuoiSpec
 import com.sasagui.onmangequoi.meal.MealType
 import java.time.DayOfWeek
+import java.time.LocalDate
 
 class DaySpec extends OnMangeQuoiSpec {
+
+    def "isToday - day date is #dayDate - returns #expectedResult"() {
+        given:
+        Day day = Day.dinner(DayOfWeek.MONDAY)
+        day.setDate(dayDate)
+
+        expect:
+        day.isToday() == expectedResult
+
+        where:
+        dayDate                    | expectedResult
+        LocalDate.of(2023, 12, 31) | false
+        LocalDate.now()            | true
+    }
 
     def "dinner - dayOfWeek given - returns a day with one meal with type DINNER and given dayOfWeek"() {
         when:
