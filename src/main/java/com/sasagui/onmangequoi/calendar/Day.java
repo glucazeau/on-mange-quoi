@@ -25,6 +25,10 @@ public class Day {
         return LocalDate.now().equals(date);
     }
 
+    public boolean isWeekend() {
+        return List.of(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY).contains(dayOfWeek);
+    }
+
     public static Day dinner(DayOfWeek dayOfWeek) {
         return new Day(dayOfWeek, List.of(new Meal(MealType.DINNER)));
     }

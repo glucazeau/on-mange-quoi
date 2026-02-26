@@ -21,6 +21,24 @@ class DaySpec extends OnMangeQuoiSpec {
         LocalDate.now()            | true
     }
 
+    def "isWeekend - day of week is #dayOfWeek - returns #expectedResult"() {
+        given:
+        Day day = Day.dinner(dayOfWeek)
+
+        expect:
+        day.isWeekend() == expectedResult
+
+        where:
+        dayOfWeek           | expectedResult
+        DayOfWeek.MONDAY    | false
+        DayOfWeek.TUESDAY   | false
+        DayOfWeek.WEDNESDAY | false
+        DayOfWeek.THURSDAY  | false
+        DayOfWeek.FRIDAY    | false
+        DayOfWeek.SATURDAY  | true
+        DayOfWeek.SUNDAY    | true
+    }
+
     def "dinner - dayOfWeek given - returns a day with one meal with type DINNER and given dayOfWeek"() {
         when:
         def result = Day.dinner(DayOfWeek.MONDAY)
