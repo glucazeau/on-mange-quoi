@@ -1,5 +1,6 @@
 package com.sasagui.onmangequoi.meal;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sasagui.onmangequoi.calendar.Day;
 import com.sasagui.onmangequoi.calendar.Week;
 import com.sasagui.onmangequoi.dish.Dish;
@@ -29,6 +30,7 @@ public class MealPlan {
                 Day.dinner(DayOfWeek.FRIDAY),
                 Day.lunchAndDinner(DayOfWeek.SATURDAY),
                 Day.lunchAndDinner(DayOfWeek.SUNDAY));
+        setDates(week, days);
         return new MealPlan(week, days);
     }
 
@@ -47,9 +49,11 @@ public class MealPlan {
         List<Day> days = mealsPerDay.entrySet().stream()
                 .map(e -> Day.from(e.getKey(), e.getValue()))
                 .toList();
+        setDates(week, days);
         return new MealPlan(week, days);
     }
 
+    @JsonIgnore
     public Set<Dish> getDishes() {
         return days.stream()
                 .map(Day::getMeals)
@@ -57,5 +61,11 @@ public class MealPlan {
                 .map(Meal::getDish)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
+    }
+
+    private static void setDates(Week week, List<Day> days) {
+        for (Day day : days) {
+            day.setDate(week.getStart().plusDays((long) day.getDayOfWeek().getValue() - 1));
+        }
     }
 }

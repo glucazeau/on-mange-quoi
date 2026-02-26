@@ -7,6 +7,7 @@ import com.sasagui.onmangequoi.meal.MealEntity
 import com.sasagui.onmangequoi.meal.MealId
 import com.sasagui.onmangequoi.meal.MealType
 import java.time.DayOfWeek
+import java.time.LocalDate
 import spock.lang.Shared
 import spock.lang.Specification
 
@@ -18,6 +19,8 @@ class OnMangeQuoiSpec extends Specification {
         getNumber() >> 12
         getPreviousWeek() >> new Week.WeekRef(2026, 11)
         getNextWeek() >> new Week.WeekRef(2026, 13)
+        getStart() >> LocalDate.of(2026, 03, 16)
+        getEnd() >> LocalDate.of(2026, 03, 22)
     }
 
     @Shared

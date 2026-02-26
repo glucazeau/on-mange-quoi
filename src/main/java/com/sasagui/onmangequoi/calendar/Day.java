@@ -4,14 +4,12 @@ import com.sasagui.onmangequoi.meal.Meal;
 import com.sasagui.onmangequoi.meal.MealEntity;
 import com.sasagui.onmangequoi.meal.MealType;
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.util.List;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.*;
 
 @Getter
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString(onlyExplicitlyIncluded = true)
 public class Day {
 
@@ -19,6 +17,13 @@ public class Day {
     private final DayOfWeek dayOfWeek;
 
     private final List<Meal> meals;
+
+    @Setter
+    private LocalDate date;
+
+    public boolean isToday() {
+        return LocalDate.now().equals(date);
+    }
 
     public static Day dinner(DayOfWeek dayOfWeek) {
         return new Day(dayOfWeek, List.of(new Meal(MealType.DINNER)));
