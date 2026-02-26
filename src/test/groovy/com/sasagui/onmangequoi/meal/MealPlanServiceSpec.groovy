@@ -2,6 +2,7 @@ package com.sasagui.onmangequoi.meal
 
 import com.sasagui.onmangequoi.OnMangeQuoiSpec
 import com.sasagui.onmangequoi.dish.DishRepository
+import java.time.LocalDate
 
 class MealPlanServiceSpec extends OnMangeQuoiSpec {
 
@@ -32,6 +33,9 @@ class MealPlanServiceSpec extends OnMangeQuoiSpec {
 
         and: "days and meals are correctly set"
         mealPlan.getDays()[0].getMeals()[0].getDish().getId() == 1
+
+        and: "date is set on day"
+        mealPlan.getDays()[0].getDate() == LocalDate.of(2026,03, 16)
     }
 
     def "getMealPlan - no meal plan exist for the given year and week - returns Optional empty"() {

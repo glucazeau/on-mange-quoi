@@ -30,6 +30,7 @@ public class MealPlan {
                 Day.dinner(DayOfWeek.FRIDAY),
                 Day.lunchAndDinner(DayOfWeek.SATURDAY),
                 Day.lunchAndDinner(DayOfWeek.SUNDAY));
+        setDates(week, days);
         return new MealPlan(week, days);
     }
 
@@ -48,6 +49,7 @@ public class MealPlan {
         List<Day> days = mealsPerDay.entrySet().stream()
                 .map(e -> Day.from(e.getKey(), e.getValue()))
                 .toList();
+        setDates(week, days);
         return new MealPlan(week, days);
     }
 
@@ -59,5 +61,11 @@ public class MealPlan {
                 .map(Meal::getDish)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
+    }
+
+    private static void setDates(Week week, List<Day> days) {
+        for (Day day : days) {
+            day.setDate(week.getStart().plusDays((long) day.getDayOfWeek().getValue() - 1));
+        }
     }
 }
