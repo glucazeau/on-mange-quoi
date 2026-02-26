@@ -16,11 +16,8 @@ class DishSelectorSpec extends OnMangeQuoiSpec {
         def result = selector.selectDish([dish1, dish2], Mock(Day), Mock(Meal), [] as Set, [])
 
         then: "each scorer is called twice"
-        1 * dishScorerMock1.score(dish1, _ as Day, _ as Meal, [] as Set, []) >> -1
-        1 * dishScorerMock1.score(dish2, _ as Day, _ as Meal, [] as Set, []) >> 1
-
-        1 * dishScorerMock2.score(dish1, _ as Day, _ as Meal, [] as Set, []) >> -1
-        1 * dishScorerMock2.score(dish2, _ as Day, _ as Meal, [] as Set, []) >> 1
+        2 * dishScorerMock1.score(_ as DishScoringContext) >> { DishScoringContext ctx -> ctx.getDish() == dish1 ? -1 : 1 }
+        2 * dishScorerMock2.score(_ as DishScoringContext) >> { DishScoringContext ctx -> ctx.getDish() == dish1 ? -1 : 1 }
 
         and: "dish with the highest score is returned"
         result == dish2
