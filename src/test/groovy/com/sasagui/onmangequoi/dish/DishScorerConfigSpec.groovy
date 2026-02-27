@@ -53,4 +53,15 @@ class DishScorerConfigSpec extends OnMangeQuoiSpec {
         false          | true         | -1
         false          | false        | 0
     }
+
+    def "randomScorer - returns int between -1 and 1"() {
+        when:
+        def score = config.randomScorer().score(Mock(DishScoringContext))
+
+        then:
+        score <= 1
+
+        and:
+        score >= -1
+    }
 }

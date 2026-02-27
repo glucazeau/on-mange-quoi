@@ -1,5 +1,6 @@
 package com.sasagui.onmangequoi.dish;
 
+import java.util.Random;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -7,6 +8,8 @@ import org.springframework.context.annotation.Configuration;
 @Slf4j
 @Configuration
 public class DishScorerConfig {
+
+    Random random = new Random();
 
     @Bean
     public DishScorer quickDishOnWeekDayScorer() {
@@ -31,6 +34,14 @@ public class DishScorerConfig {
                 }
             }
             return 0;
+        };
+    }
+
+    @Bean
+    public DishScorer randomScorer() {
+        return context -> {
+            log.debug("Random scoring");
+            return random.nextInt(-1, 1);
         };
     }
 }
