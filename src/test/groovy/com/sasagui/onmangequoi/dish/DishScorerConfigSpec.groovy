@@ -19,7 +19,7 @@ class DishScorerConfigSpec extends OnMangeQuoiSpec {
             isWeekend() >> isWeekendValue
         }
 
-        def ctx = new DishScoringContext(dishMock, dayMock, Mock(Meal), [] as Set, [])
+        def ctx = new DishScoringContext(dishMock, dayMock, Mock(Meal), [] as Set, [] as Set)
 
         expect:
         config.quickDishOnWeekDayScorer().score(ctx) == expected
@@ -42,7 +42,7 @@ class DishScorerConfigSpec extends OnMangeQuoiSpec {
             isWeekend() >> isWeekendValue
         }
 
-        def ctx = new DishScoringContext(dishMock, dayMock, Mock(Meal), [] as Set, [])
+        def ctx = new DishScoringContext(dishMock, dayMock, Mock(Meal), [] as Set, [] as Set)
 
         expect:
         config.slowDishOnWeekDaysScorer().score(ctx) == expected
@@ -76,7 +76,7 @@ class DishScorerConfigSpec extends OnMangeQuoiSpec {
             getType() >> mealTypeValue
         }
 
-        def ctx = new DishScoringContext(dishMock, Mock(Day), mealMock, [dish1] as Set, [])
+        def ctx = new DishScoringContext(dishMock, Mock(Day), mealMock, [dish1] as Set, [] as Set)
 
         expect:
         config.veganDishForDinnerScorer().score(ctx) == expected

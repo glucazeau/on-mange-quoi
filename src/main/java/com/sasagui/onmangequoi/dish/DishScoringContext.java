@@ -2,7 +2,6 @@ package com.sasagui.onmangequoi.dish;
 
 import com.sasagui.onmangequoi.calendar.Day;
 import com.sasagui.onmangequoi.meal.Meal;
-import java.util.List;
 import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,7 +15,7 @@ public class DishScoringContext {
 
     Meal meal;
 
-    Set<Dish> currentWeekDishes;
+    Set<Dish> previousWeekDishes;
 
-    List<Dish> previousWeeksDishes;
+    Set<Dish> olderWeeksDishes;
 }

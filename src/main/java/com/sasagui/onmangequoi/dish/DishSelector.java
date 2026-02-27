@@ -18,12 +18,12 @@ public class DishSelector {
     private final List<DishScorer> scorers;
 
     public Dish selectDish(
-            List<Dish> dishes, Day day, Meal meal, Set<Dish> currentWeekDishes, List<Dish> previousWeeksDishes) {
+            List<Dish> dishes, Day day, Meal meal, Set<Dish> previousWeekDishes, Set<Dish> olderWeeksDishes) {
         log.info("Scoring {} dishes for {} of {}", dishes.size(), day, meal);
         List<ScoredDish> scoredDishes = dishes.stream().map(ScoredDish::new).collect(Collectors.toList());
         for (ScoredDish scoredDish : scoredDishes) {
             DishScoringContext context =
-                    new DishScoringContext(scoredDish.getDish(), day, meal, currentWeekDishes, previousWeeksDishes);
+                    new DishScoringContext(scoredDish.getDish(), day, meal, previousWeekDishes, olderWeeksDishes);
             for (DishScorer scorer : scorers) {
                 scoredDish.adjustScore(scorer.score(context));
             }
