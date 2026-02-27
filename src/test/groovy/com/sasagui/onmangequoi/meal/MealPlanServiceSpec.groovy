@@ -49,7 +49,7 @@ class MealPlanServiceSpec extends OnMangeQuoiSpec {
         result.isEmpty()
     }
 
-    def "from - DTO given - returns entity"() {
+    def "saveMealPlan - DTO given - builds and save entity"() {
         given:
         def mealPlan = MealPlan.schoolWeek(weekMock)
         mealPlan.getDays()[0].getMeals()[0].setDish(dish1)
@@ -64,20 +64,19 @@ class MealPlanServiceSpec extends OnMangeQuoiSpec {
         mealPlan.getDays()[6].getMeals()[1].setDish(dish2)
 
         when:
-        def result = service.from(mealPlan)
+        service.saveMealPlan(mealPlan)
 
         then: "dish repository called to load dish references"
         7 * dishRepositoryMock.getReferenceById(1) >> dishEntity1
         3 * dishRepositoryMock.getReferenceById(2) >> dishEntity2
 
         and:
-        result.getMeals().size() == 10
-
-        and: "dish entities are loaded in meals"
-        result.getMeals().every({ it.getDish() in [dishEntity1, dishEntity2]})
-
-        and: "meal ids are correctly created"
-        result.getMeals().every({it -> it.getId().year == 2026 && it.getId().weekNumber == 12 })
+        mealPlanRepositoryMock.save(_ as MealPlanEntity) >> { MealPlanEntity e ->
+            e.getMeals().size() == 10
+            e.getMeals().every({ it.getDish() in [dishEntity1, dishEntity2]})
+            e.getMeals().every({it -> it.getId().year == 2026 && it.getId().weekNumber == 12 })
+            return e
+        }
     }
 
 }

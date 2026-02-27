@@ -29,7 +29,13 @@ public class MealPlanService {
         return Optional.empty();
     }
 
-    public MealPlanEntity from(MealPlan mealPlan) {
+    public void saveMealPlan(MealPlan mealPlan) {
+        log.info("Saving meal plan for week {}", mealPlan.getWeek());
+        MealPlanEntity mealPlanEntity = from(mealPlan);
+        mealPlanRepository.save(mealPlanEntity);
+    }
+
+    private MealPlanEntity from(MealPlan mealPlan) {
         Week week = mealPlan.getWeek();
         log.info("Building MealPlan entity for week {}", week);
         MealPlanId mealPlanId = new MealPlanId(week.getYear(), week.getNumber());
