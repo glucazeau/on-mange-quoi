@@ -68,7 +68,7 @@ class MealPlanGeneratorSpec extends OnMangeQuoiSpec {
         1 * dishServiceMock.listDishes(null) >> [dish1, dish2]
 
         and: "compute previous week"
-        1 * weekServiceMock.getWeek(2026, 11) >> previousWeek
+        1 * weekServiceMock.getPreviousWeek(weekMock) >> previousWeek
 
         and: "loads previous week meal plan"
         1 * mealPlanServiceMock.getMealPlan(previousWeek) >> Optional.of(previousWeekMealPlan)

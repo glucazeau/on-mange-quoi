@@ -20,6 +20,16 @@ public class WeekService {
         return getWeek(weekYear, weekNumber);
     }
 
+    public Week getNextWeek(Week week) {
+        log.info("Computing next week from {}", week);
+        return getWeek(week.getNextWeek().year(), week.getNextWeek().number());
+    }
+
+    public Week getPreviousWeek(Week week) {
+        log.info("Computing previous week from {}", week);
+        return getWeek(week.getPreviousWeek().year(), week.getPreviousWeek().number());
+    }
+
     public Week getWeek(int year, int weekNumber) {
         log.info("Computing week #{} of {}", weekNumber, year);
         return Week.builder().year(year).number(weekNumber).build();

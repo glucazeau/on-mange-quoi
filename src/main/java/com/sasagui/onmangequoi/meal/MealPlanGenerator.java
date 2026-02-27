@@ -29,8 +29,7 @@ public class MealPlanGenerator {
         List<Dish> dishes = dishService.listDishes(null);
 
         log.info("Loading previous week meal plan");
-        Week previousWeek = weekService.getWeek(
-                week.getPreviousWeek().year(), week.getPreviousWeek().number());
+        Week previousWeek = weekService.getPreviousWeek(week);
         Optional<MealPlan> previousWeekMealPlan = mealPlanService.getMealPlan(previousWeek);
 
         log.info("Loading two weeks before meal plans");
