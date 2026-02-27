@@ -30,6 +30,7 @@ public class MealPlanGenerator {
                 Dish selectedDish =
                         dishSelector.selectDish(dishes, day, meal, mealPlan.getDishes(), Collections.emptyList());
                 meal.setDish(selectedDish);
+                dishes.remove(selectedDish);
             }
         }
         return mealPlan;

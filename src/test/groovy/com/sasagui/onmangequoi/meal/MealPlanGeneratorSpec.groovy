@@ -20,8 +20,11 @@ class MealPlanGeneratorSpec extends OnMangeQuoiSpec {
         then: "calls dish service to load dishes"
         1 * dishServiceMock.listDishes(null) >> [dish1, dish2]
 
-        and:
-        10 * dishSelectorMock.selectDish([dish1, dish2], _ as Day, _ as Meal, _ as Set, []) >> dish1
+        and: "first call contains all dishes"
+        1 * dishSelectorMock.selectDish([dish1, dish2], _ as Day, _ as Meal, _ as Set, []) >> dish1
+
+        and: "select dish is removed from list in other calls"
+        9 * dishSelectorMock.selectDish([dish2], _ as Day, _ as Meal, _ as Set, []) >> dish1
 
         and:
         result.getDays().every({ it.getMeals().every({ it.getDish() == dish1 })})
