@@ -3,6 +3,7 @@ package com.sasagui.onmangequoi.dish
 import com.sasagui.onmangequoi.OnMangeQuoiSpec
 import com.sasagui.onmangequoi.calendar.Day
 import com.sasagui.onmangequoi.meal.Meal
+import com.sasagui.onmangequoi.meal.MealType
 
 class DishScorerConfigSpec extends OnMangeQuoiSpec {
 
@@ -63,5 +64,28 @@ class DishScorerConfigSpec extends OnMangeQuoiSpec {
 
         and:
         score >= -1
+    }
+
+    def "veganDishForDinnerScorer - dish is vegan: #isVeganValue and meal type is #mealTypeValue - returns #expected"() {
+        given:
+        def dishMock = Mock(Dish) {
+            isVegan() >> isVeganValue
+        }
+
+        def mealMock = Mock(Meal) {
+            getType() >> mealTypeValue
+        }
+
+        def ctx = new DishScoringContext(dishMock, Mock(Day), mealMock, [dish1] as Set, [])
+
+        expect:
+        config.veganDishForDinnerScorer().score(ctx) == expected
+
+        where:
+        isVeganValue | mealTypeValue   | expected
+        true         | MealType.LUNCH  | 0
+        false        | MealType.LUNCH  | 0
+        true         | MealType.DINNER | 1
+        false        | MealType.DINNER | 0
     }
 }

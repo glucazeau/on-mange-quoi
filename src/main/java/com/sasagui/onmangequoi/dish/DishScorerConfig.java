@@ -1,5 +1,6 @@
 package com.sasagui.onmangequoi.dish;
 
+import com.sasagui.onmangequoi.meal.MealType;
 import java.util.Random;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -42,6 +43,18 @@ public class DishScorerConfig {
         return context -> {
             log.debug("Random scoring");
             return random.nextInt(-1, 1);
+        };
+    }
+
+    @Bean
+    public DishScorer veganDishForDinnerScorer() {
+        return context -> {
+            log.debug("Scoring vegan dish for dinner");
+            if (context.getDish().isVegan()
+                    && MealType.DINNER.equals(context.getMeal().getType())) {
+                return 1;
+            }
+            return 0;
         };
     }
 }
