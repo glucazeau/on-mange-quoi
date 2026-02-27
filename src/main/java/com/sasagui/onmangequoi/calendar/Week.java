@@ -32,6 +32,10 @@ public class Week {
 
     public record WeekRef(int year, int number) {}
 
+    public boolean isOver() {
+        return LocalDate.now().isAfter(end);
+    }
+
     public static WeekBuilder builder() {
         return new WeekBuilder();
     }
