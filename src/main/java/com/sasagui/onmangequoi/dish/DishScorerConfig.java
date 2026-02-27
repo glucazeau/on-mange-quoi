@@ -18,4 +18,19 @@ public class DishScorerConfig {
             return 0;
         };
     }
+
+    @Bean
+    public DishScorer slowDishOnWeekDaysScorer() {
+        return context -> {
+            log.debug("Scoring slow dish and day type");
+            if (context.getDish().isSlow()) {
+                if (context.getDay().isWeekend()) {
+                    return 1;
+                } else {
+                    return -1;
+                }
+            }
+            return 0;
+        };
+    }
 }
