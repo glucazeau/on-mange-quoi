@@ -61,4 +61,33 @@ class WeekServiceSpec extends OnMangeQuoiSpec {
         2026      | 53              | 2026             | 52                 | 2027         | 1              | "2026-12-28"  | "2027-01-03" | Season.WINTER
     }
 
+    def "getPreviousWeek - given week is #12 of 2026 - returns week #11 of 2026"() {
+        when:
+        def result = manager.getPreviousWeek(weekMock)
+
+        then:
+        result.getYear() == 2026
+        result.getNumber() == 11
+    }
+
+    def "getNextWeek - given week is #12 of 2026 of #weekMock.getYear() - returns week #13 of 2026"() {
+        when:
+        def result = manager.getNextWeek(weekMock)
+
+        then:
+        result.getYear() == 2026
+        result.getNumber() == 13
+    }
+
+    def "week.isOver - week is #testLabel - returns expected"() {
+        expect:
+        manager.getWeek(givenYear, givenWeekNumber).isOver() == expected
+
+        where:
+        givenYear                | givenWeekNumber | expected | testLabel
+        LocalDate.now().year - 1 | 12              | true     | "last year"
+        LocalDate.now().year + 1 | 12              | false    | "next year"
+
+    }
+
 }

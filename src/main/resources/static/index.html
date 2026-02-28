@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-  <title>Menus de la semaine</title>
+  <title>On mange quoi ce soir ?</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
 
@@ -43,7 +43,7 @@
       <a href="index.html" class="logo d-flex align-items-center me-auto me-lg-0">
         <!-- Uncomment the line below if you also wish to use an image logo -->
         <!-- <img src="assets/img/logo.png" alt=""> -->
-        <h1 >Menus de la <span>semaine</span></h1>
+        <h1>On mange quoi <span>ce soir </span>?</h1>
       </a>
 
       <nav id="navbar" class="navbar">
@@ -67,11 +67,11 @@
       <div class="container" data-aos="fade-up">
 
         <div class="section-header">
-          <h2 x-show="displayedWeek.is_current">semaine courante</h2>
+          <h2 x-show="mealPlan.week.current">semaine courante</h2>
           <p>
-            <i class="bi bi-arrow-left-short"></i>
-            Semaine <span x-text="displayedWeek.number"></span>
-            <i class="bi bi-arrow-right-short"></i>
+            <button @click="goToWeek(mealPlan.week.previousWeek.year, mealPlan.week.previousWeek.number)" style="all: unset; cursor: pointer;"><-&nbsp;</button>
+            Semaine <span x-text="mealPlan.week.number"></span>
+            <button @click="goToWeek(mealPlan.week.nextWeek.year, mealPlan.week.nextWeek.number)" style="all: unset; cursor: pointer;">&nbsp;-></button>
           </p>
         </div>
 
@@ -82,28 +82,28 @@
               <div class="col-xl-3" data-aos="fade-up" data-aos-delay="200">
                 <div class="icon-box week-infos">
                   <div class="season-img w-100">
-                    <img :src="getSeasonPicture()" class="img-fluid">
+                    <img :src="getSeasonPicture(mealPlan.week.start)" class="img-fluid">
                   </div>
                   <div class="btn-actions">
-                    <button class="btn btn-sm btn-action" x-show="displayedWeek.status == 'DRAFT' && !displayedWeek.is_finished" x-on:click="generateWeek(displayedWeek.year, displayedWeek.number)"><span class="bi-arrow-clockwise"></span> Regénérer</button>
+                    <button class="btn btn-sm btn-action" x-show="mealPlan.status == 'DRAFT' && !mealPlan.is_finished" x-on:click="generateWeek(mealPlan.year, mealPlan.number)"><span class="bi-arrow-clockwise"></span> Regénérer</button>
 
-                    <button class="btn btn-sm btn-action" x-show="displayedWeek.status == 'DRAFT' && !displayedWeek.is_finished" x-on:click="changeWeekStatus(displayedWeek.year, displayedWeek.number, 'save')"><span class="bi-check-circle"></span> Enregistrer</button>
+                    <button class="btn btn-sm btn-action" x-show="mealPlan.status == 'DRAFT' && !mealPlan.is_finished" x-on:click="changeWeekStatus(mealPlan.year, mealPlan.number, 'save')"><span class="bi-check-circle"></span> Enregistrer</button>
 
-                    <button class="btn btn-sm btn-action" x-show="displayedWeek.status == 'SAVED' && !displayedWeek.is_finished" href="#"  x-on:click="changeWeekStatus(displayedWeek.year, displayedWeek.number, 'edit')"><span class="bi-pen"></span> Modifier</button>
+                    <button class="btn btn-sm btn-action" x-show="mealPlan.status == 'SAVED' && !mealPlan.is_finished" href="#"  x-on:click="changeWeekStatus(mealPlan.year, mealPlan.number, 'edit')"><span class="bi-pen"></span> Modifier</button>
                   </div>
                 </div>
               </div>
 
-              <template x-for="day in displayedWeek.days.sort((a, b) => a.number > b.number)" :key="day.number">
+              <template x-for="day in mealPlan.days" :key="day.dayOfWeek">
                 <div class="col-xl-3" data-aos="fade-up" data-aos-delay="200">
-                  <div class="icon-box align-items-center" :class="{ 'today': day.is_today }">
-                    <h4 x-text="day.name">{{ day.name }}</h4>
+                  <div class="icon-box align-items-center" :class="{ 'today': day.today }">
+                    <h4 x-text="frenchDay(day.dayOfWeek)">{{ day.dayOfWeek }}</h4>
                     <template x-for="meal in day.meals" :key="meal.type">
                       <div>
                         <p x-show="day.meals.length == 1">&nbsp;</p>
                         <p>
                           <hr x-show="meal.type == 'Soir'" class="dotted">
-                          <span x-text="meal.dish.name"></span>
+                          <span x-text="meal.dish.label"></span>
                           <span x-show="meal.dish.vegan">🌱</span>
                           <span x-show="meal.dish.fromRestaurant">💸</span>
                           <span x-show="meal.dish.quick">🚀</span>
@@ -295,9 +295,8 @@
 
   const manageMenus = () => ({
       baseUrl: 'https://sasagui.fr/onmangequoi/api',
-      days: ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi' ,'vendredi', 'samedi'],
       months: ['janvier', 'février', 'mars', 'avril', 'mai' ,'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'],
-      displayedWeek: {
+      mealPlan: {
         days: []
       },
       dishes: [],
@@ -356,20 +355,26 @@
       },
 
       async getCurrentWeek() {
-        await fetch(this.baseUrl + '/week/current')
+        await fetch(this.baseUrl + '/meal-plans/current')
           .then((response) => response.json())
-          .then((json) => this.displayedWeek = json);
+          .then((json) => this.mealPlan = json);
       },
 
-      setDisplayedWeek(json) {
-        this.displayedWeek = json;
+      setMealPlan(json) {
+        this.mealPlan = json;
+      },
+
+      async goToWeek(year, number) {
+        await fetch(this.baseUrl + '/meal-plans/year/' + year + '/week/' + number)
+          .then((response) => response.json())
+          .then((json) => this.mealPlan = json);
       },
 
       async generateWeek(year, number) {
-        await fetch(this.baseUrl + '/week/' + year + '/' + number + '?generate=true')
+        await fetch(this.baseUrl + '/meal-plans/year/' + year + '/week/' + number + '?generate=true')
           .then((response) => response.json())
           .then((json) =>  {
-            this.setDisplayedWeek(json)
+            this.setMealPlan(json)
           });
       },
 
@@ -385,51 +390,31 @@
         })
         .then((response) => response.json())
         .then((json) =>  {
-          this.setDisplayedWeek(json)
+          this.setMealPlan(json)
         });
       },
 
-      getWeekLabel(week) {
-        weekLabel = 'Semaine ' + week.number
-        if (week.is_finished) {
-          weekLabel += ' ✔️'
-        }
-        return weekLabel
-      },
-
-      getMealTypeLabel(meals, meal) {
-        if (meals.length > 1 && meal.type == 'Soir') {
-            return ' 🌜'
-        } else {
-            return ''
-        }
-      },
-
-      getSeasonEmoji() {
+      getSeasonPicture(dateString) {
         getSeason = d => Math.floor((d.getMonth() / 12 * 4)) % 4;
-        return ['❄️', '🍃', '☀️', '🍂'][getSeason(new Date())];
-      },
-
-
-      getSeasonPicture() {
-        getSeason = d => Math.floor((d.getMonth() / 12 * 4)) % 4;
-        return 'assets/img/' + ['winter.jpg', 'spring.jpg', 'summer.webp', 'autumn.avif'][getSeason(new Date())];
-      },
-
-      getDateTitle() {
-          d = new Date();
-          return this.days[d.getDay()] + ' ' + d.getDate() + ' ' + this.months[d.getMonth()]
+        return 'assets/img/' + ['winter.jpg', 'spring.jpg', 'summer.webp', 'autumn.avif'][getSeason(new Date(dateString))];
       },
 
       getMonthLabel(month) {
         return this.months[month];
       },
 
-      renderDay(day) {
-          const template = document.getElementById('day-template').innerHTML;
-          const rendered = Mustache.render(template, { day: day });
-          document.getElementById('target').innerHTML = rendered;
-      },
+      frenchDay(day) {
+            const mapping = {
+                MONDAY: 'lundi',
+                TUESDAY: 'mardi',
+                WEDNESDAY: 'mercredi',
+                THURSDAY: 'jeudi',
+                FRIDAY: 'vendredi',
+                SATURDAY: 'samedi',
+                SUNDAY: 'dimanche'
+            };
+            return mapping[day] || day;
+        }
   })
   </script>
 
