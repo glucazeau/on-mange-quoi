@@ -88,4 +88,43 @@ class DishScorerConfigSpec extends OnMangeQuoiSpec {
         true         | MealType.DINNER | 1
         false        | MealType.DINNER | 0
     }
+
+    def "dishUsedLastWeekScorer - dish was #testLabel last week - returns #expected"() {
+        given:
+        def ctx = new DishScoringContext(dishValue, Mock(Day), Mock(Meal), [dish1] as Set, [] as Set)
+
+        expect:
+        config.dishUsedLastWeekScorer().score(ctx) == expected
+
+        where:
+        dishValue | expected | testLabel
+        dish1     | -2       | "used"
+        dish2     | 0        | "not used"
+    }
+
+    def "dishUsedOlderWeeksScorer - dish was #testLabel previous weeks - returns #expected"() {
+        given:
+        def ctx = new DishScoringContext(dishValue, Mock(Day), Mock(Meal), [] as Set, [dish1] as Set)
+
+        expect:
+        config.dishUsedOlderWeeksScorer().score(ctx) == expected
+
+        where:
+        dishValue | expected | testLabel
+        dish1     | -1       | "used"
+        dish2     | 0        | "not used"
+    }
+
+    def "dishNotUsedLastWeekAndPreviousWeeks - dish was #testLabel last week or previous weeks - returns #expected"() {
+        given:
+        def ctx = new DishScoringContext(dishValue, Mock(Day), Mock(Meal), [dish1] as Set, [dish1] as Set)
+
+        expect:
+        config.dishNotUsedLastWeekAndPreviousWeeks().score(ctx) == expected
+
+        where:
+        dishValue | expected | testLabel
+        dish1     | 0        | "used"
+        dish2     | 1        | "not used"
+    }
 }

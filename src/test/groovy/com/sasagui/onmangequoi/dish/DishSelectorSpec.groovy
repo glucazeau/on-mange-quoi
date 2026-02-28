@@ -26,15 +26,15 @@ class DishSelectorSpec extends OnMangeQuoiSpec {
         2 * dishScorerMock1.score(_ as DishScoringContext) >> { DishScoringContext ctx ->
             assert ctx.getDay() == dayMock
             assert ctx.getMeal() == mealMock
-            assert ctx.getPreviousWeekDishes() == previousWeekDishes
-            assert ctx.getOlderWeeksDishes() == olderWeeksDishes
+            assert ctx.getLastWeekDishes() == previousWeekDishes
+            assert ctx.getPreviousWeeksDishes() == olderWeeksDishes
             return ctx.getDish() == dish1 ? -1 : 1
         }
         2 * dishScorerMock2.score(_ as DishScoringContext) >> { DishScoringContext ctx ->
             assert ctx.getDay() == dayMock
             assert ctx.getMeal() == mealMock
-            assert ctx.getPreviousWeekDishes() == previousWeekDishes
-            assert ctx.getOlderWeeksDishes() == olderWeeksDishes
+            assert ctx.getLastWeekDishes() == previousWeekDishes
+            assert ctx.getPreviousWeeksDishes() == olderWeeksDishes
             return ctx.getDish() == dish1 ? -1 : 1
         }
         and: "dish with the highest score is returned"

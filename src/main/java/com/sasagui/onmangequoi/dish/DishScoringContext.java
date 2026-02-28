@@ -15,7 +15,7 @@ public class DishScoringContext {
 
     Meal meal;
 
-    Set<Dish> previousWeekDishes;
+    Set<Dish> lastWeekDishes;
 
-    Set<Dish> olderWeeksDishes;
+    Set<Dish> previousWeeksDishes;
 }

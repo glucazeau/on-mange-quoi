@@ -57,4 +57,37 @@ public class DishScorerConfig {
             return 0;
         };
     }
+
+    @Bean
+    public DishScorer dishUsedLastWeekScorer() {
+        return context -> {
+            log.debug("Scoring dish used last week");
+            if (context.getLastWeekDishes().contains(context.getDish())) {
+                return -2;
+            }
+            return 0;
+        };
+    }
+
+    @Bean
+    public DishScorer dishUsedOlderWeeksScorer() {
+        return context -> {
+            log.debug("Scoring dish used previous weeks");
+            if (context.getPreviousWeeksDishes().contains(context.getDish())) {
+                return -1;
+            }
+            return 0;
+        };
+    }
+
+    public DishScorer dishNotUsedLastWeekAndPreviousWeeks() {
+        return context -> {
+            log.debug("Scoring dish not used last week and previous weeks");
+            if (!context.getLastWeekDishes().contains(context.getDish())
+                    && !context.getPreviousWeeksDishes().contains(context.getDish())) {
+                return 1;
+            }
+            return 0;
+        };
+    }
 }
