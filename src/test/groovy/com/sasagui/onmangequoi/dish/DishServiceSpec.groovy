@@ -38,4 +38,20 @@ class DishServiceSpec extends OnMangeQuoiSpec {
         and:
         result == [Dish.from(dishEntity1), Dish.from(dishEntity2)]
     }
+
+    def "addDish - new body sent given - creates entity from body and calls repository to save it"() {
+        given:
+        def bodyMock = Mock(NewDish) {
+            getLabel() >> "New label"
+        }
+
+        when:
+        service.addDish(bodyMock)
+
+        then:
+        1 * repositoryMock.save(_) >> { DishEntity e ->
+            assert e.getLabel() == "New label"
+            return e
+        }
+    }
 }

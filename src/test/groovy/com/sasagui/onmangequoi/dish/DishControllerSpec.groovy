@@ -39,4 +39,32 @@ class DishControllerSpec extends MvcSpecification {
                 .andExpect(jsonPath("\$[1].fromRestaurant").value(false))
                 .andExpect(jsonPath("\$[1].vegan").value(false))
     }
+
+    def "POST /dishes - new request body sent - returns HTTP 201"() {
+        when:
+        def response = mvc.perform(post("/dishes")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""{
+                            "label": "New label",
+                            "slow": ${flagValue},
+                            "quick": ${flagValue},
+                            "fromRestaurant": ${flagValue},
+                            "vegan": ${flagValue}
+                        }"""))
+
+        then: "calls service to get dishes"
+        1 * dishServiceMock.addDish(_) >> { NewDish nd ->
+            assert nd.getLabel() == "New label"
+            assert nd.isSlow() == flagValue
+            assert nd.isQuick() == flagValue
+            assert nd.isFromRestaurant() == flagValue
+            assert nd.isVegan() == flagValue
+        }
+
+        and:
+        response.andExpect(status().isCreated())
+
+        where:
+        flagValue << [true, false]
+    }
 }

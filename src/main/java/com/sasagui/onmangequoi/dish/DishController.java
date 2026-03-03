@@ -7,13 +7,13 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import java.util.List;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RestController
-@RequestMapping(produces = APPLICATION_JSON_VALUE)
+@RequestMapping(path = "/dishes", produces = APPLICATION_JSON_VALUE)
 @AllArgsConstructor
 public class DishController {
 
@@ -24,8 +24,17 @@ public class DishController {
             value = {
                 @ApiResponse(responseCode = "200", description = "Successfully retrieved"),
             })
-    @GetMapping("dishes")
+    @GetMapping
     public List<Dish> listDishes(@RequestBody(required = false) DishSearchCriteria searchCiteria) {
         return dishService.listDishes(searchCiteria);
+    }
+
+    @Operation(summary = "Create dish", description = "Adds a new dish")
+    @ApiResponse(responseCode = "201", description = "Dish successfully created")
+    @ResponseStatus(value = HttpStatus.CREATED)
+    @PostMapping
+    public void addDish(@RequestBody NewDish newDish) {
+        log.info("New dish request received for {}", newDish);
+        dishService.addDish(newDish);
     }
 }
