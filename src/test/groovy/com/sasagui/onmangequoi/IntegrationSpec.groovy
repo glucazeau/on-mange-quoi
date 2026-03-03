@@ -7,7 +7,7 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.DynamicPropertyRegistry
 import org.springframework.test.context.DynamicPropertySource
 import org.springframework.test.web.servlet.MockMvc
-import org.testcontainers.containers.PostgreSQLContainer
+import org.testcontainers.postgresql.PostgreSQLContainer
 import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Stepwise
@@ -18,7 +18,7 @@ import spock.lang.Stepwise
 @Stepwise
 abstract class IntegrationSpec extends Specification {
 
-    static PostgreSQLContainer postgresql = new PostgreSQLContainer<>("postgres:16.0")
+    static PostgreSQLContainer postgresql = new PostgreSQLContainer("postgres:16.0")
             .withDatabaseName("brand-portal")
             .withUsername("brand-portal")
             .withPassword("brand-portal")
