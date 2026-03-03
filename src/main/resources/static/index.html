@@ -50,6 +50,7 @@
         <ul>
           <li><a href="#menus">Menus</a></li>
           <li><a href="#dishes">Plats</a></li>
+          <li><a href="#book-a-table">Nouveau plat</a></li>
         </ul>
       </nav><!-- .navbar -->
 
@@ -116,9 +117,9 @@
               </template>
             </div>
           </div>
+        </div>
       </div>
     </section><!-- End Menus Section -->
-
 
     <!-- ======= Dishes Section ======= -->
     <section id="dishes" class="dishes">
@@ -167,51 +168,6 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-md-12">
-                  <div class="card mb-4 box-shadow reservation-form-bg">
-                    <div class="card-body" x-data="newDishForm()">
-                      <h5 class="card-title">Ajouter un plat</h5>
-                      <div class="input-group py-2">
-                        <input type="text" class="form-control" placeholder="Nom" aria-describedby="basic-addon1" x-model="newDishFormData.name">
-                      </div>
-                      <div class="form-check">
-                        <input class="form-check-input" type="checkbox" x-model="newDishFormData.vegetarian" id="veganDish">
-                        <label class="form-check-label" for="veganDish">🌱 Végétarien</label>
-                      </div>
-                      <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="quickDish">
-                        <label class="form-check-label" for="quickDish">🚀 Rapide</label>
-                      </div>
-                      <div class="form-check">
-                        <input class="form-check-input" type="checkbox" x-model="newDishFormData.is_long_to_prepare" id="longDish">
-                        <label class="form-check-label" for="longDish">🐌 Long</label>
-                      </div>
-                      <div class="form-check">
-                        <input class="form-check-input" type="checkbox" x-model="newDishFormData.from_restaurant" id="restaurantDish">
-                        <label class="form-check-label" for="restaurantDish">💸 Restaurant</label>
-                      </div>
-                      <hr class="dotted">
-                      <div class="form-check">
-                        <input class="form-check-input" type="checkbox" x-model="newDishFormData.seasons" value="1" id="springDish">
-                        <label class="form-check-label" for="springDish">🍃 Printemps</label>
-                      </div>
-                      <div class="form-check">
-                        <input class="form-check-input" type="checkbox" x-model="newDishFormData.seasons" value="2" id="summerDish">
-                        <label class="form-check-label" for="summerDish">☀️ Été</label>
-                      </div>
-                      <div class="form-check">
-                        <input class="form-check-input" type="checkbox" x-model="newDishFormData.seasons" value="3" id="autumnDish">
-                        <label class="form-check-label" for="autumnDish">🍂 Automne</label>
-                      </div>
-                      <div class="form-check">
-                        <input class="form-check-input" type="checkbox" x-model="newDishFormData.seasons" value=4 id="winterDish">
-                        <label class="form-check-label" for="winterDish">❄️ Hiver</label>
-                      </div>
-
-                      <button class="btn btn-sm btn-action" x-on:click="addDish()"><span class="bi-check-circle"></span> Enregistrer</button>
-                    </div>
-                  </div>
-                </div>
               </div>
             </div>
             <template x-for="(half, index) in [
@@ -244,6 +200,64 @@
         </div>
       </div>
     </section><!-- End Dishes Section -->
+
+    <!-- ======= Book A Table Section ======= -->
+    <section id="book-a-table" class="book-a-table">
+      <div class="container" data-aos="fade-up">
+
+        <div class="section-header">
+          <p>Ajouter un <span>plat</span></p>
+        </div>
+
+        <div class="row g-0">
+
+          <div class="col-lg-4 reservation-img" style="background-image: url(assets/img/cocotte.jpg);" data-aos="zoom-out" data-aos-delay="200"></div>
+
+          <div class="col-lg-8 align-items-center reservation-form-bg">
+            <form @submit.prevent="submitForm" x-data="newDishForm()" role="form" class="php-email-form" data-aos="fade-up" data-aos-delay="100">
+              <div class="row gy-4">
+                <div class="col-12">
+                  <input x-model="newDishFormData.label" type="text" name="label" class="form-control" id="label" placeholder="Libellé" data-rule="minlen:4" data-msg="Please enter at least 4 chars">
+                  <div class="validate"></div>
+                </div>
+                <div class="col-2">
+                  <div class="form-check">
+                    <input x-model="newDishFormData.vegan" class="form-check-input" type="checkbox" value="" id="veganFilter">
+                    <label class="form-check-label" for="veganFilter">&nbsp;🌱</label>
+                  </div>
+                </div>
+                <div class="col-2">
+                  <div class="form-check">
+                    <input x-model="newDishFormData.quick" class="form-check-input" type="checkbox" value="" id="quickFilter">
+                    <label class="form-check-label" for="quickFilter">&nbsp;🚀</label>
+                  </div>
+                </div>
+                <div class="col-2">
+                  <div class="form-check">
+                    <input x-model="newDishFormData.long" class="form-check-input" type="checkbox" value="" id="longFilter">
+                    <label class="form-check-label" for="longFilter">&nbsp;🐌</label>
+                  </div>
+                </div>
+                <div class="col-2">
+                  <div class="form-check">
+                    <input x-model="newDishFormData.fromRestaurant" class="form-check-input" type="checkbox" value="" id="restaurantFilter">
+                    <label class="form-check-label" for="restaurantFilter">&nbsp;💸</label>
+                  </div>
+                </div>
+              </div>
+              <div class="mb-3">
+                <div class="loading">Loading</div>
+                <div class="error-message">Error</div>
+                <div class="sent-message"></div>
+              </div>
+              <div class="text-center"><button type="submit" x-on:click="addDish()">Enregistrer</button></div>
+            </form>
+          </div><!-- End Reservation Form -->
+
+        </div>
+
+      </div>
+    </section><!-- End Book A Table Section -->
 
   </main><!-- End #main -->
 
@@ -319,7 +333,7 @@
       newDishForm() {
         return {
           newDishFormData: {
-            name: '',
+            label: '',
             from_restaurant: false,
             vegetarian: false,
             is_long_to_prepare: false,
@@ -329,17 +343,18 @@
       },
 
       async addDish() {
-        await fetch(this.baseUrl + '/dish', {
+        event.preventDefault();
+        await fetch(this.baseUrl + '/dishes', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            'name': this.newDishFormData.name,
-            'from_restaurant': this.newDishFormData.from_restaurant,
-            'vegetarian': this.newDishFormData.vegetarian,
-            'is_long_to_prepare': this.newDishFormData.is_long_to_prepare,
-            'seasons': this.newDishFormData.seasons
+            'label': this.newDishFormData.label,
+            'fromRestaurant': this.newDishFormData.fromRestaurant,
+            'vegan': this.newDishFormData.vegan,
+            'long': this.newDishFormData.long,
+            'quick': this.newDishFormData.quick
           })
         })
         .then((response) => response.json())
