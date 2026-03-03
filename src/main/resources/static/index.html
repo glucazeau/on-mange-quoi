@@ -310,7 +310,7 @@
 
       getDishes() {
         fetch(this.baseUrl + '/dishes', {
-          method: 'POST'
+          method: 'GET'
         })
           .then((response) => response.json())
           .then((json) => this.dishes = json);

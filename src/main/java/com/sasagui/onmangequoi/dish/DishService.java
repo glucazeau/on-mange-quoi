@@ -20,4 +20,9 @@ public class DishService {
                 .map(Dish::from)
                 .toList();
     }
+
+    public void addDish(NewDish newDish) {
+        DishEntity entity = DishEntity.from(newDish);
+        dishRepository.save(entity);
+    }
 }
