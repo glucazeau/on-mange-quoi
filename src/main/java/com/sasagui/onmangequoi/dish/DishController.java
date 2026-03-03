@@ -7,7 +7,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import java.util.List;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,7 +24,7 @@ public class DishController {
             value = {
                 @ApiResponse(responseCode = "200", description = "Successfully retrieved"),
             })
-    @PostMapping("dishes")
+    @GetMapping("dishes")
     public List<Dish> listDishes(@RequestBody(required = false) DishSearchCriteria searchCiteria) {
         return dishService.listDishes(searchCiteria);
     }

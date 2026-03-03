@@ -1,7 +1,7 @@
 package com.sasagui.onmangequoi.dish
 
 import static org.hamcrest.Matchers.hasSize
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
@@ -12,7 +12,7 @@ class DishIntegrationSpec extends IntegrationSpec {
 
     def "GET /dishes - no request body sent - returns HTTP 200 and dishes JSON results"() {
         when:
-        def response = mvc.perform(post("/dishes")
+        def response = mvc.perform(get("/dishes")
                 .contentType(MediaType.APPLICATION_JSON))
 
         then:
