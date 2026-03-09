@@ -49,7 +49,8 @@
       <nav id="navbar" class="navbar">
         <ul>
           <li><a href="#menus">Menus</a></li>
-          <li><a href="#dishes">Plats</a></li>
+          <li><a href="#menu">Plats</a></li>
+          <li><a href="#book-a-table">Nouveau plat</a></li>
         </ul>
       </nav><!-- .navbar -->
 
@@ -116,134 +117,107 @@
               </template>
             </div>
           </div>
+        </div>
       </div>
     </section><!-- End Menus Section -->
 
+    <!-- Menu Section -->
+    <section id="menu" class="menu section">
 
-    <!-- ======= Dishes Section ======= -->
-    <section id="dishes" class="dishes">
-      <div class="container" data-aos="fade-up">
-
-        <div class="section-header">
-          <p>
-            Plats <span>disponibles</span>
-          </p>
-        </div>
-        <div class="row gy-1">
-          <div class="col-lg-12 d-flex">
-            <div class="col-md-2">
-              <div class="row">
-                <div class="col-md-12 py-3">
-                  <div class="card mb-4 box-shadow reservation-form-bg">
-                    <div class="card-body">
-                      <div class="input-group py-2">
-                        <span class="input-group-text" id="basic-addon1">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
-                          </svg>
-                        </span>
-                        <input type="text" class="form-control" placeholder="Filtrer" x-model="searchDish" aria-describedby="basic-addon1">
-                      </div>
-                      <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="currentMonth">
-                        <label class="form-check-label" for="currentMonth" x-text="getMonthLabel(new Date().getMonth())"></label>
-                      </div>
-                      <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="veganFilter">
-                        <label class="form-check-label" for="veganFilter">🌱 Végétariens</label>
-                      </div>
-                      <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="quickFilter">
-                        <label class="form-check-label" for="quickFilter">🚀 Rapides</label>
-                      </div>
-                      <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="longFilter">
-                        <label class="form-check-label" for="longFilter">🐌 Longs</label>
-                      </div>
-                      <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="restaurantFilter">
-                        <label class="form-check-label" for="restaurantFilter">💸 Restaurants</label>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-12">
-                  <div class="card mb-4 box-shadow reservation-form-bg">
-                    <div class="card-body" x-data="newDishForm()">
-                      <h5 class="card-title">Ajouter un plat</h5>
-                      <div class="input-group py-2">
-                        <input type="text" class="form-control" placeholder="Nom" aria-describedby="basic-addon1" x-model="newDishFormData.name">
-                      </div>
-                      <div class="form-check">
-                        <input class="form-check-input" type="checkbox" x-model="newDishFormData.vegetarian" id="veganDish">
-                        <label class="form-check-label" for="veganDish">🌱 Végétarien</label>
-                      </div>
-                      <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="quickDish">
-                        <label class="form-check-label" for="quickDish">🚀 Rapide</label>
-                      </div>
-                      <div class="form-check">
-                        <input class="form-check-input" type="checkbox" x-model="newDishFormData.is_long_to_prepare" id="longDish">
-                        <label class="form-check-label" for="longDish">🐌 Long</label>
-                      </div>
-                      <div class="form-check">
-                        <input class="form-check-input" type="checkbox" x-model="newDishFormData.from_restaurant" id="restaurantDish">
-                        <label class="form-check-label" for="restaurantDish">💸 Restaurant</label>
-                      </div>
-                      <hr class="dotted">
-                      <div class="form-check">
-                        <input class="form-check-input" type="checkbox" x-model="newDishFormData.seasons" value="1" id="springDish">
-                        <label class="form-check-label" for="springDish">🍃 Printemps</label>
-                      </div>
-                      <div class="form-check">
-                        <input class="form-check-input" type="checkbox" x-model="newDishFormData.seasons" value="2" id="summerDish">
-                        <label class="form-check-label" for="summerDish">☀️ Été</label>
-                      </div>
-                      <div class="form-check">
-                        <input class="form-check-input" type="checkbox" x-model="newDishFormData.seasons" value="3" id="autumnDish">
-                        <label class="form-check-label" for="autumnDish">🍂 Automne</label>
-                      </div>
-                      <div class="form-check">
-                        <input class="form-check-input" type="checkbox" x-model="newDishFormData.seasons" value=4 id="winterDish">
-                        <label class="form-check-label" for="winterDish">❄️ Hiver</label>
-                      </div>
-
-                      <button class="btn btn-sm btn-action" x-on:click="addDish()"><span class="bi-check-circle"></span> Enregistrer</button>
-                    </div>
-                  </div>
+      <div class="section-header">
+        <h2><span x-text=filteredDishes.length></span> plats disponibles</h2>
+        <p>
+          La <span>carte</span>
+        </p>
+      </div>
+      <div class="container">
+        <div class="tab-content" data-aos="fade-up" data-aos-delay="200">
+          <div class="tab-pane fade active show" id="menu-starters">
+            <div class="row g-12">
+              <div class="col-lg-12">
+                <div class="input-group py-2">
+                  <span class="input-group-text" id="basic-addon1">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                      <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                    </svg>
+                  </span>
+                  <input type="text" class="form-control" placeholder="Filtrer" x-model="searchDish" aria-describedby="basic-addon1">
                 </div>
               </div>
             </div>
-            <template x-for="(half, index) in [
-      filteredDishes.slice(0, Math.ceil(filteredDishes.length / 2)),
-      filteredDishes.slice(Math.ceil(filteredDishes.length / 2))
-    ]" :key="index">
-              <div class="col-md-5 px-3 py-3">
-                <div class="card mb-4">
-                  <div class="card-body">
-                    <table class="table">
-                      <tbody>
-                      <template x-for="dish in half" :key="dish.label">
-                        <tr>
-                          <td class="text-right">
-                            <span x-show="dish.vegan">🌱</span>
-                            <span x-show="dish.fromRestaurant">💸</span>
-                            <span x-show="dish.quick">🚀</span>
-                            <span x-show="dish.slow">🐌</span>
-                          </td>
-                          <td x-text="dish.label"></td>
-                        </tr>
-                      </template>
-                      </tbody>
-                    </table>
+            <div class="row gy-2">
+              <template x-for="dish in filteredDishes" :key="dish.label">
+                <div class="col-lg-3 menu-item">
+                  <a class="glightbox"><img src="assets/img/default-dish.jpg" class="menu-img img-fluid" alt=""></a>
+                  <h4 x-text="dish.label"></h4>
+                  <p class="ingredients">
+                    <span x-show="dish.vegan">🌱</span>
+                    <span x-show="dish.fromRestaurant">💸</span>
+                    <span x-show="dish.quick">🚀</span>
+                    <span x-show="dish.slow">🐌</span>
+                  </p>
+                </div><!-- Menu Item -->
+              </template>
+            </div>
+          </div><!-- End Starter Menu Content -->
+        </div>
+      </div>
+    </section><!-- /Menu Section -->
+
+    <!-- ======= Book A Table Section ======= -->
+    <section id="book-a-table" class="book-a-table">
+      <div class="container" data-aos="fade-up">
+
+        <div class="section-header">
+          <p>Compléter la <span>carte</span></p>
+        </div>
+        <div class="row g-0">
+          <div class="col-lg-4 reservation-img" style="background-image: url(assets/img/cocotte.jpg);" data-aos="zoom-out" data-aos-delay="200"></div>
+          <div class="col-lg-8 align-items-center reservation-form-bg">
+            <form @submit.prevent="submitForm" x-data="newDishForm()" role="form" class="php-email-form" data-aos="fade-up" data-aos-delay="100">
+              <div class="row gy-4">
+                <div class="col-12">
+                  <input x-model="newDishFormData.label" type="text" name="label" class="form-control" id="label" placeholder="Libellé" data-rule="minlen:4" data-msg="Please enter at least 4 chars">
+                  <div class="validate"></div>
+                </div>
+                <div class="col-2">
+                  <div class="form-check">
+                    <input x-model="newDishFormData.vegan" class="form-check-input" type="checkbox" value="" id="veganFilter">
+                    <label class="form-check-label" for="veganFilter">&nbsp;🌱</label>
+                  </div>
+                </div>
+                <div class="col-2">
+                  <div class="form-check">
+                    <input x-model="newDishFormData.quick" class="form-check-input" type="checkbox" value="" id="quickFilter">
+                    <label class="form-check-label" for="quickFilter">&nbsp;🚀</label>
+                  </div>
+                </div>
+                <div class="col-2">
+                  <div class="form-check">
+                    <input x-model="newDishFormData.long" class="form-check-input" type="checkbox" value="" id="longFilter">
+                    <label class="form-check-label" for="longFilter">&nbsp;🐌</label>
+                  </div>
+                </div>
+                <div class="col-2">
+                  <div class="form-check">
+                    <input x-model="newDishFormData.fromRestaurant" class="form-check-input" type="checkbox" value="" id="restaurantFilter">
+                    <label class="form-check-label" for="restaurantFilter">&nbsp;💸</label>
                   </div>
                 </div>
               </div>
-            </template>
-          </div>
+              <div class="mb-3">
+                <div class="loading">Loading</div>
+                <div class="error-message">Error</div>
+                <div class="sent-message" x-show="newDishSuccessMessage" x-text="newDishSuccessMessage"></div>
+              </div>
+              <div class="text-center"><button type="submit" x-on:click="addDish()">Enregistrer</button></div>
+            </form>
+          </div><!-- End Reservation Form -->
+
         </div>
+
       </div>
-    </section><!-- End Dishes Section -->
+    </section><!-- End Book A Table Section -->
 
   </main><!-- End #main -->
 
@@ -294,7 +268,7 @@
   <script>
 
   const manageMenus = () => ({
-      baseUrl: 'https://sasagui.fr/onmangequoi/api',
+      baseUrl: window.location.hostname === 'localhost' ? 'http://localhost:8080/api' : 'https://sasagui.fr/onmangequoi/api/'
       months: ['janvier', 'février', 'mars', 'avril', 'mai' ,'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'],
       mealPlan: {
         days: []
@@ -302,6 +276,7 @@
       dishes: [],
       searchDish: '',
       newDishFormData: null,
+      newDishSuccessMessage: 'Toto',
 
       async init() {
           await this.getCurrentWeek()
@@ -319,31 +294,32 @@
       newDishForm() {
         return {
           newDishFormData: {
-            name: '',
-            from_restaurant: false,
-            vegetarian: false,
-            is_long_to_prepare: false,
-            seasons: []
+            label: '',
+            fromRestaurant: false,
+            vegan: false,
+            slow: false,
+            quick: false
           }
         };
       },
 
       async addDish() {
-        await fetch(this.baseUrl + '/dish', {
+        event.preventDefault();
+        await fetch(this.baseUrl + '/dishes', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            'name': this.newDishFormData.name,
-            'from_restaurant': this.newDishFormData.from_restaurant,
-            'vegetarian': this.newDishFormData.vegetarian,
-            'is_long_to_prepare': this.newDishFormData.is_long_to_prepare,
-            'seasons': this.newDishFormData.seasons
+            'label': this.newDishFormData.label,
+            'fromRestaurant': this.newDishFormData.fromRestaurant,
+            'vegan': this.newDishFormData.vegan,
+            'long': this.newDishFormData.long,
+            'quick': this.newDishFormData.quick
           })
         })
-        .then((response) => response.json())
         .then((json) =>  {
+          this.newDishSuccessMessage = 'Nouveau plat enregistré';
           this.getDishes()
         });
       },
