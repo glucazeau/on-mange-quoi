@@ -103,4 +103,18 @@ public class DishScorerConfig {
             return 0;
         };
     }
+
+    public DishScorer soupOnSundayDiner() {
+        return context -> {
+            String label = context.getDish().getLabel().toLowerCase();
+            boolean isSoup = label.contains("soupe") || label.contains("potage") || label.contains("velouté");
+            log.debug("Scoring soup for Sunday diner");
+            if (isSoup
+                    && DayOfWeek.SUNDAY.equals(context.getDay().getDayOfWeek())
+                    && MealType.DINNER.equals(context.getMeal().getType())) {
+                return 1;
+            }
+            return 0;
+        };
+    }
 }

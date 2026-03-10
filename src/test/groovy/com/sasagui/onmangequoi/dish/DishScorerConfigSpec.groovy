@@ -153,4 +153,29 @@ class DishScorerConfigSpec extends OnMangeQuoiSpec {
         ].combinations()
         expected = kidLunchValue && dayValue == DayOfWeek.WEDNESDAY && mealValue == MealType.LUNCH ? 2 : 0
     }
+
+    def "soupOnSundayDiner - dish label is: #dishLabelValue and day is #dayValue and meal is #mealValue - returns #expected"() {
+        given:
+        def dishMock = Mock(Dish) {
+            getLabel() >> dishLabelValue
+        }
+        def dayMock = Mock(Day) {
+            getDayOfWeek() >> dayValue
+        }
+        def mealMock = Mock(Meal) {
+            getType() >> mealValue
+        }
+        def ctx = new DishScoringContext(dishMock, dayMock,mealMock, [] as Set, [] as Set)
+
+        expect:
+        config.soupOnSundayDiner().score(ctx) == expected
+
+        where:
+        [dishLabelValue, dayValue, mealValue] << [
+                ["Soupe", "soupe", "Potage", "potage", "Velouté", "velouté", "Poisson pané"],
+                DayOfWeek.values(),
+                MealType.values()
+        ].combinations()
+        expected = dishLabelValue != "Poisson pané" && dayValue == DayOfWeek.SUNDAY && mealValue == MealType.DINNER ? 1 : 0
+    }
 }
