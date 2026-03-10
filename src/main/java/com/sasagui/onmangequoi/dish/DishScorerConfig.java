@@ -1,6 +1,7 @@
 package com.sasagui.onmangequoi.dish;
 
 import com.sasagui.onmangequoi.meal.MealType;
+import java.time.DayOfWeek;
 import java.util.Random;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -86,6 +87,18 @@ public class DishScorerConfig {
             if (!context.getLastWeekDishes().contains(context.getDish())
                     && !context.getPreviousWeeksDishes().contains(context.getDish())) {
                 return 1;
+            }
+            return 0;
+        };
+    }
+
+    public DishScorer kidLunchAndWednesdayLunch() {
+        return context -> {
+            log.debug("Scoring kid lunch for Wednesday lunch");
+            if (context.getDish().isKidLunch()
+                    && DayOfWeek.WEDNESDAY.equals(context.getDay().getDayOfWeek())
+                    && MealType.LUNCH.equals(context.getMeal().getType())) {
+                return 2;
             }
             return 0;
         };

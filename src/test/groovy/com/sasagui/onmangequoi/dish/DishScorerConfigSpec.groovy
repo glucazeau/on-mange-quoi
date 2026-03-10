@@ -4,6 +4,7 @@ import com.sasagui.onmangequoi.OnMangeQuoiSpec
 import com.sasagui.onmangequoi.calendar.Day
 import com.sasagui.onmangequoi.meal.Meal
 import com.sasagui.onmangequoi.meal.MealType
+import java.time.DayOfWeek
 
 class DishScorerConfigSpec extends OnMangeQuoiSpec {
 
@@ -126,5 +127,30 @@ class DishScorerConfigSpec extends OnMangeQuoiSpec {
         dishValue | expected | testLabel
         dish1     | 0        | "used"
         dish2     | 1        | "not used"
+    }
+
+    def "kidLunchAndWednesdayLunch - dish is kid lunch: #kidLunchValue and day is #dayValue and meal is #mealValue - returns #expected"() {
+        given:
+        def dishMock = Mock(Dish) {
+            isKidLunch() >> kidLunchValue
+        }
+        def dayMock = Mock(Day) {
+            getDayOfWeek() >> dayValue
+        }
+        def mealMock = Mock(Meal) {
+            getType() >> mealValue
+        }
+        def ctx = new DishScoringContext(dishMock, dayMock,mealMock, [] as Set, [] as Set)
+
+        expect:
+        config.kidLunchAndWednesdayLunch().score(ctx) == expected
+
+        where:
+        [kidLunchValue, dayValue, mealValue] << [
+                [true, false],
+                DayOfWeek.values(),
+                MealType.values()
+        ].combinations()
+        expected = kidLunchValue && dayValue == DayOfWeek.WEDNESDAY && mealValue == MealType.LUNCH ? 2 : 0
     }
 }
