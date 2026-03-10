@@ -49,4 +49,14 @@ public class DishEntity {
         entity.kidLunch = newDish.isKidLunch();
         return entity;
     }
+
+    public void update(NewDish updatedDish) {
+        this.label = updatedDish.getLabel();
+        this.slow = updatedDish.isSlow();
+        this.quick = updatedDish.isQuick();
+        this.fromRestaurant = updatedDish.isFromRestaurant();
+        this.vegan = updatedDish.isVegan();
+        this.fish = updatedDish.isFish();
+        this.kidLunch = updatedDish.isKidLunch();
+    }
 }

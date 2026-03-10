@@ -2,6 +2,7 @@ package com.sasagui.onmangequoi.dish
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
@@ -87,6 +88,38 @@ class DishControllerSpec extends MvcSpecification {
 
         and:
         response.andExpect(status().isCreated())
+
+        where:
+        flagValue << [true, false]
+    }
+
+    def "PUT /dishes/{dishId} - update request body sent - returns HTTP 200"() {
+        when:
+        def response = mvc.perform(put("/dishes/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""{
+                            "label": "New label",
+                            "slow": ${flagValue},
+                            "quick": ${flagValue},
+                            "fromRestaurant": ${flagValue},
+                            "vegan": ${flagValue},
+                            "fish": ${flagValue},
+                            "kidLunch": ${flagValue}
+                        }"""))
+
+        then: "calls service to update dish"
+        1 * dishServiceMock.updateDish(1, _ as NewDish) >> { long id, NewDish nd ->
+            assert nd.getLabel() == "New label"
+            assert nd.isSlow() == flagValue
+            assert nd.isQuick() == flagValue
+            assert nd.isFromRestaurant() == flagValue
+            assert nd.isVegan() == flagValue
+            assert nd.isFish() == flagValue
+            assert nd.isKidLunch() == flagValue
+        }
+
+        and:
+        response.andExpect(status().isOk())
 
         where:
         flagValue << [true, false]

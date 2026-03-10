@@ -31,4 +31,11 @@ public class DishService {
         DishEntity entity = DishEntity.from(newDish);
         dishRepository.save(entity);
     }
+
+    public void updateDish(long id, NewDish dish) {
+        log.info("Updating dish with ID {}", id);
+        DishEntity entity = dishRepository.getReferenceById(id);
+        entity.update(dish);
+        dishRepository.save(entity);
+    }
 }
