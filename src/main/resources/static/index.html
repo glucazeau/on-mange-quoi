@@ -106,6 +106,7 @@
                           <hr x-show="meal.type == 'Soir'" class="dotted">
                           <span x-text="meal.dish.label"></span>
                           <span x-show="meal.dish.vegan">🌱</span>
+                          <span x-show="meal.dish.fish">🐟</span>
                           <span x-show="meal.dish.fromRestaurant">💸</span>
                           <span x-show="meal.dish.quick">🚀</span>
                           <span x-show="meal.dish.slow">🐌</span>
@@ -152,6 +153,7 @@
                   <h4 x-text="dish.label"></h4>
                   <p class="ingredients">
                     <span x-show="dish.vegan">🌱</span>
+                    <span x-show="dish.fish">🐟</span>
                     <span x-show="dish.fromRestaurant">💸</span>
                     <span x-show="dish.quick">🚀</span>
                     <span x-show="dish.slow">🐌</span>
@@ -184,6 +186,12 @@
                   <div class="form-check">
                     <input x-model="newDishFormData.vegan" class="form-check-input" type="checkbox" value="" id="veganFilter">
                     <label class="form-check-label" for="veganFilter">&nbsp;🌱</label>
+                  </div>
+                </div>
+                <div class="col-2">
+                  <div class="form-check">
+                    <input x-model="newDishFormData.fish" class="form-check-input" type="checkbox" value="" id="fishFilter">
+                    <label class="form-check-label" for="fishFilter">&nbsp;🐟</label>
                   </div>
                 </div>
                 <div class="col-2">
@@ -298,7 +306,8 @@
             fromRestaurant: false,
             vegan: false,
             slow: false,
-            quick: false
+            quick: false,
+            fish: false
           }
         };
       },
@@ -314,6 +323,7 @@
             'label': this.newDishFormData.label,
             'fromRestaurant': this.newDishFormData.fromRestaurant,
             'vegan': this.newDishFormData.vegan,
+            'fish': this.newDishFormData.fish,
             'long': this.newDishFormData.long,
             'quick': this.newDishFormData.quick
           })

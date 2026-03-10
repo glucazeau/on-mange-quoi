@@ -32,6 +32,9 @@ public class DishEntity {
     @Column(name = "is_vegan")
     private boolean vegan;
 
+    @Column(name = "is_fish")
+    private boolean fish;
+
     public static DishEntity from(NewDish newDish) {
         DishEntity entity = new DishEntity();
         entity.label = newDish.getLabel();
@@ -39,6 +42,7 @@ public class DishEntity {
         entity.quick = newDish.isQuick();
         entity.fromRestaurant = newDish.isFromRestaurant();
         entity.vegan = newDish.isVegan();
+        entity.fish = newDish.isFish();
         return entity;
     }
 }

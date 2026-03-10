@@ -137,3 +137,15 @@ databaseChangeLog:
             referencedTableName: dish
             referencedColumnNames: dish_id
             constraintName: fk_meal_dish
+
+  - changeSet:
+      id: add-fish-and-kid-column
+      author: Guillaume
+      changes:
+        - addColumn:
+            tableName: dish
+            columns:
+              - column:
+                  name: is_fish
+                  type: BOOLEAN
+                  defaultValueBoolean: false

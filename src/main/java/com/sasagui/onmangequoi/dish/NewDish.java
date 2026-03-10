@@ -19,4 +19,6 @@ public class NewDish {
     private boolean fromRestaurant;
 
     private boolean vegan;
+
+    private boolean fish;
 }

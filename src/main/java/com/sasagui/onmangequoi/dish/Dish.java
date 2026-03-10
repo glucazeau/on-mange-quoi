@@ -25,12 +25,20 @@ public class Dish {
 
     private final boolean vegan;
 
+    private final boolean fish;
+
     public static Dish from(DishEntity dish) {
         return new Dish(
-                dish.getId(), dish.getLabel(), dish.isSlow(), dish.isQuick(), dish.isFromRestaurant(), dish.isVegan());
+                dish.getId(),
+                dish.getLabel(),
+                dish.isSlow(),
+                dish.isQuick(),
+                dish.isFromRestaurant(),
+                dish.isVegan(),
+                dish.isFish());
     }
 
     public static Dish empty() {
-        return new Dish(-1, "rien de prévu \uD83D\uDE41", false, false, false, false);
+        return new Dish(-1, "rien de prévu \uD83D\uDE41", false, false, false, false, false);
     }
 }

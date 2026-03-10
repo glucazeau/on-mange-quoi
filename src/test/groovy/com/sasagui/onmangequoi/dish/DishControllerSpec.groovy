@@ -32,12 +32,14 @@ class DishControllerSpec extends MvcSpecification {
                 .andExpect(jsonPath("\$[0].quick").value(true))
                 .andExpect(jsonPath("\$[0].fromRestaurant").value(true))
                 .andExpect(jsonPath("\$[0].vegan").value(true))
+                .andExpect(jsonPath("\$[0].fish").value(true))
 
                 .andExpect(jsonPath("\$[1].label").value("Dish 2"))
                 .andExpect(jsonPath("\$[1].slow").value(false))
                 .andExpect(jsonPath("\$[1].quick").value(false))
                 .andExpect(jsonPath("\$[1].fromRestaurant").value(false))
                 .andExpect(jsonPath("\$[1].vegan").value(false))
+                .andExpect(jsonPath("\$[1].fish").value(false))
     }
 
     def "POST /dishes - new request body sent - returns HTTP 201"() {
@@ -49,7 +51,8 @@ class DishControllerSpec extends MvcSpecification {
                             "slow": ${flagValue},
                             "quick": ${flagValue},
                             "fromRestaurant": ${flagValue},
-                            "vegan": ${flagValue}
+                            "vegan": ${flagValue},
+                            "fish": ${flagValue}
                         }"""))
 
         then: "calls service to get dishes"
@@ -59,6 +62,7 @@ class DishControllerSpec extends MvcSpecification {
             assert nd.isQuick() == flagValue
             assert nd.isFromRestaurant() == flagValue
             assert nd.isVegan() == flagValue
+            assert nd.isFish() == flagValue
         }
 
         and:
