@@ -40,7 +40,7 @@
   <header id="header" class="header fixed-top d-flex align-items-center">
     <div class="container d-flex align-items-center justify-content-between">
 
-      <a href="index.html" class="logo d-flex align-items-center me-auto me-lg-0">
+      <a x-on:click="getCurrentWeek()" class="logo d-flex align-items-center me-auto me-lg-0" style="all: unset; cursor: pointer;">
         <!-- Uncomment the line below if you also wish to use an image logo -->
         <!-- <img src="assets/img/logo.png" alt=""> -->
         <h1>On mange quoi <span>ce soir </span>?</h1>
@@ -68,10 +68,10 @@
       <div class="container" data-aos="fade-up">
 
         <div class="section-header">
-          <h2 x-show="mealPlan.week.current">semaine courante</h2>
+          <h2 x-show="mealPlan?.week?.current">semaine courante</h2>
           <p>
             <button @click="goToWeek(mealPlan.week.previousWeek.year, mealPlan.week.previousWeek.number)" style="all: unset; cursor: pointer;"><-&nbsp;</button>
-            Semaine <span x-text="mealPlan.week.number"></span>
+            Semaine <span x-text="mealPlan?.week?.number"></span>
             <button @click="goToWeek(mealPlan.week.nextWeek.year, mealPlan.week.nextWeek.number)" style="all: unset; cursor: pointer;">&nbsp;-></button>
           </p>
         </div>
@@ -83,7 +83,7 @@
               <div class="col-xl-3" data-aos="fade-up" data-aos-delay="200">
                 <div class="icon-box week-infos">
                   <div class="season-img w-100">
-                    <img :src="getSeasonPicture(mealPlan.week.start)" class="img-fluid">
+                    <img :src="getSeasonPicture(mealPlan?.week?.start)" class="img-fluid">
                   </div>
                   <div class="btn-actions">
                     <button class="btn btn-sm btn-action" x-show="mealPlan.status == 'DRAFT' && !mealPlan.is_finished" x-on:click="generateWeek(mealPlan.year, mealPlan.number)"><span class="bi-arrow-clockwise"></span> Regénérer</button>
@@ -106,9 +106,11 @@
                           <hr x-show="meal.type == 'Soir'" class="dotted">
                           <span x-text="meal.dish.label"></span>
                           <span x-show="meal.dish.vegan">🌱</span>
+                          <span x-show="meal.dish.fish">🐟</span>
                           <span x-show="meal.dish.fromRestaurant">💸</span>
                           <span x-show="meal.dish.quick">🚀</span>
                           <span x-show="meal.dish.slow">🐌</span>
+                          <span x-show="meal.dish.kidLunch">👦🏼</span>
                         </p>
                       </div>
                     </template>
@@ -146,15 +148,17 @@
               </div>
             </div>
             <div class="row gy-2">
-              <template x-for="dish in filteredDishes" :key="dish.label">
+              <template x-for="dish in filteredDishes" :key="dish.id">
                 <div class="col-lg-3 menu-item">
                   <a class="glightbox"><img src="assets/img/default-dish.jpg" class="menu-img img-fluid" alt=""></a>
                   <h4 x-text="dish.label"></h4>
                   <p class="ingredients">
                     <span x-show="dish.vegan">🌱</span>
+                    <span x-show="dish.fish">🐟</span>
                     <span x-show="dish.fromRestaurant">💸</span>
                     <span x-show="dish.quick">🚀</span>
                     <span x-show="dish.slow">🐌</span>
+                    <span x-show="dish.kidLunch">👦🏼</span>
                   </p>
                 </div><!-- Menu Item -->
               </template>
@@ -188,6 +192,12 @@
                 </div>
                 <div class="col-2">
                   <div class="form-check">
+                    <input x-model="newDishFormData.fish" class="form-check-input" type="checkbox" value="" id="fishFilter">
+                    <label class="form-check-label" for="fishFilter">&nbsp;🐟</label>
+                  </div>
+                </div>
+                <div class="col-2">
+                  <div class="form-check">
                     <input x-model="newDishFormData.quick" class="form-check-input" type="checkbox" value="" id="quickFilter">
                     <label class="form-check-label" for="quickFilter">&nbsp;🚀</label>
                   </div>
@@ -202,6 +212,12 @@
                   <div class="form-check">
                     <input x-model="newDishFormData.fromRestaurant" class="form-check-input" type="checkbox" value="" id="restaurantFilter">
                     <label class="form-check-label" for="restaurantFilter">&nbsp;💸</label>
+                  </div>
+                </div>
+                <div class="col-2">
+                  <div class="form-check">
+                    <input x-model="newDishFormData.kidLunch" class="form-check-input" type="checkbox" value="" id="kidLunchFilter">
+                    <label class="form-check-label" for="kidLunchFilter">&nbsp;👦🏼</label>
                   </div>
                 </div>
               </div>
@@ -268,7 +284,7 @@
   <script>
 
   const manageMenus = () => ({
-      baseUrl: window.location.hostname === 'localhost' ? 'http://localhost:8080/api' : 'https://sasagui.fr/onmangequoi/api/'
+      baseUrl: window.location.hostname === 'localhost' ? 'http://localhost:8080/api' : 'https://sasagui.fr/onmangequoi/api/',
       months: ['janvier', 'février', 'mars', 'avril', 'mai' ,'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'],
       mealPlan: {
         days: []
@@ -298,7 +314,9 @@
             fromRestaurant: false,
             vegan: false,
             slow: false,
-            quick: false
+            quick: false,
+            fish: false,
+            kidLunch: false
           }
         };
       },
@@ -314,8 +332,10 @@
             'label': this.newDishFormData.label,
             'fromRestaurant': this.newDishFormData.fromRestaurant,
             'vegan': this.newDishFormData.vegan,
+            'fish': this.newDishFormData.fish,
             'long': this.newDishFormData.long,
-            'quick': this.newDishFormData.quick
+            'quick': this.newDishFormData.quick,
+            'kidLunch': this.newDishFormData.kidLunch
           })
         })
         .then((json) =>  {

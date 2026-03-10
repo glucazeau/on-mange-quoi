@@ -25,6 +25,12 @@ public class DishSearchCriteria {
     @ToString.Include
     private Boolean vegan;
 
+    @ToString.Include
+    private Boolean fish;
+
+    @ToString.Include
+    private Boolean kidLunch;
+
     private final List<Specification<DishEntity>> specs = new ArrayList<>();
 
     public Specification<DishEntity> toSpec() {
@@ -46,6 +52,14 @@ public class DishSearchCriteria {
 
         if (vegan != null) {
             specs.add(vegan(vegan));
+        }
+
+        if (fish != null) {
+            specs.add(fish(fish));
+        }
+
+        if (kidLunch != null) {
+            specs.add(kidLunch(kidLunch));
         }
 
         return Specification.allOf(specs);
@@ -72,5 +86,13 @@ public class DishSearchCriteria {
 
     private Specification<DishEntity> vegan(final Boolean vegan) {
         return (root, query, builder) -> builder.equal(root.get("vegan"), vegan);
+    }
+
+    private Specification<DishEntity> fish(final Boolean fish) {
+        return (root, query, builder) -> builder.equal(root.get("fish"), fish);
+    }
+
+    private Specification<DishEntity> kidLunch(final Boolean kidLunch) {
+        return (root, query, builder) -> builder.equal(root.get("kidLunch"), kidLunch);
     }
 }

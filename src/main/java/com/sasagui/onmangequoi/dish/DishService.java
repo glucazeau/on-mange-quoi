@@ -21,8 +21,21 @@ public class DishService {
                 .toList();
     }
 
+    public Dish getDish(long dishId) {
+        log.info("Loading dish with ID {}", dishId);
+        DishEntity entity = dishRepository.getReferenceById(dishId);
+        return Dish.from(entity);
+    }
+
     public void addDish(NewDish newDish) {
         DishEntity entity = DishEntity.from(newDish);
+        dishRepository.save(entity);
+    }
+
+    public void updateDish(long id, NewDish dish) {
+        log.info("Updating dish with ID {}", id);
+        DishEntity entity = dishRepository.getReferenceById(id);
+        entity.update(dish);
         dishRepository.save(entity);
     }
 }

@@ -39,7 +39,18 @@ class DishServiceSpec extends OnMangeQuoiSpec {
         result == [Dish.from(dishEntity1), Dish.from(dishEntity2)]
     }
 
-    def "addDish - new body sent given - creates entity from body and calls repository to save it"() {
+    def "getDish - dish ID given - loads entity with ID and returns DTO"() {
+        when:
+        def result = service.getDish(1)
+
+        then:
+        1 * repositoryMock.getReferenceById(1) >> dishEntity1
+
+        and:
+        result == dish1
+    }
+
+    def "addDish - new body sent - creates entity from body and calls repository to save it"() {
         given:
         def bodyMock = Mock(NewDish) {
             getLabel() >> "New label"
@@ -51,6 +62,36 @@ class DishServiceSpec extends OnMangeQuoiSpec {
         then:
         1 * repositoryMock.save(_) >> { DishEntity e ->
             assert e.getLabel() == "New label"
+            return e
+        }
+    }
+
+    def "updateDish - ID and new body sent - loads entity from ID, updates and calls repository to save it"() {
+        given:
+        def bodyMock = Mock(NewDish) {
+            getLabel() >> "Updated label"
+            isSlow() >> true
+            isQuick() >> false
+            isFromRestaurant() >> false
+            isVegan() >> false
+            isFish() >> true
+            isKidLunch() >> false
+        }
+
+        when:
+        service.updateDish(1, bodyMock)
+
+        then:
+        1 * repositoryMock.getReferenceById(1) >> dishEntity1
+
+        1 * repositoryMock.save(dishEntity1) >> { DishEntity e ->
+            assert e.getLabel() == "Updated label"
+            assert e.isSlow()
+            assert !e.isQuick()
+            assert !e.isFromRestaurant()
+            assert !e.isVegan()
+            assert e.isFish()
+            assert !e.isKidLunch()
             return e
         }
     }
