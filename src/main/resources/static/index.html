@@ -148,7 +148,7 @@
               </div>
             </div>
             <div class="row gy-2">
-              <template x-for="dish in filteredDishes" :key="dish.label">
+              <template x-for="dish in filteredDishes" :key="dish.id">
                 <div class="col-lg-3 menu-item">
                   <a class="glightbox"><img src="assets/img/default-dish.jpg" class="menu-img img-fluid" alt=""></a>
                   <h4 x-text="dish.label"></h4>
