@@ -68,10 +68,10 @@
       <div class="container" data-aos="fade-up">
 
         <div class="section-header">
-          <h2 x-show="mealPlan.week.current">semaine courante</h2>
+          <h2 x-show="mealPlan?.week?.current">semaine courante</h2>
           <p>
             <button @click="goToWeek(mealPlan.week.previousWeek.year, mealPlan.week.previousWeek.number)" style="all: unset; cursor: pointer;"><-&nbsp;</button>
-            Semaine <span x-text="mealPlan.week.number"></span>
+            Semaine <span x-text="mealPlan?.week?.number"></span>
             <button @click="goToWeek(mealPlan.week.nextWeek.year, mealPlan.week.nextWeek.number)" style="all: unset; cursor: pointer;">&nbsp;-></button>
           </p>
         </div>
@@ -83,7 +83,7 @@
               <div class="col-xl-3" data-aos="fade-up" data-aos-delay="200">
                 <div class="icon-box week-infos">
                   <div class="season-img w-100">
-                    <img :src="getSeasonPicture(mealPlan.week.start)" class="img-fluid">
+                    <img :src="getSeasonPicture(mealPlan?.week?.start)" class="img-fluid">
                   </div>
                   <div class="btn-actions">
                     <button class="btn btn-sm btn-action" x-show="mealPlan.status == 'DRAFT' && !mealPlan.is_finished" x-on:click="generateWeek(mealPlan.year, mealPlan.number)"><span class="bi-arrow-clockwise"></span> Regénérer</button>
