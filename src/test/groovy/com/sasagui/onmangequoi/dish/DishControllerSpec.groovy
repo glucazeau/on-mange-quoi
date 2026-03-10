@@ -52,7 +52,8 @@ class DishControllerSpec extends MvcSpecification {
                             "quick": ${flagValue},
                             "fromRestaurant": ${flagValue},
                             "vegan": ${flagValue},
-                            "fish": ${flagValue}
+                            "fish": ${flagValue},
+                            "kidLunch": ${flagValue}
                         }"""))
 
         then: "calls service to get dishes"
@@ -63,6 +64,7 @@ class DishControllerSpec extends MvcSpecification {
             assert nd.isFromRestaurant() == flagValue
             assert nd.isVegan() == flagValue
             assert nd.isFish() == flagValue
+            assert nd.isKidLunch() == flagValue
         }
 
         and:

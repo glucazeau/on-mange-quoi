@@ -21,4 +21,6 @@ public class NewDish {
     private boolean vegan;
 
     private boolean fish;
+
+    private boolean kidLunch;
 }

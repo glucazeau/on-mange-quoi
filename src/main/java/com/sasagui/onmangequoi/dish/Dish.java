@@ -27,6 +27,8 @@ public class Dish {
 
     private final boolean fish;
 
+    private boolean kidLunch;
+
     public static Dish from(DishEntity dish) {
         return new Dish(
                 dish.getId(),
@@ -35,10 +37,11 @@ public class Dish {
                 dish.isQuick(),
                 dish.isFromRestaurant(),
                 dish.isVegan(),
-                dish.isFish());
+                dish.isFish(),
+                dish.isKidLunch());
     }
 
     public static Dish empty() {
-        return new Dish(-1, "rien de prévu \uD83D\uDE41", false, false, false, false, false);
+        return new Dish(-1, "rien de prévu \uD83D\uDE41", false, false, false, false, false, false);
     }
 }

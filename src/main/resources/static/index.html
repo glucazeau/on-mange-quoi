@@ -110,6 +110,7 @@
                           <span x-show="meal.dish.fromRestaurant">💸</span>
                           <span x-show="meal.dish.quick">🚀</span>
                           <span x-show="meal.dish.slow">🐌</span>
+                          <span x-show="meal.dish.kidLunch">👦🏼</span>
                         </p>
                       </div>
                     </template>
@@ -157,6 +158,7 @@
                     <span x-show="dish.fromRestaurant">💸</span>
                     <span x-show="dish.quick">🚀</span>
                     <span x-show="dish.slow">🐌</span>
+                    <span x-show="dish.kidLunch">👦🏼</span>
                   </p>
                 </div><!-- Menu Item -->
               </template>
@@ -210,6 +212,12 @@
                   <div class="form-check">
                     <input x-model="newDishFormData.fromRestaurant" class="form-check-input" type="checkbox" value="" id="restaurantFilter">
                     <label class="form-check-label" for="restaurantFilter">&nbsp;💸</label>
+                  </div>
+                </div>
+                <div class="col-2">
+                  <div class="form-check">
+                    <input x-model="newDishFormData.kidLunch" class="form-check-input" type="checkbox" value="" id="kidLunchFilter">
+                    <label class="form-check-label" for="kidLunchFilter">&nbsp;👦🏼</label>
                   </div>
                 </div>
               </div>
@@ -307,7 +315,8 @@
             vegan: false,
             slow: false,
             quick: false,
-            fish: false
+            fish: false,
+            kidLunch: false
           }
         };
       },
@@ -325,7 +334,8 @@
             'vegan': this.newDishFormData.vegan,
             'fish': this.newDishFormData.fish,
             'long': this.newDishFormData.long,
-            'quick': this.newDishFormData.quick
+            'quick': this.newDishFormData.quick,
+            'kidLunch': this.newDishFormData.kidLunch
           })
         })
         .then((json) =>  {

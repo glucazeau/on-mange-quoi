@@ -149,3 +149,7 @@ databaseChangeLog:
                   name: is_fish
                   type: BOOLEAN
                   defaultValueBoolean: false
+              - column:
+                  name: is_kid_lunch
+                  type: BOOLEAN
+                  defaultValueBoolean: false
