@@ -29,6 +29,16 @@ public class DishController {
         return dishService.listDishes(searchCiteria);
     }
 
+    @Operation(summary = "Get dish", description = "Returns the dish with the given ID")
+    @ApiResponses(
+            value = {
+                @ApiResponse(responseCode = "200", description = "Successfully retrieved"),
+            })
+    @GetMapping(path = "/{dishId}")
+    public Dish getDish(@PathVariable long dishId) {
+        return dishService.getDish(dishId);
+    }
+
     @Operation(summary = "Create dish", description = "Adds a new dish")
     @ApiResponse(responseCode = "201", description = "Dish successfully created")
     @ResponseStatus(value = HttpStatus.CREATED)

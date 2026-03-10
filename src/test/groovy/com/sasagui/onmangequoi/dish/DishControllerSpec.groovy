@@ -42,6 +42,24 @@ class DishControllerSpec extends MvcSpecification {
                 .andExpect(jsonPath("\$[1].fish").value(false))
     }
 
+    def "GET /dishes/{dishId} - dish ID URL parameter - calls service with ID and returns HTTP 200 and dish JSON results"() {
+        when:
+        def response = mvc.perform(get("/dishes/1")
+                .contentType(MediaType.APPLICATION_JSON))
+
+        then: "calls service to get dishes"
+        1 * dishServiceMock.getDish(1) >> dish1
+
+        and:
+        response.andExpect(status().isOk())
+                .andExpect(jsonPath("\$.label").value("Dish 1"))
+                .andExpect(jsonPath("\$.slow").value(true))
+                .andExpect(jsonPath("\$.quick").value(true))
+                .andExpect(jsonPath("\$.fromRestaurant").value(true))
+                .andExpect(jsonPath("\$.vegan").value(true))
+                .andExpect(jsonPath("\$.fish").value(true))
+    }
+
     def "POST /dishes - new request body sent - returns HTTP 201"() {
         when:
         def response = mvc.perform(post("/dishes")
