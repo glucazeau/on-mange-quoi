@@ -153,3 +153,12 @@ databaseChangeLog:
                   name: is_kid_lunch
                   type: BOOLEAN
                   defaultValueBoolean: false
+
+  -  changeSet:
+       id:  add-unique-constraint-on-dish-label
+       author:  Guillaume
+       changes:
+         -  addUniqueConstraint:
+              tableName:  dish
+              columnNames:  label
+              constraintName:  unique-dish-label
