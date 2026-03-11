@@ -391,8 +391,10 @@
       },
 
       getSeasonPicture(dateString) {
-        getSeason = d => Math.floor((d.getMonth() / 12 * 4)) % 4;
-        return 'assets/img/' + ['winter.jpg', 'spring.jpg', 'summer.webp', 'autumn.avif'][getSeason(new Date(dateString))];
+        if (!dateString) return '';
+        const d = new Date(dateString + "T00:00:00");
+        const season = Math.floor((d.getMonth() / 12) * 4) % 4;
+        return 'assets/img/' + ['winter.jpg', 'spring.jpg', 'summer.webp', 'autumn.avif'][season];
       },
 
       getMonthLabel(month) {
