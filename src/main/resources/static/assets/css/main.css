@@ -918,7 +918,6 @@ section {
 }
 
 .book-a-table .php-email-form .error-message {
-  display: none;
   color: #fff;
   background: #df1529;
   text-align: left;
@@ -928,7 +927,6 @@ section {
 }
 
 .book-a-table .php-email-form .sent-message {
-  display: none;
   color: #fff;
   background: #059652;
   text-align: center;
@@ -1215,18 +1213,14 @@ section {
   border-color: var(--color-primary);;
 }
 
-.dishes .reservation-form-bg {
-  background: rgba(55, 55, 63, 0.04);
+
+.book-a-table .php-email-form .error-message {
+  margin-top: 24px;
 }
 
-
-/* Bouton édition plat */
-.button {
-    display: none;
+.book-a-table .php-email-form .sent-message {
+  margin-top: 24px;
 }
 
-img:hover + .button, .button:hover {
-    display: inline-block;
-}
 
 /* Fin ajouts */
