@@ -3,6 +3,7 @@ package com.sasagui.onmangequoi.dish
 import static org.hamcrest.Matchers.hasSize
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
@@ -92,6 +93,41 @@ class DishIntegrationSpec extends IntegrationSpec {
                 .andExpect(jsonPath('\$.vegan').value(false))
                 .andExpect(jsonPath('\$.fish').value(false))
                 .andExpect(jsonPath('\$.kidLunch').value(false))
+    }
+
+    def "PUT /dishes/{dishId} - dish exists - updates dish returns HTTP 200"() {
+        when:
+        def response = mvc.perform(put("/dishes/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""{
+                    "label": "Sushis (updated)",
+                    "slow": true,
+                    "quick": true,
+                    "fromRestaurant": false,
+                    "vegan": true,
+                    "fish": true,
+                    "kidLunch": true
+                }"""))
+
+        then:
+        response.andExpect(status().isOk())
+    }
+
+    def "GET /dishes/{dishId} - dish exists and has been updated - returns HTTP 200 and updated JSON results"() {
+        when:
+        def response = mvc.perform(get("/dishes/1")
+                .contentType(MediaType.APPLICATION_JSON))
+
+        then:
+        response.andExpect(status().isOk())
+                .andExpect(jsonPath('\$.id').value(1))
+                .andExpect(jsonPath('\$.label').value("Sushis (updated)"))
+                .andExpect(jsonPath('\$.slow').value(true))
+                .andExpect(jsonPath('\$.quick').value(true))
+                .andExpect(jsonPath('\$.fromRestaurant').value(false))
+                .andExpect(jsonPath('\$.vegan').value(true))
+                .andExpect(jsonPath('\$.fish').value(true))
+                .andExpect(jsonPath('\$.kidLunch').value(true))
     }
 
     def "GET /dishes/{dishId} - dish does not exist - returns HTTP 404"() {

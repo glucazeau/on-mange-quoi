@@ -1,5 +1,6 @@
 package com.sasagui.onmangequoi.dish;
 
+import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +41,9 @@ public class DishService {
 
     public void updateDish(long id, NewDish dish) {
         log.info("Updating dish with ID {}", id);
-        DishEntity entity = dishRepository.getReferenceById(id);
+        DishEntity entity = dishRepository
+                .findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(String.format("Dish with ID %d not found", id)));
         entity.update(dish);
         dishRepository.save(entity);
     }

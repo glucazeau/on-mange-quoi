@@ -100,7 +100,7 @@ class DishServiceSpec extends OnMangeQuoiSpec {
         service.updateDish(1, bodyMock)
 
         then:
-        1 * repositoryMock.getReferenceById(1) >> dishEntity1
+        1 * repositoryMock.findById(1) >> Optional.of(dishEntity1)
 
         1 * repositoryMock.save(dishEntity1) >> { DishEntity e ->
             assert e.getLabel() == "Updated label"
