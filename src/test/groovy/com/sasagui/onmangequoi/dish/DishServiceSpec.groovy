@@ -1,6 +1,7 @@
 package com.sasagui.onmangequoi.dish
 
 import com.sasagui.onmangequoi.OnMangeQuoiSpec
+import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.data.jpa.domain.Specification
 
 
@@ -64,6 +65,23 @@ class DishServiceSpec extends OnMangeQuoiSpec {
             assert e.getLabel() == "New label"
             return e
         }
+    }
+
+    def "addDish - new body sent and repository throws DataIntegrityViolationException - DishAlreadyExistsException is thrown"() {
+        given:
+        def bodyMock = Mock(NewDish) {
+            getLabel() >> "New label"
+        }
+
+        when:
+        service.addDish(bodyMock)
+
+        then:
+        1 * repositoryMock.save(_) >> { throw new DataIntegrityViolationException("") }
+
+        and:
+        def e = thrown(DishAlreadyExistsException)
+        e.getMessage() == "A dish with label 'New label' already exists"
     }
 
     def "updateDish - ID and new body sent - loads entity from ID, updates and calls repository to save it"() {

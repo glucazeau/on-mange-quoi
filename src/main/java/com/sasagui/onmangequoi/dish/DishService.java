@@ -3,6 +3,7 @@ package com.sasagui.onmangequoi.dish;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -28,8 +29,13 @@ public class DishService {
     }
 
     public void addDish(NewDish newDish) {
-        DishEntity entity = DishEntity.from(newDish);
-        dishRepository.save(entity);
+        try {
+            DishEntity entity = DishEntity.from(newDish);
+            dishRepository.save(entity);
+        } catch (DataIntegrityViolationException e) {
+            log.error("Error while saving new dish {}: {}", newDish, e.getMessage(), e);
+            throw new DishAlreadyExistsException(newDish.getLabel());
+        }
     }
 
     public void updateDish(long id, NewDish dish) {

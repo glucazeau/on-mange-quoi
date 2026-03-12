@@ -46,7 +46,7 @@ class DishIntegrationSpec extends IntegrationSpec {
                 .andExpect(jsonPath("\$", hasSize(30)))
     }
 
-    def "POST /dishes -new dish body sent with same label - returns HTTP 409"() {
+    def "POST /dishes - new dish body sent with same label - returns HTTP 409"() {
         when:
         def response = mvc.perform(post("/dishes")
                 .contentType(MediaType.APPLICATION_JSON).content("""{
@@ -59,6 +59,7 @@ class DishIntegrationSpec extends IntegrationSpec {
 
         then:
         response.andExpect(status().isConflict())
+                .andExpect(jsonPath('\$.errors[0].errorMessage').value("A dish with label 'Poulet frites' already exists"))
     }
 
 }

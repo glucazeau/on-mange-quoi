@@ -1,12 +1,12 @@
 package com.sasagui.onmangequoi;
 
+import com.sasagui.onmangequoi.dish.DishAlreadyExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -23,8 +23,8 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @ControllerAdvice
 public class CommonControllerAdvice extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(value = {DataIntegrityViolationException.class})
-    public ResponseEntity<ErrorResponse> handleDataIntegrityViolationException(DataIntegrityViolationException e) {
+    @ExceptionHandler(value = {DishAlreadyExistsException.class})
+    public ResponseEntity<ErrorResponse> handleDishAlreadyExistsException(DishAlreadyExistsException e) {
         var errorResponse = new ErrorResponse(HttpStatus.CONFLICT, e.getMessage());
         return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
     }
