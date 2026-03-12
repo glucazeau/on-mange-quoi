@@ -62,4 +62,30 @@ class DishIntegrationSpec extends IntegrationSpec {
                 .andExpect(jsonPath('\$.errors[0].errorMessage').value("A dish with label 'Poulet frites' already exists"))
     }
 
+    def "GET /dishes/{dishId} - dish exists - returns HTTP 200 and JSON results"() {
+        when:
+        def response = mvc.perform(get("/dishes/1")
+                .contentType(MediaType.APPLICATION_JSON))
+
+        then:
+        response.andExpect(status().isOk())
+                .andExpect(jsonPath('\$.id').value(1))
+                .andExpect(jsonPath('\$.label').value("Sushis"))
+                .andExpect(jsonPath('\$.slow').value(false))
+                .andExpect(jsonPath('\$.quick').value(false))
+                .andExpect(jsonPath('\$.fromRestaurant').value(true))
+                .andExpect(jsonPath('\$.vegan').value(false))
+                .andExpect(jsonPath('\$.fish').value(false))
+                .andExpect(jsonPath('\$.kidLunch').value(false))
+    }
+
+    def "GET /dishes/{dishId} - dish does not exist - returns HTTP 404"() {
+        when:
+        def response = mvc.perform(get("/dishes/1111111")
+                .contentType(MediaType.APPLICATION_JSON))
+
+        then:
+        response.andExpect(status().isNotFound())
+    }
+
 }
