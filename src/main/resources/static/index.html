@@ -103,7 +103,7 @@
                       <div>
                         <p x-show="day.meals.length == 1">&nbsp;</p>
                         <p>
-                          <hr x-show="meal.type == 'Soir'" class="dotted">
+                          <hr x-show="meal.type == 'DINNER'" class="dotted">
                           <span x-text="meal.dish.label"></span>
                           <span x-show="meal.dish.vegan">🌱</span>
                           <span x-show="meal.dish.fish">🐟</span>
@@ -149,7 +149,11 @@
             </div>
             <div class="row gy-2">
               <template x-for="dish in filteredDishes" :key="dish.id">
-                <div class="col-lg-3 menu-item">
+                <div class="col-lg-3 menu-item"
+                     x-data="{ hover: false }"
+                     @mouseenter="hover = true"
+                     @mouseleave="hover = false"
+                     class="relative w-40 h-40 bg-gray-200 flex items-center justify-center">
                   <a class="glightbox"><img src="assets/img/default-dish.jpg" class="menu-img img-fluid" alt=""></a>
                   <h4 x-text="dish.label"></h4>
                   <p class="ingredients">
@@ -160,6 +164,9 @@
                     <span x-show="dish.slow">🐌</span>
                     <span x-show="dish.kidLunch">👦🏼</span>
                   </p>
+                  <div class="dish-edit d-flex align-items-center">
+                    <i x-show="hover" @click="openEditDish(dish)" class="icon bi bi-pencil flex-shrink-0"></i>
+                  </div>
                 </div><!-- Menu Item -->
               </template>
             </div>
@@ -178,55 +185,68 @@
         <div class="row g-0">
           <div class="col-lg-4 reservation-img" style="background-image: url(assets/img/cocotte.jpg);" data-aos="zoom-out" data-aos-delay="200"></div>
           <div class="col-lg-8 align-items-center reservation-form-bg">
-            <form @submit.prevent="submitForm" x-data="newDishForm()" role="form" class="php-email-form" data-aos="fade-up" data-aos-delay="100">
+            <form @submit.prevent="saveDish" role="form" class="php-email-form" data-aos="fade-up" data-aos-delay="100">
               <div class="row gy-4">
                 <div class="col-12">
-                  <input x-model="newDishFormData.label" type="text" name="label" class="form-control" id="label" placeholder="Libellé" data-rule="minlen:4" data-msg="Please enter at least 4 chars">
+                  <input x-model="dishForm.label" x-ref="dishFormLabel" type="text" name="label" class="form-control" id="label" placeholder="Libellé" data-rule="minlen:4" data-msg="Please enter at least 4 chars">
                   <div class="validate"></div>
                 </div>
                 <div class="col-2">
                   <div class="form-check">
-                    <input x-model="newDishFormData.vegan" class="form-check-input" type="checkbox" value="" id="veganFilter">
+                    <input x-model="dishForm.vegan" class="form-check-input" type="checkbox" value="" id="veganFilter">
                     <label class="form-check-label" for="veganFilter">&nbsp;🌱</label>
                   </div>
                 </div>
                 <div class="col-2">
                   <div class="form-check">
-                    <input x-model="newDishFormData.fish" class="form-check-input" type="checkbox" value="" id="fishFilter">
+                    <input x-model="dishForm.fish" class="form-check-input" type="checkbox" value="" id="fishFilter">
                     <label class="form-check-label" for="fishFilter">&nbsp;🐟</label>
                   </div>
                 </div>
                 <div class="col-2">
                   <div class="form-check">
-                    <input x-model="newDishFormData.quick" class="form-check-input" type="checkbox" value="" id="quickFilter">
+                    <input x-model="dishForm.quick" class="form-check-input" type="checkbox" value="" id="quickFilter">
                     <label class="form-check-label" for="quickFilter">&nbsp;🚀</label>
                   </div>
                 </div>
                 <div class="col-2">
                   <div class="form-check">
-                    <input x-model="newDishFormData.long" class="form-check-input" type="checkbox" value="" id="longFilter">
+                    <input x-model="dishForm.long" class="form-check-input" type="checkbox" value="" id="longFilter">
                     <label class="form-check-label" for="longFilter">&nbsp;🐌</label>
                   </div>
                 </div>
                 <div class="col-2">
                   <div class="form-check">
-                    <input x-model="newDishFormData.fromRestaurant" class="form-check-input" type="checkbox" value="" id="restaurantFilter">
+                    <input x-model="dishForm.fromRestaurant" class="form-check-input" type="checkbox" value="" id="restaurantFilter">
                     <label class="form-check-label" for="restaurantFilter">&nbsp;💸</label>
                   </div>
                 </div>
                 <div class="col-2">
                   <div class="form-check">
-                    <input x-model="newDishFormData.kidLunch" class="form-check-input" type="checkbox" value="" id="kidLunchFilter">
+                    <input x-model="dishForm.kidLunch" class="form-check-input" type="checkbox" value="" id="kidLunchFilter">
                     <label class="form-check-label" for="kidLunchFilter">&nbsp;👦🏼</label>
                   </div>
                 </div>
               </div>
               <div class="mb-3">
                 <div class="loading">Loading</div>
-                <div class="error-message">Error</div>
-                <div class="sent-message" x-show="newDishSuccessMessage" x-text="newDishSuccessMessage"></div>
+                <div class="error-message" x-show="dishFormErrorMessage" x-text="dishFormErrorMessage"></div>
+                <div class="sent-message" x-show="dishFormSuccessMessage" x-text="dishFormSuccessMessage" x-transition></div>
               </div>
-              <div class="text-center"><button type="submit" x-on:click="addDish()">Enregistrer</button></div>
+              <div class="buttons">
+                <div class="text-center">
+                  <button type="submit">
+                    <i class="bi bi-floppy-fill me-2"></i>
+                    <span x-text="isEditing ? 'Mettre à jour' : 'Enregistrer'"></span>
+                  </button>
+                </div>
+                <div class="text-center">
+                  <button type="button" x-on:click="resetForm()" x-show="isEditing">
+                    <i class="bi bi-x-circle-fill me-2"></i>
+                    <span x-text="'Annuler'"></span>
+                  </button>
+                </div>
+              </div>
             </form>
           </div><!-- End Reservation Form -->
 
@@ -291,8 +311,10 @@
       },
       dishes: [],
       searchDish: '',
-      newDishFormData: null,
-      newDishSuccessMessage: 'Toto',
+      dishForm: null,
+      isEditing: false,
+      dishFormSuccessMessage: '',
+      dishFormErrorMessage: '',
 
       async init() {
           await this.getCurrentWeek()
@@ -307,41 +329,96 @@
           .then((json) => this.dishes = json);
       },
 
-      newDishForm() {
-        return {
-          newDishFormData: {
-            label: '',
-            fromRestaurant: false,
-            vegan: false,
-            slow: false,
-            quick: false,
-            fish: false,
-            kidLunch: false
-          }
-        };
+      // default form
+      dishForm: {
+        id: '',
+        label: '',
+        fromRestaurant: false,
+        vegan: false,
+        slow: false,
+        quick: false,
+        fish: false,
+        kidLunch: false
       },
 
-      async addDish() {
-        event.preventDefault();
-        await fetch(this.baseUrl + '/dishes', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            'label': this.newDishFormData.label,
-            'fromRestaurant': this.newDishFormData.fromRestaurant,
-            'vegan': this.newDishFormData.vegan,
-            'fish': this.newDishFormData.fish,
-            'long': this.newDishFormData.long,
-            'quick': this.newDishFormData.quick,
-            'kidLunch': this.newDishFormData.kidLunch
-          })
-        })
-        .then((json) =>  {
-          this.newDishSuccessMessage = 'Nouveau plat enregistré';
-          this.getDishes()
+      // helper to reset form (also used for "create")
+      resetForm() {
+        this.isEditing = false
+        this.dishForm = {
+          id: '',
+          label: '',
+          fromRestaurant: false,
+          vegan: false,
+          slow: false,
+          quick: false,
+          fish: false,
+          kidLunch: false
+        }
+      },
+
+      // called for editing an existing dish
+      openEditDish(dish) {
+        this.isEditing = true
+        this.dishForm = {
+          id: dish.id,
+          label: dish.label,
+          fromRestaurant: dish.fromRestaurant,
+          vegan: dish.vegan,
+          slow: dish.slow,
+          quick: dish.quick,
+          fish: dish.fish,
+          kidLunch: dish.kidLunch
+        }
+        this.$nextTick(() => {
+          // Focus on the name input when editing starts
+          this.$refs.dishFormLabel?.focus();
         });
+      },
+
+      async saveDish() {
+        const url = this.isEditing ? `/dishes/${this.dishForm.id}` : `/dishes`;
+
+        const method = this.isEditing ? 'PUT' : 'POST';
+
+        try {
+          const response = await fetch(this.baseUrl + url, {
+            method: method,
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(this.dishForm)
+          });
+
+          // Check if the response is OK (status 2xx)
+          if (!response.ok) {
+            // If response is not OK (e.g., 4xx, 5xx), throw the response data to be caught in the catch block
+            const errorData = await response.json();
+            throw errorData;
+          }
+
+          // Handle success: update UI, reset form, and fetch dishes
+          this.dishFormSuccessMessage = 'Enregistré';
+          setTimeout(() => {
+            this.dishFormSuccessMessage = null;
+          }, 10000);
+
+          this.resetForm();
+          this.getDishes();
+
+        } catch (err) {
+          // Handle errors: if the response has a structured error message
+          if (err.errors && Array.isArray(err.errors) && err.errors.length > 0) {
+            this.dishFormErrorMessage = err.errors[0].errorMessage;
+          } else {
+            // Fallback error message
+            this.dishFormErrorMessage = 'An unknown error occurred.';
+          }
+
+          // Hide the error message after a short time
+          setTimeout(() => {
+            this.dishFormErrorMessage = null;
+          }, 10000);
+        }
       },
 
       get filteredDishes() {
@@ -391,8 +468,10 @@
       },
 
       getSeasonPicture(dateString) {
-        getSeason = d => Math.floor((d.getMonth() / 12 * 4)) % 4;
-        return 'assets/img/' + ['winter.jpg', 'spring.jpg', 'summer.webp', 'autumn.avif'][getSeason(new Date(dateString))];
+        if (!dateString) return '';
+        const d = new Date(dateString + "T00:00:00");
+        const season = Math.floor((d.getMonth() / 12) * 4) % 4;
+        return 'assets/img/' + ['winter.jpg', 'spring.jpg', 'summer.webp', 'autumn.avif'][season];
       },
 
       getMonthLabel(month) {

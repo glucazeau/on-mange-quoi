@@ -1,6 +1,7 @@
 package com.sasagui.onmangequoi.dish;
 
 import com.sasagui.onmangequoi.meal.MealType;
+import java.time.DayOfWeek;
 import java.util.Random;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -85,6 +86,32 @@ public class DishScorerConfig {
             log.debug("Scoring dish not used last week and previous weeks");
             if (!context.getLastWeekDishes().contains(context.getDish())
                     && !context.getPreviousWeeksDishes().contains(context.getDish())) {
+                return 1;
+            }
+            return 0;
+        };
+    }
+
+    public DishScorer kidLunchAndWednesdayLunch() {
+        return context -> {
+            log.debug("Scoring kid lunch for Wednesday lunch");
+            if (context.getDish().isKidLunch()
+                    && DayOfWeek.WEDNESDAY.equals(context.getDay().getDayOfWeek())
+                    && MealType.LUNCH.equals(context.getMeal().getType())) {
+                return 2;
+            }
+            return 0;
+        };
+    }
+
+    public DishScorer soupOnSundayDiner() {
+        return context -> {
+            String label = context.getDish().getLabel().toLowerCase();
+            boolean isSoup = label.contains("soupe") || label.contains("potage") || label.contains("velouté");
+            log.debug("Scoring soup for Sunday diner");
+            if (isSoup
+                    && DayOfWeek.SUNDAY.equals(context.getDay().getDayOfWeek())
+                    && MealType.DINNER.equals(context.getMeal().getType())) {
                 return 1;
             }
             return 0;

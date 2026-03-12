@@ -1,6 +1,7 @@
 package com.sasagui.onmangequoi.dish
 
 import com.sasagui.onmangequoi.OnMangeQuoiSpec
+import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.data.jpa.domain.Specification
 
 
@@ -50,7 +51,26 @@ class DishServiceSpec extends OnMangeQuoiSpec {
         result == dish1
     }
 
-    def "addDish - new body sent - creates entity from body and calls repository to save it"() {
+    def "addDish - new body sent - creates entity from body, calls repository to save it and returns DTO"() {
+        given:
+        def bodyMock = Mock(NewDish) {
+            getLabel() >> "New label"
+        }
+
+        when:
+        def result = service.addDish(bodyMock)
+
+        then:
+        1 * repositoryMock.save(_) >> { DishEntity e ->
+            assert e.getLabel() == "New label"
+            return e
+        }
+
+        and:
+        result.getLabel() == "New label"
+    }
+
+    def "addDish - new body sent and repository throws DataIntegrityViolationException - DishAlreadyExistsException is thrown"() {
         given:
         def bodyMock = Mock(NewDish) {
             getLabel() >> "New label"
@@ -60,10 +80,11 @@ class DishServiceSpec extends OnMangeQuoiSpec {
         service.addDish(bodyMock)
 
         then:
-        1 * repositoryMock.save(_) >> { DishEntity e ->
-            assert e.getLabel() == "New label"
-            return e
-        }
+        1 * repositoryMock.save(_) >> { throw new DataIntegrityViolationException("") }
+
+        and:
+        def e = thrown(DishAlreadyExistsException)
+        e.getMessage() == "A dish with label 'New label' already exists"
     }
 
     def "updateDish - ID and new body sent - loads entity from ID, updates and calls repository to save it"() {
@@ -79,11 +100,12 @@ class DishServiceSpec extends OnMangeQuoiSpec {
         }
 
         when:
-        service.updateDish(1, bodyMock)
+        def result = service.updateDish(1, bodyMock)
 
         then:
-        1 * repositoryMock.getReferenceById(1) >> dishEntity1
+        1 * repositoryMock.findById(1) >> Optional.of(dishEntity1)
 
+        and:
         1 * repositoryMock.save(dishEntity1) >> { DishEntity e ->
             assert e.getLabel() == "Updated label"
             assert e.isSlow()
@@ -94,5 +116,8 @@ class DishServiceSpec extends OnMangeQuoiSpec {
             assert !e.isKidLunch()
             return e
         }
+
+        and:
+        result.getLabel() == "Updated label"
     }
 }
