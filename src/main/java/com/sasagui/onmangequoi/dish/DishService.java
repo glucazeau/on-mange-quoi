@@ -29,22 +29,24 @@ public class DishService {
         return Dish.from(entity);
     }
 
-    public void addDish(NewDish newDish) {
+    public Dish addDish(NewDish newDish) {
         try {
             DishEntity entity = DishEntity.from(newDish);
-            dishRepository.save(entity);
+            DishEntity saved = dishRepository.save(entity);
+            return Dish.from(saved);
         } catch (DataIntegrityViolationException e) {
             log.error("Error while saving new dish {}: {}", newDish, e.getMessage(), e);
             throw new DishAlreadyExistsException(newDish.getLabel());
         }
     }
 
-    public void updateDish(long id, NewDish dish) {
+    public Dish updateDish(long id, NewDish dish) {
         log.info("Updating dish with ID {}", id);
         DishEntity entity = dishRepository
                 .findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(String.format("Dish with ID %d not found", id)));
         entity.update(dish);
-        dishRepository.save(entity);
+        DishEntity saved = dishRepository.save(entity);
+        return Dish.from(saved);
     }
 }

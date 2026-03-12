@@ -44,15 +44,15 @@ public class DishController {
     @ApiResponse(responseCode = "201", description = "Dish successfully created")
     @ResponseStatus(value = HttpStatus.CREATED)
     @PostMapping
-    public void addDish(@RequestBody @Valid NewDish newDish) {
+    public Dish addDish(@RequestBody @Valid NewDish newDish) {
         log.info("New dish request received for {}", newDish);
-        dishService.addDish(newDish);
+        return dishService.addDish(newDish);
     }
 
     @Operation(summary = "Create dish", description = "Adds a new dish")
     @ApiResponse(responseCode = "200", description = "Dish successfully updated")
     @PutMapping(path = "/{dishId}")
-    public void addDish(@PathVariable long dishId, @RequestBody NewDish newDish) {
-        dishService.updateDish(dishId, newDish);
+    public Dish addDish(@PathVariable long dishId, @RequestBody NewDish newDish) {
+        return dishService.updateDish(dishId, newDish);
     }
 }

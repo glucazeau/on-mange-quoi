@@ -95,7 +95,7 @@ class DishIntegrationSpec extends IntegrationSpec {
                 .andExpect(jsonPath('\$.kidLunch').value(false))
     }
 
-    def "PUT /dishes/{dishId} - dish exists - updates dish returns HTTP 200"() {
+    def "PUT /dishes/{dishId} - dish exists - updates dish returns HTTP 204"() {
         when:
         def response = mvc.perform(put("/dishes/1")
                 .contentType(MediaType.APPLICATION_JSON)
