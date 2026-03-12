@@ -188,7 +188,7 @@
             <form @submit.prevent="saveDish" role="form" class="php-email-form" data-aos="fade-up" data-aos-delay="100">
               <div class="row gy-4">
                 <div class="col-12">
-                  <input x-model="dishForm.label" type="text" name="label" class="form-control" id="label" placeholder="Libellé" data-rule="minlen:4" data-msg="Please enter at least 4 chars">
+                  <input x-model="dishForm.label" x-ref="dishFormLabel" type="text" name="label" class="form-control" id="label" placeholder="Libellé" data-rule="minlen:4" data-msg="Please enter at least 4 chars">
                   <div class="validate"></div>
                 </div>
                 <div class="col-2">
@@ -369,6 +369,10 @@
           fish: dish.fish,
           kidLunch: dish.kidLunch
         }
+        this.$nextTick(() => {
+          // Focus on the name input when editing starts
+          this.$refs.dishFormLabel?.focus();
+        });
       },
 
       async saveDish() {
