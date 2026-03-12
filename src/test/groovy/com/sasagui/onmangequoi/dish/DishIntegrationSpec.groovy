@@ -62,6 +62,21 @@ class DishIntegrationSpec extends IntegrationSpec {
                 .andExpect(jsonPath('\$.errors[0].errorMessage').value("A dish with label 'Poulet frites' already exists"))
     }
 
+    def "POST /dishes - new dish body sent with missing label - returns HTTP 400"() {
+        when:
+        def response = mvc.perform(post("/dishes")
+                .contentType(MediaType.APPLICATION_JSON).content("""{
+                            "slow": true,
+                            "quick": false,
+                            "fromRestaurant": false,
+                            "vegan": false
+                        }"""))
+
+        then:
+        response.andExpect(status().isBadRequest())
+                .andExpect(jsonPath('\$.errors[0].errorMessage').value("Dish label must not be blank"))
+    }
+
     def "GET /dishes/{dishId} - dish exists - returns HTTP 200 and JSON results"() {
         when:
         def response = mvc.perform(get("/dishes/1")

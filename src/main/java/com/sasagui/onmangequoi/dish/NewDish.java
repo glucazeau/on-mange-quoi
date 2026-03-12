@@ -1,5 +1,6 @@
 package com.sasagui.onmangequoi.dish;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -9,6 +10,7 @@ import lombok.ToString;
 @ToString(onlyExplicitlyIncluded = true)
 public class NewDish {
 
+    @NotBlank(message = "Dish label must not be blank")
     @ToString.Include
     private String label;
 

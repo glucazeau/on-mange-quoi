@@ -5,6 +5,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,7 +44,7 @@ public class DishController {
     @ApiResponse(responseCode = "201", description = "Dish successfully created")
     @ResponseStatus(value = HttpStatus.CREATED)
     @PostMapping
-    public void addDish(@RequestBody NewDish newDish) {
+    public void addDish(@RequestBody @Valid NewDish newDish) {
         log.info("New dish request received for {}", newDish);
         dishService.addDish(newDish);
     }
