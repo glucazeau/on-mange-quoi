@@ -149,7 +149,11 @@
             </div>
             <div class="row gy-2">
               <template x-for="dish in filteredDishes" :key="dish.id">
-                <div class="col-lg-3 menu-item">
+                <div class="col-lg-3 menu-item"
+                     x-data="{ hover: false }"
+                     @mouseenter="hover = true"
+                     @mouseleave="hover = false"
+                     class="relative w-40 h-40 bg-gray-200 flex items-center justify-center">
                   <a class="glightbox"><img src="assets/img/default-dish.jpg" class="menu-img img-fluid" alt=""></a>
                   <h4 x-text="dish.label"></h4>
                   <p class="ingredients">
@@ -160,6 +164,9 @@
                     <span x-show="dish.slow">🐌</span>
                     <span x-show="dish.kidLunch">👦🏼</span>
                   </p>
+                  <div class="dish-edit d-flex align-items-center">
+                    <i x-show="hover" @click="openEditDish(dish)" class="icon bi bi-pencil flex-shrink-0"></i>
+                  </div>
                 </div><!-- Menu Item -->
               </template>
             </div>
@@ -178,7 +185,7 @@
         <div class="row g-0">
           <div class="col-lg-4 reservation-img" style="background-image: url(assets/img/cocotte.jpg);" data-aos="zoom-out" data-aos-delay="200"></div>
           <div class="col-lg-8 align-items-center reservation-form-bg">
-            <form @submit.prevent="saveDish()" role="form" class="php-email-form" data-aos="fade-up" data-aos-delay="100">
+            <form @submit.prevent="saveDish" role="form" class="php-email-form" data-aos="fade-up" data-aos-delay="100">
               <div class="row gy-4">
                 <div class="col-12">
                   <input x-model="dishForm.label" type="text" name="label" class="form-control" id="label" placeholder="Libellé" data-rule="minlen:4" data-msg="Please enter at least 4 chars">
@@ -224,9 +231,22 @@
               <div class="mb-3">
                 <div class="loading">Loading</div>
                 <div class="error-message" x-show="dishFormErrorMessage" x-text="dishFormErrorMessage"></div>
-                <div class="sent-message" x-show="dishFormSuccessMessage"  x-text="dishFormSuccessMessage" x-transition></div>
+                <div class="sent-message" x-show="dishFormSuccessMessage" x-text="dishFormSuccessMessage" x-transition></div>
               </div>
-              <div class="text-center"><button type="submit" x-on:click="saveDish()" x-text="isEditing ? 'Mettre à jour' : 'Enregistrer'"></button></div>
+              <div class="buttons">
+                <div class="text-center">
+                  <button type="submit">
+                    <i class="bi bi-floppy-fill me-2"></i>
+                    <span x-text="isEditing ? 'Mettre à jour' : 'Enregistrer'"></span>
+                  </button>
+                </div>
+                <div class="text-center">
+                  <button type="button" x-on:click="resetForm()" x-show="isEditing">
+                    <i class="bi bi-x-circle-fill me-2"></i>
+                    <span x-text="'Annuler'"></span>
+                  </button>
+                </div>
+              </div>
             </form>
           </div><!-- End Reservation Form -->
 
@@ -311,6 +331,7 @@
 
       // default form
       dishForm: {
+        id: '',
         label: '',
         fromRestaurant: false,
         vegan: false,
@@ -324,6 +345,7 @@
       resetForm() {
         this.isEditing = false
         this.dishForm = {
+          id: '',
           label: '',
           fromRestaurant: false,
           vegan: false,
@@ -338,6 +360,7 @@
       openEditDish(dish) {
         this.isEditing = true
         this.dishForm = {
+          id: dish.id,
           label: dish.label,
           fromRestaurant: dish.fromRestaurant,
           vegan: dish.vegan,
@@ -349,37 +372,49 @@
       },
 
       async saveDish() {
-        const url = this.isEditing
-          ? `/dishes/${this.form.id}`
-          : `/dishes`
+        const url = this.isEditing ? `/dishes/${this.dishForm.id}` : `/dishes`;
 
-        const method = this.isEditing ? 'PUT' : 'POST'
+        const method = this.isEditing ? 'PUT' : 'POST';
 
-        const response = await fetch(this.baseUrl + url, {
-          method: method,
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(this.dishForm)
-        })
-        .then(async response => {
+        try {
+          const response = await fetch(this.baseUrl + url, {
+            method: method,
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(this.dishForm)
+          });
+
+          // Check if the response is OK (status 2xx)
           if (!response.ok) {
-              throw await response.json()
+            // If response is not OK (e.g., 4xx, 5xx), throw the response data to be caught in the catch block
+            const errorData = await response.json();
+            throw errorData;
           }
+
+          // Handle success: update UI, reset form, and fetch dishes
           this.dishFormSuccessMessage = 'Enregistré';
           setTimeout(() => {
-              this.dishFormSuccessMessage = null;
-          }, 10000)
-          this.getDishes()
-          return response.json()
-        })
-        .catch(err => {
-          this.dishFormErrorMessage = err.errors[0].errorMessage
-          console.log(this.dishFormErrorMessage);
+            this.dishFormSuccessMessage = null;
+          }, 10000);
+
+          this.resetForm();
+          this.getDishes();
+
+        } catch (err) {
+          // Handle errors: if the response has a structured error message
+          if (err.errors && Array.isArray(err.errors) && err.errors.length > 0) {
+            this.dishFormErrorMessage = err.errors[0].errorMessage;
+          } else {
+            // Fallback error message
+            this.dishFormErrorMessage = 'An unknown error occurred.';
+          }
+
+          // Hide the error message after a short time
           setTimeout(() => {
-              this.dishFormErrorMessage = null;
-          }, 10000)
-        })
+            this.dishFormErrorMessage = null;
+          }, 10000);
+        }
       },
 
       get filteredDishes() {

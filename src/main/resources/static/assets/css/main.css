@@ -976,7 +976,6 @@ section {
   padding: 12px 15px;
 }
 
-
 .book-a-table .php-email-form button[type=submit] {
   color: var(--contrast-color);
   background: var(--accent-color);
@@ -1213,6 +1212,12 @@ section {
   border-color: var(--color-primary);;
 }
 
+.book-a-table .php-email-form .buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
 
 .book-a-table .php-email-form .error-message {
   margin-top: 24px;
@@ -1222,5 +1227,60 @@ section {
   margin-top: 24px;
 }
 
+.menu-item {
+  position: relative; /* needed for absolute positioning inside */
+}
 
+.menu-item .dish-edit {
+  position: absolute;
+  inset: 0; /* top:0; right:0; bottom:0; left:0 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: none; /* allow hovering through */
+}
+
+.menu .dish-edit .icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  font-size: 24px;
+  line-height: 0;
+  color: #fff;
+  background: var(--color-primary);
+  border-radius: 50%;
+  margin-right: 15px;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+
+.book-a-table .php-email-form button[type=submit] {
+  color: var(--contrast-color);
+  background: #1B5E20;
+  padding: 14px 30px;
+}
+
+.book-a-table .php-email-form button[type=submit]:hover {
+  background: color-mix(in srgb, #1B5E20, transparent 20%);
+}
+
+.book-a-table .php-email-form button {
+  color: var(--contrast-color);
+  background: #6C757D;
+  border: 0;
+  padding: 14px 30px;
+  transition: 0.4s;
+  border-radius: 4px;
+}
+
+.book-a-table .php-email-form button:hover {
+  background: color-mix(in srgb, #6C757D, transparent 20%);
+}
+
+.form-check-label {
+  font-size: 22px;
+}
 /* Fin ajouts */
