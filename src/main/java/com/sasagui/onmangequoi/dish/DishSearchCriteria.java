@@ -1,5 +1,6 @@
 package com.sasagui.onmangequoi.dish;
 
+import jakarta.persistence.criteria.Join;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Setter;
@@ -31,6 +32,9 @@ public class DishSearchCriteria {
     @ToString.Include
     private Boolean kidLunch;
 
+    @ToString.Include
+    private Integer month;
+
     private final List<Specification<DishEntity>> specs = new ArrayList<>();
 
     public Specification<DishEntity> toSpec() {
@@ -60,6 +64,10 @@ public class DishSearchCriteria {
 
         if (kidLunch != null) {
             specs.add(kidLunch(kidLunch));
+        }
+
+        if (month != null) {
+            specs.add(availableInMonth(month));
         }
 
         return Specification.allOf(specs);
@@ -94,5 +102,12 @@ public class DishSearchCriteria {
 
     private Specification<DishEntity> kidLunch(final Boolean kidLunch) {
         return (root, query, builder) -> builder.equal(root.get("kidLunch"), kidLunch);
+    }
+
+    private Specification<DishEntity> availableInMonth(final Integer month) {
+        return (root, query, builder) -> {
+            Join<DishEntity, Integer> monthsJoin = root.join("months");
+            return builder.equal(monthsJoin, month);
+        };
     }
 }
