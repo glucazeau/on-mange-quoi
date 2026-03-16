@@ -1,6 +1,8 @@
 package com.sasagui.onmangequoi.dish;
 
 import jakarta.validation.constraints.NotBlank;
+import java.util.HashSet;
+import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -25,4 +27,6 @@ public class NewDish {
     private boolean fish;
 
     private boolean kidLunch;
+
+    private Set<Integer> months = new HashSet<>();
 }

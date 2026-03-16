@@ -162,3 +162,23 @@ databaseChangeLog:
               tableName:  dish
               columnNames:  label
               constraintName:  unique-dish-label
+
+  - changeSet:
+      id: add-dish-month-table
+      author: Guillaume
+      changes:
+        - createTable:
+            tableName: dish_month
+            columns:
+              - column:
+                  name: dish_id
+                  type: INTEGER
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: month_number
+                  type: INTEGER
+                  constraints:
+                    primaryKey: true
+                    nullable: false

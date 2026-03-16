@@ -24,7 +24,7 @@ class OnMangeQuoiSpec extends Specification {
     }
 
     @Shared
-    def dishEntity1 = new DishEntity(id: 1, label: "Dish 1", slow: true, quick: true, fromRestaurant: true, vegan: true, fish: true, "kidLunch": true)
+    def dishEntity1 = new DishEntity(id: 1, label: "Dish 1", slow: true, quick: true, fromRestaurant: true, vegan: true, fish: true, "kidLunch": true, "months": [1, 2, 3])
 
     @Shared
     def dishEntity2 = new DishEntity(id: 2, label: "Dish 2", slow: false, quick: false, fromRestaurant: false, vegan: false, fish: false, "kidLunch": false)
