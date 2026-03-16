@@ -1,5 +1,6 @@
 package com.sasagui.onmangequoi.dish
 
+import static org.hamcrest.Matchers.hasSize
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
@@ -18,13 +19,13 @@ class DishControllerSpec extends MvcSpecification {
     @SpringBean
     DishService dishServiceMock = Mock(DishService)
 
-    def "GET /dishes - no request body sent - returns HTTP 200 and dishes JSON results"() {
+    def "GET /dishes - no URL params given - returns HTTP 200 and dishes JSON results"() {
         when:
         def response = mvc.perform(get("/dishes")
                 .contentType(MediaType.APPLICATION_JSON))
 
         then: "calls service to get dishes"
-        1 * dishServiceMock.listDishes(null) >> [dish1, dish2]
+        1 * dishServiceMock.listDishes(_ as DishSearchCriteria) >> [dish1, dish2]
 
         and:
         response.andExpect(status().isOk())
@@ -41,6 +42,22 @@ class DishControllerSpec extends MvcSpecification {
                 .andExpect(jsonPath("\$[1].fromRestaurant").value(false))
                 .andExpect(jsonPath("\$[1].vegan").value(false))
                 .andExpect(jsonPath("\$[1].fish").value(false))
+    }
+
+    def "GET /dishes - month URL param given - calls repository with search criteria with month, returns HTTP 200 and dishes JSON results"() {
+        when:
+        def response = mvc.perform(get("/dishes?month=1")
+                .contentType(MediaType.APPLICATION_JSON))
+
+        then: "calls service to get dishes"
+        1 * dishServiceMock.listDishes(_ as DishSearchCriteria) >> { DishSearchCriteria c ->
+            assert c.month == 1
+            return []
+        }
+
+        and:
+        response.andExpect(status().isOk())
+                .andExpect(jsonPath("\$", hasSize(0)))
     }
 
     def "GET /dishes/{dishId} - dish ID URL parameter - calls service with ID and returns HTTP 200 and dish JSON results"() {

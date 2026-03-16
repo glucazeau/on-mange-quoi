@@ -26,7 +26,7 @@ public class DishController {
                 @ApiResponse(responseCode = "200", description = "Successfully retrieved"),
             })
     @GetMapping
-    public List<Dish> listDishes(@RequestBody(required = false) DishSearchCriteria searchCiteria) {
+    public List<Dish> listDishes(DishSearchCriteria searchCiteria) {
         return dishService.listDishes(searchCiteria);
     }
 
