@@ -30,11 +30,38 @@ class DishIntegrationSpec extends IntegrationSpec {
                             "slow": true,
                             "quick": false,
                             "fromRestaurant": false,
-                            "vegan": false
+                            "vegan": false,
+                            "fish": true,
+                            "kidLunch": false,
+                            "months": [
+                                4, 5, 6
+                            ]
                         }"""))
 
         then:
         response.andExpect(status().isCreated())
+    }
+
+    def "GET /dishes/{dishId} - new dish has been added"() {
+        when:
+        def response = mvc.perform(get("/dishes/30")
+                .contentType(MediaType.APPLICATION_JSON))
+
+        then:
+        response.andExpect(status().isOk())
+                .andExpect(jsonPath('\$.id').value(30))
+                .andExpect(jsonPath('\$.label').value("Poulet frites"))
+                .andExpect(jsonPath('\$.slow').value(true))
+                .andExpect(jsonPath('\$.quick').value(false))
+                .andExpect(jsonPath('\$.fromRestaurant').value(false))
+                .andExpect(jsonPath('\$.vegan').value(false))
+                .andExpect(jsonPath('\$.fish').value(true))
+                .andExpect(jsonPath('\$.kidLunch').value(false))
+                .andExpect(jsonPath("\$.availableAllYear").value(false))
+                .andExpect(jsonPath("\$.months", hasSize(3)))
+                .andExpect(jsonPath('\$.months[0]').value(4))
+                .andExpect(jsonPath('\$.months[1]').value(5))
+                .andExpect(jsonPath('\$.months[2]').value(6))
     }
 
     def "GET /dishes - new dish has been added"() {
@@ -106,7 +133,8 @@ class DishIntegrationSpec extends IntegrationSpec {
                     "fromRestaurant": false,
                     "vegan": true,
                     "fish": true,
-                    "kidLunch": true
+                    "kidLunch": true,
+                    "months": [1, 2, 3]
                 }"""))
 
         then:
@@ -128,6 +156,10 @@ class DishIntegrationSpec extends IntegrationSpec {
                 .andExpect(jsonPath('\$.vegan').value(true))
                 .andExpect(jsonPath('\$.fish').value(true))
                 .andExpect(jsonPath('\$.kidLunch').value(true))
+                .andExpect(jsonPath("\$.months", hasSize(3)))
+                .andExpect(jsonPath('\$.months[0]').value(1))
+                .andExpect(jsonPath('\$.months[1]').value(2))
+                .andExpect(jsonPath('\$.months[2]').value(3))
     }
 
     def "GET /dishes/{dishId} - dish does not exist - returns HTTP 404"() {

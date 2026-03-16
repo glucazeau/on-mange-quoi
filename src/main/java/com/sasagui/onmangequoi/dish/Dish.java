@@ -1,5 +1,9 @@
 package com.sasagui.onmangequoi.dish;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -27,7 +31,9 @@ public class Dish {
 
     private final boolean fish;
 
-    private boolean kidLunch;
+    private final boolean kidLunch;
+
+    private Set<Integer> months = new HashSet<>();
 
     public static Dish from(DishEntity dish) {
         return new Dish(
@@ -38,10 +44,17 @@ public class Dish {
                 dish.isFromRestaurant(),
                 dish.isVegan(),
                 dish.isFish(),
-                dish.isKidLunch());
+                dish.isKidLunch(),
+                dish.getMonths());
     }
 
     public static Dish empty() {
-        return new Dish(-1, "rien de prévu \uD83D\uDE41", false, false, false, false, false, false);
+        return new Dish(
+                -1, "rien de prévu \uD83D\uDE41", false, false, false, false, false, false, Collections.emptySet());
+    }
+
+    @JsonProperty
+    public boolean availableAllYear() {
+        return months.size() == 12;
     }
 }

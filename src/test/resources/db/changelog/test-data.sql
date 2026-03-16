@@ -28,3 +28,8 @@ INSERT INTO dish (label, is_slow, is_quick, is_from_restaurant, is_vegan) VALUES
 ('Oeufs à la coque / fromage', false, false, false, true),
 ('Omelette', false, false, false, true),
 ('Rougail saucisses', false, false, false, false);
+
+
+INSERT INTO dish_month (dish_id, month_number) VALUES
+(4, 9), (4, 10), (4, 11), (4, 12), (4, 1), (4, 2), (4, 3),
+(5, 9), (5, 10), (5, 11), (5, 12), (5, 1), (5, 2), (5, 3);

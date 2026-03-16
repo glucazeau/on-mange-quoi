@@ -1226,36 +1226,41 @@ section {
 .book-a-table .php-email-form .sent-message {
   margin-top: 24px;
 }
-
 .menu-item {
-  position: relative; /* needed for absolute positioning inside */
+  position: relative;
 }
 
 .menu-item .dish-edit {
   position: absolute;
-  inset: 0; /* top:0; right:0; bottom:0; left:0 */
+  inset: 0;              /* fill the tile */
   display: flex;
-  justify-content: center;
   align-items: center;
-  pointer-events: none; /* allow hovering through */
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  pointer-events: none;  /* allow hover on the tile */
+}
+
+.menu-item:hover .dish-edit {
+  opacity: 1;
 }
 
 .menu .dish-edit .icon {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 56px;
-  height: 56px;
-  font-size: 24px;
-  line-height: 0;
+
+  width: 24px;
+  height: 24px;
+  font-size: 14px;
+
   color: #fff;
   background: var(--color-primary);
   border-radius: 50%;
-  margin-right: 15px;
-  cursor: pointer;
-  pointer-events: auto;
-}
 
+  cursor: pointer;
+  pointer-events: auto;  /* make button clickable */
+}
 
 .book-a-table .php-email-form button[type=submit] {
   color: var(--contrast-color);
@@ -1282,5 +1287,9 @@ section {
 
 .form-check-label {
   font-size: 22px;
+}
+
+.form-check-label-month {
+  font-size: 14px;
 }
 /* Fin ajouts */

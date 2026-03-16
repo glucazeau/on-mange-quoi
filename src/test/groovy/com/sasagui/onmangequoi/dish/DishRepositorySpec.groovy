@@ -52,4 +52,22 @@ class DishRepositorySpec extends OnMangeQuoiSpec {
         "Di"     | 16
         "Dish 1" | 8
     }
+
+    def "findAll - criteria with months #monthValue - returns expected results"() {
+        given:
+        def criteria = new DishSearchCriteria()
+        criteria.month = monthValue
+
+        when:
+        def results = repository.findAll(criteria.toSpec())
+
+        then:
+        results.size() == expectedSize
+
+        where:
+        monthValue | expectedSize
+        null       | 16
+        1          | 2
+        12         | 1
+    }
 }

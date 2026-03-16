@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -15,6 +16,7 @@ public class DishService {
 
     private final DishRepository dishRepository;
 
+    @Transactional(readOnly = true)
     public List<Dish> listDishes(DishSearchCriteria criteria) {
         log.info("Loading dishes with criteria {}", criteria);
         criteria = criteria == null ? new DishSearchCriteria() : criteria;
