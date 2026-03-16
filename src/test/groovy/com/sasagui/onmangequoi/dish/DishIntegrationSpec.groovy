@@ -162,6 +162,35 @@ class DishIntegrationSpec extends IntegrationSpec {
                 .andExpect(jsonPath('\$.months[2]').value(3))
     }
 
+    def "PUT /dishes/{dishId} - dish exists and empty months array sent - updates dish returns HTTP 204"() {
+        when:
+        def response = mvc.perform(put("/dishes/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""{
+                    "label": "Sushis (updated)",
+                    "slow": true,
+                    "quick": true,
+                    "fromRestaurant": false,
+                    "vegan": true,
+                    "fish": true,
+                    "kidLunch": true,
+                    "months": []
+                }"""))
+
+        then:
+        response.andExpect(status().isOk())
+    }
+
+    def "GET /dishes/{dishId} - dish exists and has been updated - dish is now linked to all 12 months"() {
+        when:
+        def response = mvc.perform(get("/dishes/1")
+                .contentType(MediaType.APPLICATION_JSON))
+
+        then:
+        response.andExpect(status().isOk())
+                .andExpect(jsonPath("\$.months", hasSize(12)))
+    }
+
     def "GET /dishes/{dishId} - dish does not exist - returns HTTP 404"() {
         when:
         def response = mvc.perform(get("/dishes/1111111")
