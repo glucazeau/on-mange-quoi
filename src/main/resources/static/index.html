@@ -149,25 +149,23 @@
             </div>
             <div class="row gy-2">
               <template x-for="dish in filteredDishes" :key="dish.id">
-                <div class="col-lg-3 menu-item"
+                <div class="col-auto menu-item"
                      x-data="{ hover: false }"
                      @mouseenter="hover = true"
-                     @mouseleave="hover = false"
-                     class="relative w-40 h-40 bg-gray-200 flex items-center justify-center">
-                  <a class="glightbox"><img src="assets/img/default-dish.jpg" class="menu-img img-fluid" alt=""></a>
-                  <h4 x-text="dish.label"></h4>
-                  <p class="ingredients">
+                     @mouseleave="hover = false">
+                  <div class="border rounded px-3 py-2 bg-light">
+                    <span x-text="dish.label"></span>
                     <span x-show="dish.vegan">🌱</span>
                     <span x-show="dish.fish">🐟</span>
                     <span x-show="dish.fromRestaurant">💸</span>
                     <span x-show="dish.quick">🚀</span>
                     <span x-show="dish.slow">🐌</span>
                     <span x-show="dish.kidLunch">👦🏼</span>
-                  </p>
+                  </div>
                   <div class="dish-edit d-flex align-items-center">
                     <i x-show="hover" @click="openEditDish(dish)" class="icon bi bi-pencil flex-shrink-0"></i>
                   </div>
-                </div><!-- Menu Item -->
+                </div>
               </template>
             </div>
           </div><!-- End Starter Menu Content -->
