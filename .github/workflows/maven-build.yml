@@ -40,12 +40,14 @@ jobs:
 
       - name: Upload backend JAR
         uses: actions/upload-artifact@v6
+        if: github.ref == 'refs/heads/main'
         with:
           name: onmangequoi-jar
           path: target/*.jar
 
       - name: Upload static website
         uses: actions/upload-artifact@v6
+        if: github.ref == 'refs/heads/main'
         with:
           name: website-directory
           path: src/main/resources/static
