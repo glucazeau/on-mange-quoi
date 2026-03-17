@@ -3,6 +3,7 @@ package com.sasagui.onmangequoi.meal;
 import com.sasagui.onmangequoi.calendar.Week;
 import com.sasagui.onmangequoi.calendar.WeekService;
 import com.sasagui.onmangequoi.dish.Dish;
+import com.sasagui.onmangequoi.dish.DishSearchCriteria;
 import com.sasagui.onmangequoi.dish.DishSelector;
 import com.sasagui.onmangequoi.dish.DishService;
 import java.util.*;
@@ -26,7 +27,7 @@ public class MealPlanGenerator {
 
     public MealPlan generateMealPlan(Week week) {
         log.info("Generating new meal plan for {}", week);
-        List<Dish> dishes = dishService.listDishes(null);
+        List<Dish> dishes = dishService.listDishes(DishSearchCriteria.currentMonth());
 
         log.info("Loading previous week dishes");
         Week previousWeek = weekService.getPreviousWeek(week);

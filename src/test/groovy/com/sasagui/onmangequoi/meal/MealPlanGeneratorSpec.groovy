@@ -1,13 +1,14 @@
 package com.sasagui.onmangequoi.meal
 
 import com.sasagui.onmangequoi.OnMangeQuoiSpec
-import com.sasagui.onmangequoi.calendar.Day
 import com.sasagui.onmangequoi.calendar.Week
 import com.sasagui.onmangequoi.calendar.WeekService
 import com.sasagui.onmangequoi.dish.Dish
+import com.sasagui.onmangequoi.dish.DishSearchCriteria
 import com.sasagui.onmangequoi.dish.DishSelector
 import com.sasagui.onmangequoi.dish.DishService
 import java.time.DayOfWeek
+import java.time.LocalDateTime
 
 class MealPlanGeneratorSpec extends OnMangeQuoiSpec {
 
@@ -73,8 +74,11 @@ class MealPlanGeneratorSpec extends OnMangeQuoiSpec {
         when:
         def result = generator.generateMealPlan(weekMock)
 
-        then: "calls dish service to load dishes"
-        1 * dishServiceMock.listDishes(null) >> [dish1, dish2]
+        then: "calls dish service to load dishes available in current month"
+        1 * dishServiceMock.listDishes(_ as DishSearchCriteria) >> { DishSearchCriteria c ->
+            assert c.getMonth() == LocalDateTime.now().getMonth().getValue()
+            return [dish1, dish2]
+        }
 
         and: "compute previous week"
         1 * weekServiceMock.getPreviousWeek(weekMock) >> previousWeek
