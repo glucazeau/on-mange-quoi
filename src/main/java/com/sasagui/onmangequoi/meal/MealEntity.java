@@ -21,12 +21,6 @@ public class MealEntity {
     @JoinColumn(name = "dish_id")
     private DishEntity dish;
 
-    @Setter
-    @ManyToOne
-    @JoinColumn(name = "plan_year", referencedColumnName = "plan_year", insertable = false, updatable = false)
-    @JoinColumn(name = "week_number", referencedColumnName = "week_number", insertable = false, updatable = false)
-    private MealPlanEntity mealPlan;
-
     public MealEntity(MealId id, DishEntity dishEntity) {
         this.id = id;
         this.dish = dishEntity;

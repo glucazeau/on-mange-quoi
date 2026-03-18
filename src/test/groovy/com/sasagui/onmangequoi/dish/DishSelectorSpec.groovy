@@ -3,6 +3,7 @@ package com.sasagui.onmangequoi.dish
 import com.sasagui.onmangequoi.OnMangeQuoiSpec
 import com.sasagui.onmangequoi.calendar.Day
 import com.sasagui.onmangequoi.meal.Meal
+import java.time.DayOfWeek
 
 class DishSelectorSpec extends OnMangeQuoiSpec {
 
@@ -20,18 +21,18 @@ class DishSelectorSpec extends OnMangeQuoiSpec {
         def olderWeeksDishes = [] as Set
 
         when:
-        def result = selector.selectDish(dishes, dayMock, mealMock, previousWeekDishes, olderWeeksDishes)
+        def result = selector.selectDish(dishes, DayOfWeek.MONDAY, mealMock, previousWeekDishes, olderWeeksDishes)
 
         then: "each scorer is called twice"
         2 * dishScorerMock1.score(_ as DishScoringContext) >> { DishScoringContext ctx ->
-            assert ctx.getDay() == dayMock
+            assert ctx.getDay().getDayOfWeek() == DayOfWeek.MONDAY
             assert ctx.getMeal() == mealMock
             assert ctx.getLastWeekDishes() == previousWeekDishes
             assert ctx.getPreviousWeeksDishes() == olderWeeksDishes
             return ctx.getDish() == dish1 ? -1 : 1
         }
         2 * dishScorerMock2.score(_ as DishScoringContext) >> { DishScoringContext ctx ->
-            assert ctx.getDay() == dayMock
+            assert ctx.getDay().getDayOfWeek() == DayOfWeek.MONDAY
             assert ctx.getMeal() == mealMock
             assert ctx.getLastWeekDishes() == previousWeekDishes
             assert ctx.getPreviousWeeksDishes() == olderWeeksDishes

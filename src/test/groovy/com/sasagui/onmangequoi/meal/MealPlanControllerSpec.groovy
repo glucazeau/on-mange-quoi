@@ -37,7 +37,7 @@ class MealPlanControllerSpec extends MvcSpecification {
         1 * weekService.getCurrentWeek() >> weekMock
 
         and: "calls meal plan service to search for a meal plan"
-        1 * mealPlanService.getMealPlan(weekMock) >> Optional.empty()
+        1 * mealPlanService.getMealPlan(weekMock) >> MealPlan.schoolWeek(weekMock)
 
         and:
         response.andExpect(status().isOk())
@@ -59,7 +59,7 @@ class MealPlanControllerSpec extends MvcSpecification {
         1 * weekService.getCurrentWeek() >> weekMock
 
         and: "calls meal plan service to search for a meal plan"
-        1 * mealPlanService.getMealPlan(weekMock) >> Optional.of(mealPlan)
+        1 * mealPlanService.getMealPlan(weekMock) >> mealPlan
 
         and:
         response.andExpect(status().isOk())
@@ -79,7 +79,7 @@ class MealPlanControllerSpec extends MvcSpecification {
         1 * weekService.getWeek(2026, 12) >> weekMock
 
         and: "calls meal plan service to search for a meal plan"
-        1 * mealPlanService.getMealPlan(weekMock) >> Optional.of(mealPlan)
+        1 * mealPlanService.getMealPlan(weekMock) >> mealPlan
 
         and:
         response.andExpect(status().isOk())
@@ -99,7 +99,7 @@ class MealPlanControllerSpec extends MvcSpecification {
         1 * weekService.getWeek(2026, 12) >> weekMock
 
         and: "calls meal plan service to search for a meal plan"
-        1 * mealPlanService.getMealPlan(weekMock) >> Optional.empty()
+        1 * mealPlanService.getMealPlan(weekMock) >> MealPlan.schoolWeek(weekMock)
 
         and:
         response.andExpect(status().isOk())

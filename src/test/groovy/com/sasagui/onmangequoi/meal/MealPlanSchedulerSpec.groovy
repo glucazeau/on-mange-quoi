@@ -32,41 +32,10 @@ class MealPlanSchedulerSpec extends OnMangeQuoiSpec {
         and: "computes next week"
         1 * weekServiceMock.getNextWeek(weekMock) >> nextWeek
 
-        and: "loads meal plan"
-        1 * mealPlanServiceMock.getMealPlan(nextWeek) >> Optional.empty()
-
         and: "generates new meal plan"
         1 * mealPlanGeneratorMock.generateMealPlan(nextWeek) >> mealPlanMock
 
-        and: "saves new meal plan"
+        and: "saves meal plean"
         1 * mealPlanServiceMock.saveMealPlan(mealPlanMock)
-    }
-
-    def "generateNextWeekMealPlan - no meal plan exists - calls generator and saves result"() {
-        given:
-        def nextWeek = Mock(Week) {
-            getYear() >> 2026
-            getNumber() >> 13
-        }
-
-        def mealPlanMock = Mock(MealPlan)
-
-        when:
-        scheduler.generateNextWeekMealPlan()
-
-        then: "computes current week"
-        1 * weekServiceMock.getCurrentWeek() >> weekMock
-
-        and: "computes next week"
-        1 * weekServiceMock.getNextWeek(weekMock) >> nextWeek
-
-        and: "loads meal plan"
-        1 * mealPlanServiceMock.getMealPlan(nextWeek) >> Optional.of(mealPlanMock)
-
-        and: "does not generate meal plan"
-        0 * mealPlanGeneratorMock.generateMealPlan(_)
-
-        and: "does not save meal plan"
-        0 * mealPlanServiceMock.saveMealPlan(_)
     }
 }

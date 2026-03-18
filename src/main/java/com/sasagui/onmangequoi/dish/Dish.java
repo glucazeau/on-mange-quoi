@@ -2,7 +2,6 @@ package com.sasagui.onmangequoi.dish;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -33,7 +32,7 @@ public class Dish {
 
     private final boolean kidLunch;
 
-    private Set<Integer> months = new HashSet<>();
+    private Set<Integer> months;
 
     public static Dish from(DishEntity dish) {
         return new Dish(

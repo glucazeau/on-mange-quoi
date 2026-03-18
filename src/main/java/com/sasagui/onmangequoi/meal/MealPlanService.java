@@ -1,12 +1,13 @@
 package com.sasagui.onmangequoi.meal;
 
-import com.sasagui.onmangequoi.calendar.Day;
 import com.sasagui.onmangequoi.calendar.Week;
 import com.sasagui.onmangequoi.dish.DishEntity;
 import com.sasagui.onmangequoi.dish.DishRepository;
-import java.util.Optional;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -14,45 +15,28 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public class MealPlanService {
 
-    private final MealPlanRepository mealPlanRepository;
+    private final MealRepository mealRepository;
 
     private final DishRepository dishRepository;
 
-    public Optional<MealPlan> getMealPlan(Week week) {
-        log.info("Searching for a meal plan for week {}", week);
-        MealPlanId mealPlanId = new MealPlanId(week.getYear(), week.getNumber());
-        Optional<MealPlanEntity> optionalMealPlanEntity = mealPlanRepository.findById(mealPlanId);
-        if (optionalMealPlanEntity.isPresent()) {
-            log.info("Meal plan found for {}", week);
-            return Optional.of(MealPlan.from(week, optionalMealPlanEntity.get()));
-        }
-        return Optional.empty();
+    public MealPlan getMealPlan(Week week) {
+        log.info("Loading meal plan for week {}", week);
+        Specification<MealEntity> spec = MealRepository.fromWeek(week);
+        List<MealEntity> meals = mealRepository.findAll(spec);
+        return MealPlan.from(week, meals);
     }
 
     public void saveMealPlan(MealPlan mealPlan) {
         log.info("Saving meal plan for week {}", mealPlan.getWeek());
-        MealPlanEntity mealPlanEntity = from(mealPlan);
-        mealPlanRepository.save(mealPlanEntity);
-    }
-
-    private MealPlanEntity from(MealPlan mealPlan) {
-        Week week = mealPlan.getWeek();
-        log.info("Building MealPlan entity for week {}", week);
-        MealPlanId mealPlanId = new MealPlanId(week.getYear(), week.getNumber());
-
-        MealPlanEntity mealPlanEntity = new MealPlanEntity(mealPlanId);
-
-        for (Day day : mealPlan.getDays()) {
-            for (Meal meal : day.getMeals()) {
-                mealPlanEntity.addMeal(buildMealEntity(week, day, meal));
-            }
+        List<MealEntity> entities = new ArrayList<>();
+        for (Meal meal : mealPlan.getMeals()) {
+            entities.add(buildMealEntity(mealPlan.getWeek(), meal));
         }
-        return mealPlanEntity;
+        mealRepository.saveAll(entities);
     }
 
-    private MealEntity buildMealEntity(Week week, Day day, Meal meal) {
-        MealId mealId = new MealId(week.getYear(), week.getNumber(), day.getDayOfWeek(), meal.getType());
-
+    private MealEntity buildMealEntity(Week week, Meal meal) {
+        MealId mealId = new MealId(week.getYear(), week.getNumber(), meal.getDayOfWeek(), meal.getType());
         DishEntity dishEntity = dishRepository.getReferenceById(meal.getDish().getId());
         return new MealEntity(mealId, dishEntity);
     }

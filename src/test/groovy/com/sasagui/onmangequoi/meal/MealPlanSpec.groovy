@@ -4,6 +4,7 @@ import static java.time.DayOfWeek.*
 
 import com.sasagui.onmangequoi.OnMangeQuoiSpec
 import com.sasagui.onmangequoi.calendar.Week
+import com.sasagui.onmangequoi.dish.Dish
 import java.time.Year
 
 class MealPlanSpec extends OnMangeQuoiSpec {
@@ -16,6 +17,7 @@ class MealPlanSpec extends OnMangeQuoiSpec {
         result.getDays().size() == 7
 
         then: "meal plan contains expected days"
+        def res = result.getDays()
         result.getDays()[0].getDayOfWeek() == MONDAY
         result.getDays()[1].getDayOfWeek() == TUESDAY
         result.getDays()[2].getDayOfWeek() == WEDNESDAY
@@ -36,7 +38,7 @@ class MealPlanSpec extends OnMangeQuoiSpec {
         days2.every({ it -> it.getMeals()[1].getType() == MealType.DINNER })
     }
 
-    def "getDishes - meal plan contains several dishes over days - returns all dishes from the plan"() {
+    def "getDishes - meal plan contains several dishes over days - returns all dishes from the plan including empty dish"() {
         given:
         MealPlan mealPlan = MealPlan.schoolWeek(weekMock)
         mealPlan.getDays()[0].getMeals()[0].setDish(dish1)
@@ -47,6 +49,6 @@ class MealPlanSpec extends OnMangeQuoiSpec {
         def result = mealPlan.getDishes()
 
         then:
-        result == [dish1, dish2] as Set
+        result == [Dish.empty(),  dish1, dish2] as Set
     }
 }

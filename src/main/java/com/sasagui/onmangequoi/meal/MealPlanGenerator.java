@@ -1,6 +1,5 @@
 package com.sasagui.onmangequoi.meal;
 
-import com.sasagui.onmangequoi.calendar.Day;
 import com.sasagui.onmangequoi.calendar.Week;
 import com.sasagui.onmangequoi.calendar.WeekService;
 import com.sasagui.onmangequoi.dish.Dish;
@@ -30,24 +29,17 @@ public class MealPlanGenerator {
 
         log.info("Loading previous week meal plan");
         Week previousWeek = weekService.getPreviousWeek(week);
-        Optional<MealPlan> previousWeekMealPlan = mealPlanService.getMealPlan(previousWeek);
+        MealPlan previousWeekMealPlan = mealPlanService.getMealPlan(previousWeek);
 
         log.info("Loading two weeks before meal plans");
         Set<Dish> olderWeeksDishes = getOlderWeeksDishes(previousWeek);
 
         MealPlan mealPlan = MealPlan.schoolWeek(week);
-
-        for (Day day : mealPlan.getDays()) {
-            for (Meal meal : day.getMeals()) {
-                Dish selectedDish = dishSelector.selectDish(
-                        dishes,
-                        day,
-                        meal,
-                        previousWeekMealPlan.map(MealPlan::getDishes).orElse(Collections.emptySet()),
-                        olderWeeksDishes);
-                meal.setDish(selectedDish);
-                dishes.remove(selectedDish);
-            }
+        for (Meal meal : mealPlan.getMeals()) {
+            Dish selectedDish = dishSelector.selectDish(
+                    dishes, meal.getDayOfWeek(), meal, previousWeekMealPlan.getDishes(), olderWeeksDishes);
+            meal.setDish(selectedDish);
+            dishes.remove(selectedDish);
         }
         return mealPlan;
     }
@@ -56,16 +48,14 @@ public class MealPlanGenerator {
         Week firstWeekBefore = weekService.getWeek(
                 previousWeek.getPreviousWeek().year(),
                 previousWeek.getPreviousWeek().number());
-        Optional<MealPlan> firstWeekBeforeMealPlan = mealPlanService.getMealPlan(firstWeekBefore);
-        Set<Dish> firstWeekBeforeDishes =
-                firstWeekBeforeMealPlan.map(MealPlan::getDishes).orElse(Collections.emptySet());
+        MealPlan firstWeekBeforeMealPlan = mealPlanService.getMealPlan(firstWeekBefore);
+        Set<Dish> firstWeekBeforeDishes = firstWeekBeforeMealPlan.getDishes();
 
         Week secondWeekBefore = weekService.getWeek(
                 firstWeekBefore.getPreviousWeek().year(),
                 firstWeekBefore.getPreviousWeek().number());
-        Optional<MealPlan> secondWeekBeforeMealPlan = mealPlanService.getMealPlan(secondWeekBefore);
-        Set<Dish> secondWeekBeforeDishes =
-                secondWeekBeforeMealPlan.map(MealPlan::getDishes).orElse(Collections.emptySet());
+        MealPlan secondWeekBeforeMealPlan = mealPlanService.getMealPlan(secondWeekBefore);
+        Set<Dish> secondWeekBeforeDishes = secondWeekBeforeMealPlan.getDishes();
 
         Set<Dish> result = new HashSet<>(firstWeekBeforeDishes);
         result.addAll(secondWeekBeforeDishes);

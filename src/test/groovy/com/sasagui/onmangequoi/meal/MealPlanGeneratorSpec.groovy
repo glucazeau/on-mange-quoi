@@ -7,6 +7,7 @@ import com.sasagui.onmangequoi.calendar.WeekService
 import com.sasagui.onmangequoi.dish.Dish
 import com.sasagui.onmangequoi.dish.DishSelector
 import com.sasagui.onmangequoi.dish.DishService
+import java.time.DayOfWeek
 
 class MealPlanGeneratorSpec extends OnMangeQuoiSpec {
 
@@ -71,25 +72,25 @@ class MealPlanGeneratorSpec extends OnMangeQuoiSpec {
         1 * weekServiceMock.getPreviousWeek(weekMock) >> previousWeek
 
         and: "loads previous week meal plan"
-        1 * mealPlanServiceMock.getMealPlan(previousWeek) >> Optional.of(previousWeekMealPlan)
+        1 * mealPlanServiceMock.getMealPlan(previousWeek) >> previousWeekMealPlan
 
         and: "compute first week before previous week"
         1 * weekServiceMock.getWeek(2026, 10) >> firstWeekBefore
 
         and: "loads meal plean from first week before previous week"
-        1 * mealPlanServiceMock.getMealPlan(firstWeekBefore) >> Optional.of(mealPlan1)
+        1 * mealPlanServiceMock.getMealPlan(firstWeekBefore) >> mealPlan1
 
         and: "compute second week before previous week"
         1 * weekServiceMock.getWeek(2026, 9) >> secondWeekBefore
 
         and: "loads meal plean from second week before previous week"
-        1 * mealPlanServiceMock.getMealPlan(secondWeekBefore) >> Optional.of(mealPlan2)
+        1 * mealPlanServiceMock.getMealPlan(secondWeekBefore) >> mealPlan2
 
         and: "first call contains all dishes"
-        1 * dishSelectorMock.selectDish([dish1, dish2], _ as Day, _ as Meal, [dishMock1, dishMock2] as Set, [dishMock3, dishMock4] as Set) >> dish1
+        1 * dishSelectorMock.selectDish([dish1, dish2], _ as DayOfWeek, _ as Meal, [dishMock1, dishMock2] as Set, [dishMock3, dishMock4] as Set) >> dish1
 
         and: "select dish is removed from list in other calls"
-        9 * dishSelectorMock.selectDish([dish2], _ as Day, _ as Meal, [dishMock1, dishMock2] as Set, [dishMock3, dishMock4] as Set) >> dish1
+        9 * dishSelectorMock.selectDish([dish2], _ as DayOfWeek, _ as Meal, [dishMock1, dishMock2] as Set, [dishMock3, dishMock4] as Set) >> dish1
 
         and:
         result.getDays().every({ it.getMeals().every({ it.getDish() == dish1 })})
