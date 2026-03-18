@@ -1,19 +1,21 @@
 package com.sasagui.onmangequoi.calendar;
 
 import com.sasagui.onmangequoi.meal.Meal;
-import com.sasagui.onmangequoi.meal.MealEntity;
-import com.sasagui.onmangequoi.meal.MealType;
+import jakarta.validation.constraints.NotNull;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import lombok.*;
 
 @Getter
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString(onlyExplicitlyIncluded = true)
-public class Day {
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+public class Day implements Comparable<Day> {
 
     @ToString.Include
+    @EqualsAndHashCode.Include
     private final DayOfWeek dayOfWeek;
 
     private final List<Meal> meals;
@@ -29,15 +31,20 @@ public class Day {
         return List.of(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY).contains(dayOfWeek);
     }
 
-    public static Day dinner(DayOfWeek dayOfWeek) {
-        return new Day(dayOfWeek, List.of(new Meal(MealType.DINNER)));
+    public static Day from(DayOfWeek dayOfWeek) {
+        return new Day(dayOfWeek, Collections.emptyList());
     }
 
-    public static Day lunchAndDinner(DayOfWeek dayOfWeek) {
-        return new Day(dayOfWeek, List.of(new Meal(MealType.LUNCH), new Meal(MealType.DINNER)));
+    public static Day from(DayOfWeek dayOfWeek, List<Meal> meals) {
+        return new Day(dayOfWeek, meals);
     }
 
-    public static Day from(DayOfWeek dayOfWeek, List<MealEntity> meals) {
-        return new Day(dayOfWeek, meals.stream().map(Meal::from).toList());
+    public List<Meal> getMeals() {
+        return meals.stream().sorted().toList();
+    }
+
+    @Override
+    public int compareTo(@NotNull Day o) {
+        return this.dayOfWeek.compareTo(o.getDayOfWeek());
     }
 }

@@ -20,13 +20,13 @@ public class MealPlanController {
     public MealPlan getCurrentMealPlan() {
         log.info("Request received for current week meal plan");
         Week currentWeek = weekService.getCurrentWeek();
-        return mealPlanService.getMealPlan(currentWeek).orElseGet(() -> MealPlan.empty(currentWeek));
+        return mealPlanService.getMealPlan(currentWeek);
     }
 
     @GetMapping(path = "/year/{year}/week/{weekNumber}")
     public MealPlan getWeekMealPlan(@PathVariable int year, @PathVariable int weekNumber) {
         log.info("Request received for meal plan of week #{} of {}", weekNumber, year);
         Week week = weekService.getWeek(year, weekNumber);
-        return mealPlanService.getMealPlan(week).orElseGet(() -> MealPlan.empty(week));
+        return mealPlanService.getMealPlan(week);
     }
 }

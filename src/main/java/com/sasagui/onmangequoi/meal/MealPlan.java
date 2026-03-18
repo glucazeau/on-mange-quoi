@@ -19,48 +19,40 @@ public class MealPlan {
     @ToString.Include
     private final Week week;
 
-    private final List<Day> days;
+    private final List<Meal> meals;
 
     public static MealPlan schoolWeek(Week week) {
-        List<Day> days = List.of(
-                Day.dinner(DayOfWeek.MONDAY),
-                Day.dinner(DayOfWeek.TUESDAY),
-                Day.lunchAndDinner(DayOfWeek.WEDNESDAY),
-                Day.dinner(DayOfWeek.THURSDAY),
-                Day.dinner(DayOfWeek.FRIDAY),
-                Day.lunchAndDinner(DayOfWeek.SATURDAY),
-                Day.lunchAndDinner(DayOfWeek.SUNDAY));
-        setDates(week, days);
-        return new MealPlan(week, days);
+        List<Meal> meals = List.of(
+                Meal.empty(DayOfWeek.MONDAY, MealType.DINNER),
+                Meal.empty(DayOfWeek.TUESDAY, MealType.DINNER),
+                Meal.empty(DayOfWeek.WEDNESDAY, MealType.LUNCH),
+                Meal.empty(DayOfWeek.WEDNESDAY, MealType.DINNER),
+                Meal.empty(DayOfWeek.THURSDAY, MealType.DINNER),
+                Meal.empty(DayOfWeek.FRIDAY, MealType.DINNER),
+                Meal.empty(DayOfWeek.SATURDAY, MealType.LUNCH),
+                Meal.empty(DayOfWeek.SATURDAY, MealType.DINNER),
+                Meal.empty(DayOfWeek.SUNDAY, MealType.LUNCH),
+                Meal.empty(DayOfWeek.SUNDAY, MealType.DINNER));
+        return new MealPlan(week, meals);
     }
 
-    public static MealPlan empty(Week week) {
-        MealPlan mealPlan = schoolWeek(week);
-        mealPlan.getDays().stream()
-                .map(Day::getMeals)
-                .flatMap(Collection::stream)
-                .forEach(m -> m.setDish(Dish.empty()));
-        return mealPlan;
+    public static MealPlan from(Week week, List<MealEntity> meals) {
+        return new MealPlan(week, meals.stream().map(Meal::from).toList());
     }
 
-    public static MealPlan from(Week week, MealPlanEntity mealPlanEntity) {
-        Map<DayOfWeek, List<MealEntity>> mealsPerDay =
-                mealPlanEntity.getMeals().stream().collect(Collectors.groupingBy(MealEntity::getDayOfWeek));
+    public List<Day> getDays() {
+        Map<DayOfWeek, List<Meal>> mealsPerDay = meals.stream().collect(Collectors.groupingBy(Meal::getDayOfWeek));
         List<Day> days = mealsPerDay.entrySet().stream()
                 .map(e -> Day.from(e.getKey(), e.getValue()))
+                .sorted()
                 .toList();
         setDates(week, days);
-        return new MealPlan(week, days);
+        return days;
     }
 
     @JsonIgnore
     public Set<Dish> getDishes() {
-        return days.stream()
-                .map(Day::getMeals)
-                .flatMap(Collection::stream)
-                .map(Meal::getDish)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toSet());
+        return meals.stream().map(Meal::getDish).collect(Collectors.toSet());
     }
 
     private static void setDates(Week week, List<Day> days) {
