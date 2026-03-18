@@ -19,35 +19,29 @@ public class MealPlan {
     @ToString.Include
     private final Week week;
 
+    @JsonIgnore
     private final List<Meal> meals;
 
     public static MealPlan schoolWeek(Week week) {
-        List<Meal> meals = List.of(
-                Meal.empty(DayOfWeek.MONDAY, MealType.DINNER),
-                Meal.empty(DayOfWeek.TUESDAY, MealType.DINNER),
-                Meal.empty(DayOfWeek.WEDNESDAY, MealType.LUNCH),
-                Meal.empty(DayOfWeek.WEDNESDAY, MealType.DINNER),
-                Meal.empty(DayOfWeek.THURSDAY, MealType.DINNER),
-                Meal.empty(DayOfWeek.FRIDAY, MealType.DINNER),
-                Meal.empty(DayOfWeek.SATURDAY, MealType.LUNCH),
-                Meal.empty(DayOfWeek.SATURDAY, MealType.DINNER),
-                Meal.empty(DayOfWeek.SUNDAY, MealType.LUNCH),
-                Meal.empty(DayOfWeek.SUNDAY, MealType.DINNER));
-        return new MealPlan(week, meals);
+        return new MealPlan(week, getSchoolWeekMeals());
     }
 
-    public static MealPlan from(Week week, List<MealEntity> meals) {
-        return new MealPlan(week, meals.stream().map(Meal::from).toList());
+    public static MealPlan from(Week week, List<MealEntity> mealEntities) {
+        List<Meal> finalMeals = new ArrayList<>(getSchoolWeekMeals());
+        for (MealEntity mealEntity : mealEntities) {
+            Meal meal = Meal.from(mealEntity);
+            finalMeals.remove(meal);
+            finalMeals.add(meal);
+        }
+        return new MealPlan(week, finalMeals);
     }
 
     public List<Day> getDays() {
         Map<DayOfWeek, List<Meal>> mealsPerDay = meals.stream().collect(Collectors.groupingBy(Meal::getDayOfWeek));
-        List<Day> days = mealsPerDay.entrySet().stream()
-                .map(e -> Day.from(e.getKey(), e.getValue()))
+        return mealsPerDay.entrySet().stream()
+                .map(e -> Day.from(week, e.getKey(), e.getValue()))
                 .sorted()
                 .toList();
-        setDates(week, days);
-        return days;
     }
 
     @JsonIgnore
@@ -59,9 +53,17 @@ public class MealPlan {
         return !week.isInPast();
     }
 
-    private static void setDates(Week week, List<Day> days) {
-        for (Day day : days) {
-            day.setDate(week.getStart().plusDays((long) day.getDayOfWeek().getValue() - 1));
-        }
+    private static List<Meal> getSchoolWeekMeals() {
+        return List.of(
+                Meal.empty(DayOfWeek.MONDAY, MealType.DINNER),
+                Meal.empty(DayOfWeek.TUESDAY, MealType.DINNER),
+                Meal.empty(DayOfWeek.WEDNESDAY, MealType.LUNCH),
+                Meal.empty(DayOfWeek.WEDNESDAY, MealType.DINNER),
+                Meal.empty(DayOfWeek.THURSDAY, MealType.DINNER),
+                Meal.empty(DayOfWeek.FRIDAY, MealType.DINNER),
+                Meal.empty(DayOfWeek.SATURDAY, MealType.LUNCH),
+                Meal.empty(DayOfWeek.SATURDAY, MealType.DINNER),
+                Meal.empty(DayOfWeek.SUNDAY, MealType.LUNCH),
+                Meal.empty(DayOfWeek.SUNDAY, MealType.DINNER));
     }
 }

@@ -1,6 +1,7 @@
 package com.sasagui.onmangequoi;
 
 import com.sasagui.onmangequoi.dish.DishAlreadyExistsException;
+import com.sasagui.onmangequoi.meal.MealNotEditableException;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +23,12 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 @ControllerAdvice
 public class CommonControllerAdvice extends ResponseEntityExceptionHandler {
+
+    @ExceptionHandler(value = {MealNotEditableException.class})
+    public ResponseEntity<ErrorResponse> handeMealNotEditableException(MealNotEditableException e) {
+        var errorResponse = new ErrorResponse(HttpStatus.FORBIDDEN, e.getMessage());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
+    }
 
     @ExceptionHandler(value = {DishAlreadyExistsException.class})
     public ResponseEntity<ErrorResponse> handleDishAlreadyExistsException(DishAlreadyExistsException e) {

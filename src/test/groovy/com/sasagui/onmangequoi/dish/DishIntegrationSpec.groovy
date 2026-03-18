@@ -199,5 +199,4 @@ class DishIntegrationSpec extends IntegrationSpec {
         then:
         response.andExpect(status().isNotFound())
     }
-
 }

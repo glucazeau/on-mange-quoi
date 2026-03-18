@@ -9,7 +9,6 @@ import java.util.List;
 import lombok.*;
 
 @Getter
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString(onlyExplicitlyIncluded = true)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Day implements Comparable<Day> {
@@ -18,13 +17,26 @@ public class Day implements Comparable<Day> {
     @EqualsAndHashCode.Include
     private final DayOfWeek dayOfWeek;
 
+    private LocalDate date;
+
     private final List<Meal> meals;
 
-    @Setter
-    private LocalDate date;
+    private Day(DayOfWeek dayOfWeek, List<Meal> meals) {
+        this.dayOfWeek = dayOfWeek;
+        this.meals = meals;
+    }
+
+    private Day(Week week, DayOfWeek dayOfWeek, List<Meal> meals) {
+        this(dayOfWeek, meals);
+        this.date = week.getStart().plusDays((long) dayOfWeek.getValue() - 1);
+    }
 
     public boolean isToday() {
         return LocalDate.now().equals(date);
+    }
+
+    public boolean isPast() {
+        return LocalDate.now().isAfter(date);
     }
 
     public boolean isWeekend() {
@@ -35,8 +47,12 @@ public class Day implements Comparable<Day> {
         return new Day(dayOfWeek, Collections.emptyList());
     }
 
-    public static Day from(DayOfWeek dayOfWeek, List<Meal> meals) {
-        return new Day(dayOfWeek, meals);
+    public static Day from(Week week, DayOfWeek dayOfWeek) {
+        return new Day(week, dayOfWeek, Collections.emptyList());
+    }
+
+    public static Day from(Week week, DayOfWeek dayOfWeek, List<Meal> meals) {
+        return new Day(week, dayOfWeek, meals);
     }
 
     public List<Meal> getMeals() {
