@@ -55,6 +55,10 @@ public class MealPlan {
         return meals.stream().map(Meal::getDish).collect(Collectors.toSet());
     }
 
+    public boolean isEditable() {
+        return !week.isInPast();
+    }
+
     private static void setDates(Week week, List<Day> days) {
         for (Day day : days) {
             day.setDate(week.getStart().plusDays((long) day.getDayOfWeek().getValue() - 1));
