@@ -100,7 +100,21 @@
                   <div class="icon-box align-items-center" :class="{ 'today': day.today }">
                     <h4 x-text="frenchDay(day.dayOfWeek)">{{ day.dayOfWeek }}</h4>
                     <template x-for="meal in day.meals" :key="meal.type">
-                      <div>
+                      <div
+                          :class="{
+                             'drop-zone': !day.past && draggingDish,
+                             'highlight': !day.past && draggingDish && draggingOverZone
+                           }"
+                          x-data="{
+                           draggingOverZone: false,
+                           dayId: day.dayOfWeek,
+                           mealType: meal.type
+                         }"
+                          @mouseenter="draggingOverZone = true"
+                          @mouseleave="draggingOverZone = false"
+                          @dragover.prevent="draggingOverZone = true"
+                          @dragleave="draggingOverZone = false"
+                          @drop="handleDrop">
                         <p x-show="day.meals.length == 1">&nbsp;</p>
                         <p>
                           <hr x-show="meal.type == 'DINNER'" class="dotted">
@@ -153,7 +167,12 @@
                      x-data="{ hover: false }"
                      @mouseenter="hover = true"
                      @mouseleave="hover = false">
-                  <div class="border rounded px-3 py-2 bg-light">
+                  <div class="border rounded px-3 py-2 bg-light"
+                       draggable="true"
+                       x-data="{ dishId: dish.id }"
+                       @dragstart="document.body.style.cursor = 'grabbing'; draggingDish = true; event.dataTransfer.setData('dishId', dishId)"
+                       @dragend="document.body.style.cursor = 'default'; draggingDish = false"
+                  >
                     <span x-text="dish.label"></span>
                     <span x-show="dish.availableAllYear">🗓️</span>
                     <span x-show="dish.vegan">🌱</span>
@@ -343,6 +362,7 @@
       isEditing: false,
       dishFormSuccessMessage: '',
       dishFormErrorMessage: '',
+      draggingDish: false,
 
       async init() {
           await this.getCurrentWeek()
@@ -481,6 +501,26 @@
             this.setMealPlan(json)
           });
       },
+
+      handleDrop(event) {
+        const dishId = event.dataTransfer.getData('dishId');
+        const dayId = this.dayId;
+        const mealType = this.mealType;
+        this.draggingDish = false;
+
+        // Call your API with BOTH values
+        fetch(this.baseUrl + '/meals/year/' + this.mealPlan.week.year + '/week/' + this.mealPlan.week.number + '/day/' + dayId + '/meal/' + mealType, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: dishId
+        })
+        .then((response) => response.json())
+        .then((json) =>  {
+          this.setMealPlan(json)
+        });
+     },
 
       async changeWeekStatus(year, number, action) {
         await fetch(this.baseUrl + '/week/' + year + '/' + number, {
