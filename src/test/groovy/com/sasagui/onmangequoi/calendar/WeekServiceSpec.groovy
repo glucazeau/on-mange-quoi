@@ -2,7 +2,6 @@ package com.sasagui.onmangequoi.calendar
 
 import com.sasagui.onmangequoi.OnMangeQuoiSpec
 import java.time.LocalDate
-import java.time.Year
 
 class WeekServiceSpec extends OnMangeQuoiSpec {
 
@@ -95,9 +94,9 @@ class WeekServiceSpec extends OnMangeQuoiSpec {
         result.getNumber() == 13
     }
 
-    def "week.isOver - week is #testLabel - returns expected"() {
+    def "week.isInPast - week is #testLabel - returns expected"() {
         expect:
-        manager.getWeek(givenYear, givenWeekNumber).isOver() == expected
+        manager.getWeek(givenYear, givenWeekNumber).isInPast() == expected
 
         where:
         givenYear                | givenWeekNumber | expected | testLabel
