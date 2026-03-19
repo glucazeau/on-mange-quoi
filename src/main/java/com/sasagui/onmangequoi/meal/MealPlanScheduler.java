@@ -5,6 +5,7 @@ import com.sasagui.onmangequoi.calendar.WeekService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -20,6 +21,7 @@ public class MealPlanScheduler {
 
     private ApplicationEventPublisher applicationEventPublisher;
 
+    @Scheduled(cron = "0 0 6 * * MON")
     public void generateNextWeekMealPlan() {
         Week currentWeek = weekService.getCurrentWeek();
         Week nextWeek = weekService.getNextWeek(currentWeek);
