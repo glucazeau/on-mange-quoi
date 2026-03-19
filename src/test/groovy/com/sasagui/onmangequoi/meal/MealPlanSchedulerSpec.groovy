@@ -3,6 +3,7 @@ package com.sasagui.onmangequoi.meal
 import com.sasagui.onmangequoi.OnMangeQuoiSpec
 import com.sasagui.onmangequoi.calendar.Week
 import com.sasagui.onmangequoi.calendar.WeekService
+import org.springframework.context.ApplicationEventPublisher
 
 class MealPlanSchedulerSpec extends OnMangeQuoiSpec {
 
@@ -12,7 +13,9 @@ class MealPlanSchedulerSpec extends OnMangeQuoiSpec {
 
     def mealPlanGeneratorMock = Mock(MealPlanGenerator)
 
-    def scheduler = new MealPlanScheduler(weekServiceMock, mealPlanServiceMock, mealPlanGeneratorMock)
+    def eventPublisherMock = Mock(ApplicationEventPublisher)
+
+    def scheduler = new MealPlanScheduler(weekServiceMock, mealPlanServiceMock, mealPlanGeneratorMock, eventPublisherMock)
 
     def "generateNextWeekMealPlan - a meal plan already exists - no further action"() {
         given:
@@ -37,5 +40,10 @@ class MealPlanSchedulerSpec extends OnMangeQuoiSpec {
 
         and: "saves meal plean"
         1 * mealPlanServiceMock.saveMealPlan(mealPlanMock)
+
+        and: "publish event"
+        eventPublisherMock.publishEvent(_ as NewMealPlanEvent) >> { NewMealPlanEvent e ->
+            e.getMealPlan() == mealPlanMock
+        }
     }
 }

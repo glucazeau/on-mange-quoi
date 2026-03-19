@@ -27,7 +27,15 @@ public class MealPlanGenerator {
 
     public MealPlan generateMealPlan(Week week) {
         log.info("Generating new meal plan for {}", week);
+
+        log.info("Loading dishes available for current month");
         List<Dish> dishes = dishService.listDishes(DishSearchCriteria.currentMonth());
+
+        log.info("Checking if some meals are already planned for week {}", week);
+        MealPlan mealPlan = mealPlanService.getMealPlan(week);
+        Set<Dish> alreadyUsedDishes = mealPlan.getDishes();
+        log.info("Removing {} already used dishes from available dishes list", alreadyUsedDishes.size());
+        alreadyUsedDishes.forEach(dishes::remove);
 
         log.info("Loading previous week dishes");
         Week previousWeek = weekService.getPreviousWeek(week);
@@ -35,10 +43,18 @@ public class MealPlanGenerator {
 
         Set<Dish> olderWeeksDishes = getOlderWeeksDishes(previousWeek);
 
-        MealPlan mealPlan = MealPlan.schoolWeek(week);
-        for (Meal meal : mealPlan.getMeals()) {
+        Set<Meal> mealsToPlan =
+                mealPlan.getMeals().stream().filter(Meal::isEmpty).collect(Collectors.toSet());
+        log.info("Going to plan {} meals", mealsToPlan.size());
+        for (Meal meal : mealsToPlan) {
+            log.info("Planning meal {}", meal);
             Dish selectedDish = dishSelector.selectDish(
-                    dishes, meal.getDayOfWeek(), meal, previousWeekMealPlan.getDishes(), olderWeeksDishes);
+                    dishes,
+                    meal.getDayOfWeek(),
+                    meal,
+                    mealPlan.getDishes(),
+                    previousWeekMealPlan.getDishes(),
+                    olderWeeksDishes);
             meal.setDish(selectedDish);
             dishes.remove(selectedDish);
         }
@@ -46,7 +62,7 @@ public class MealPlanGenerator {
     }
 
     private Set<Dish> getOlderWeeksDishes(Week previousWeek) {
-        log.info("Loading dishes used in the three weeks before");
+        log.info("Loading dishes used during the three weeks before");
         List<Week> previousWeeks = weekService.getPreviousWeeks(previousWeek, 3);
         return previousWeeks.stream()
                 .map(week -> mealPlanService.getMealPlan(week).getDishes())

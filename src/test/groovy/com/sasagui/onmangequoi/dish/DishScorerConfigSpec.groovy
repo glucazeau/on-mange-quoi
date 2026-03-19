@@ -20,7 +20,7 @@ class DishScorerConfigSpec extends OnMangeQuoiSpec {
             isWeekend() >> isWeekendValue
         }
 
-        def ctx = new DishScoringContext(dishMock, dayMock, Mock(Meal), [] as Set, [] as Set)
+        def ctx = new DishScoringContext(dishMock, dayMock, Mock(Meal), [] as Set, [] as Set, [] as Set)
 
         expect:
         config.quickDishOnWeekDayScorer().score(ctx) == expected
@@ -43,7 +43,7 @@ class DishScorerConfigSpec extends OnMangeQuoiSpec {
             isWeekend() >> isWeekendValue
         }
 
-        def ctx = new DishScoringContext(dishMock, dayMock, Mock(Meal), [] as Set, [] as Set)
+        def ctx = new DishScoringContext(dishMock, dayMock, Mock(Meal), [] as Set, [] as Set, [] as Set)
 
         expect:
         config.slowDishOnWeekDaysScorer().score(ctx) == expected
@@ -77,7 +77,7 @@ class DishScorerConfigSpec extends OnMangeQuoiSpec {
             getType() >> mealTypeValue
         }
 
-        def ctx = new DishScoringContext(dishMock, Mock(Day), mealMock, [dish1] as Set, [] as Set)
+        def ctx = new DishScoringContext(dishMock, Mock(Day), mealMock,  [] as Set, [dish1] as Set, [] as Set)
 
         expect:
         config.veganDishForDinnerScorer().score(ctx) == expected
@@ -92,7 +92,7 @@ class DishScorerConfigSpec extends OnMangeQuoiSpec {
 
     def "dishUsedLastWeekScorer - dish was #testLabel last week - returns #expected"() {
         given:
-        def ctx = new DishScoringContext(dishValue, Mock(Day), Mock(Meal), [dish1] as Set, [] as Set)
+        def ctx = new DishScoringContext(dishValue, Mock(Day), Mock(Meal), [] as Set, [dish1] as Set, [] as Set)
 
         expect:
         config.dishUsedLastWeekScorer().score(ctx) == expected
@@ -105,7 +105,7 @@ class DishScorerConfigSpec extends OnMangeQuoiSpec {
 
     def "dishUsedOlderWeeksScorer - dish was #testLabel previous weeks - returns #expected"() {
         given:
-        def ctx = new DishScoringContext(dishValue, Mock(Day), Mock(Meal), [] as Set, [dish1] as Set)
+        def ctx = new DishScoringContext(dishValue, Mock(Day), Mock(Meal), [] as Set, [] as Set, [dish1] as Set)
 
         expect:
         config.dishUsedOlderWeeksScorer().score(ctx) == expected
@@ -118,7 +118,7 @@ class DishScorerConfigSpec extends OnMangeQuoiSpec {
 
     def "dishNotUsedLastWeekAndPreviousWeeks - dish was #testLabel last week or previous weeks - returns #expected"() {
         given:
-        def ctx = new DishScoringContext(dishValue, Mock(Day), Mock(Meal), [dish1] as Set, [dish1] as Set)
+        def ctx = new DishScoringContext(dishValue, Mock(Day), Mock(Meal), [] as Set, [dish1] as Set, [dish1] as Set)
 
         expect:
         config.dishNotUsedLastWeekAndPreviousWeeks().score(ctx) == expected
@@ -140,7 +140,7 @@ class DishScorerConfigSpec extends OnMangeQuoiSpec {
         def mealMock = Mock(Meal) {
             getType() >> mealValue
         }
-        def ctx = new DishScoringContext(dishMock, dayMock,mealMock, [] as Set, [] as Set)
+        def ctx = new DishScoringContext(dishMock, dayMock, mealMock, [] as Set, [] as Set, [] as Set)
 
         expect:
         config.kidLunchAndWednesdayLunch().score(ctx) == expected
@@ -165,7 +165,7 @@ class DishScorerConfigSpec extends OnMangeQuoiSpec {
         def mealMock = Mock(Meal) {
             getType() >> mealValue
         }
-        def ctx = new DishScoringContext(dishMock, dayMock,mealMock, [] as Set, [] as Set)
+        def ctx = new DishScoringContext(dishMock, dayMock, mealMock, [] as Set, [] as Set, [] as Set)
 
         expect:
         config.soupOnSundayDiner().score(ctx) == expected
@@ -177,5 +177,47 @@ class DishScorerConfigSpec extends OnMangeQuoiSpec {
                 MealType.values()
         ].combinations()
         expected = dishLabelValue != "Poisson pané" && dayValue == DayOfWeek.SUNDAY && mealValue == MealType.DINNER ? 1 : 0
+    }
+
+    def "restaurantDishWithAnotherRestaurantThisWeek - #testLabel a dish from a restaurant is in current week - returns #expected"() {
+        given:
+        def currentWeekDishMock = Mock(Dish) {
+            isFromRestaurant() >> currentWeekDishFromRestaurant
+        }
+        def scoredDishMock = Mock(Dish) {
+            isFromRestaurant() >> scoredDishFromRestaurant
+        }
+        def ctx = new DishScoringContext(scoredDishMock, Mock(Day), Mock(Meal), [currentWeekDishMock] as Set, [] as Set, [] as Set)
+
+        expect:
+        config.restaurantDishWithAnotherRestaurantThisWeek().score(ctx) == expected
+
+        where:
+        scoredDishFromRestaurant | currentWeekDishFromRestaurant | testLabel                                                                  | expected
+        true                     | true                          | "dish is from restaurant and one dish from restaurant is in this week"     | -2
+        true                     | false                         | "dish is from restaurant and no dish from restaurant is in this week"      | 0
+        false                    | true                          | "dish is not from restaurant and one dish from restaurant is in this week" | 0
+        false                    | false                         | "dish is not from restaurant and no dish from restaurant is in this week"  | 0
+    }
+
+    def "restaurantDishWithAnotherRestaurantLastWeek - #testLabel a dish from a restaurant is in last week - returns #expected"() {
+        given:
+        def lastWeekDishMock = Mock(Dish) {
+            isFromRestaurant() >> lastWeekDishFromRestaurant
+        }
+        def scoredDishMock = Mock(Dish) {
+            isFromRestaurant() >> scoredDishFromRestaurant
+        }
+        def ctx = new DishScoringContext(scoredDishMock, Mock(Day), Mock(Meal), [] as Set, [lastWeekDishMock] as Set, [] as Set)
+
+        expect:
+        config.restaurantDishWithAnotherRestaurantLastWeek().score(ctx) == expected
+
+        where:
+        scoredDishFromRestaurant | lastWeekDishFromRestaurant | testLabel                                                                   | expected
+        true                     | true                       | "dish is from restaurant and one dish from restaurant was in last week"     | -1
+        true                     | false                      | "dish is from restaurant and no dish from restaurant was in last week"      | 0
+        false                    | true                       | "dish is not from restaurant and one dish from restaurant was in last week" | 0
+        false                    | false                      | "dish is not from restaurant and no dish from restaurant was in last week"  | 0
     }
 }

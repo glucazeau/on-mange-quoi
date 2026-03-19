@@ -60,7 +60,7 @@ class MealPlanSpec extends OnMangeQuoiSpec {
         result.getDays()[6].meals[1].dish == Dish.empty()
     }
 
-    def "getDishes - meal plan contains several dishes over days - returns all dishes from the plan including empty dish"() {
+    def "getDishes - meal plan contains several dishes over days - returns all dishes from the plan excluding empty dish"() {
         given:
         MealPlan mealPlan = MealPlan.schoolWeek(weekMock)
         mealPlan.getDays()[0].getMeals()[0].setDish(dish1)
@@ -71,7 +71,7 @@ class MealPlanSpec extends OnMangeQuoiSpec {
         def result = mealPlan.getDishes()
 
         then:
-        result == [Dish.empty(),  dish1, dish2] as Set
+        result == [dish1, dish2] as Set
     }
 
     def "isEditable - week is in the past: #weekInPast - returns #expected"() {

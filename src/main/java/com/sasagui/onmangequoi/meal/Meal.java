@@ -13,6 +13,7 @@ import lombok.*;
 public class Meal implements Comparable<Meal> {
 
     @JsonIgnore
+    @ToString.Include
     @EqualsAndHashCode.Include
     private final DayOfWeek dayOfWeek;
 
@@ -29,6 +30,10 @@ public class Meal implements Comparable<Meal> {
 
     public static Meal empty(DayOfWeek day, MealType type) {
         return new Meal(day, type, Dish.empty());
+    }
+
+    public boolean isEmpty() {
+        return Dish.empty().equals(dish);
     }
 
     @Override

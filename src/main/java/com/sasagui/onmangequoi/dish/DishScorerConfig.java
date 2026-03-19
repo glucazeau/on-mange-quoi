@@ -117,4 +117,18 @@ public class DishScorerConfig {
             return 0;
         };
     }
+
+    public DishScorer restaurantDishWithAnotherRestaurantThisWeek() {
+        return context -> {
+            log.debug("Scoring restaurant dish with restaurant dishes this week");
+            return context.getDish().isFromRestaurant() && context.countCurrentWeekRestaurants() > 0 ? -2 : 0;
+        };
+    }
+
+    public DishScorer restaurantDishWithAnotherRestaurantLastWeek() {
+        return context -> {
+            log.debug("Scoring restaurant dish with restaurant dishes last week");
+            return context.getDish().isFromRestaurant() && context.countLastWeekRestaurants() > 0 ? -1 : 0;
+        };
+    }
 }

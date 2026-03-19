@@ -68,7 +68,7 @@
       <div class="container" data-aos="fade-up">
 
         <div class="section-header">
-          <h2 x-show="mealPlan?.week?.current">semaine courante</h2>
+          <h2><span x-text="getSimpleDate(mealPlan?.week?.start)"></span> - <span class="week-dates" x-text="getSimpleDate(mealPlan?.week?.end)"></span></h2>
           <p>
             <button @click="goToWeek(mealPlan.week.previousWeek.year, mealPlan.week.previousWeek.number)" style="all: unset; cursor: pointer;"><-&nbsp;</button>
             Semaine <span x-text="mealPlan?.week?.number"></span>
@@ -85,20 +85,13 @@
                   <div class="season-img w-100">
                     <img :src="getSeasonPicture(mealPlan?.week?.start)" class="img-fluid">
                   </div>
-                  <div class="btn-actions">
-                    <button class="btn btn-sm btn-action" x-show="mealPlan.status == 'DRAFT' && !mealPlan.is_finished" x-on:click="generateWeek(mealPlan.year, mealPlan.number)"><span class="bi-arrow-clockwise"></span> Regénérer</button>
-
-                    <button class="btn btn-sm btn-action" x-show="mealPlan.status == 'DRAFT' && !mealPlan.is_finished" x-on:click="changeWeekStatus(mealPlan.year, mealPlan.number, 'save')"><span class="bi-check-circle"></span> Enregistrer</button>
-
-                    <button class="btn btn-sm btn-action" x-show="mealPlan.status == 'SAVED' && !mealPlan.is_finished" href="#"  x-on:click="changeWeekStatus(mealPlan.year, mealPlan.number, 'edit')"><span class="bi-pen"></span> Modifier</button>
-                  </div>
                 </div>
               </div>
 
               <template x-for="day in mealPlan.days" :key="day.dayOfWeek">
                 <div class="col-xl-3" data-aos="fade-up" data-aos-delay="200">
                   <div class="icon-box align-items-center" :class="{ 'today': day.today }">
-                    <h4 x-text="frenchDay(day.dayOfWeek)">{{ day.dayOfWeek }}</h4>
+                    <h4 class="day-name" x-text="frenchDay(day.dayOfWeek)"></h4>
                     <template x-for="meal in day.meals" :key="meal.type">
                       <div
                           :class="{
@@ -494,14 +487,6 @@
           .then((json) => this.mealPlan = json);
       },
 
-      async generateWeek(year, number) {
-        await fetch(this.baseUrl + '/meal-plans/year/' + year + '/week/' + number + '?generate=true')
-          .then((response) => response.json())
-          .then((json) =>  {
-            this.setMealPlan(json)
-          });
-      },
-
       handleDrop(event) {
         const dishId = event.dataTransfer.getData('dishId');
         const dayId = this.dayId;
@@ -522,27 +507,16 @@
         });
      },
 
-      async changeWeekStatus(year, number, action) {
-        await fetch(this.baseUrl + '/week/' + year + '/' + number, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            action: action,
-          })
-        })
-        .then((response) => response.json())
-        .then((json) =>  {
-          this.setMealPlan(json)
-        });
-      },
-
       getSeasonPicture(dateString) {
         if (!dateString) return '';
         const d = new Date(dateString + "T00:00:00");
         const season = Math.floor((d.getMonth() / 12) * 4) % 4;
         return 'assets/img/' + ['winter.jpg', 'spring.jpg', 'summer.webp', 'autumn.avif'][season];
+      },
+
+      getSimpleDate(dateString) {
+        const [year, month, day] = dateString.split("-");
+        return `${day}/${month}`;
       },
 
       getMonthLabel(month) {

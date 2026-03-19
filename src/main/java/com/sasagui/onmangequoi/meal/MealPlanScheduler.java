@@ -4,6 +4,7 @@ import com.sasagui.onmangequoi.calendar.Week;
 import com.sasagui.onmangequoi.calendar.WeekService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -17,12 +18,17 @@ public class MealPlanScheduler {
 
     private final MealPlanGenerator mealPlanGenerator;
 
+    private ApplicationEventPublisher applicationEventPublisher;
+
     public void generateNextWeekMealPlan() {
         Week currentWeek = weekService.getCurrentWeek();
         Week nextWeek = weekService.getNextWeek(currentWeek);
 
         log.info("Generating meal plan for next week {}", nextWeek);
         MealPlan plan = mealPlanGenerator.generateMealPlan(nextWeek);
+        log.info("Saving meal plan for next week");
         mealPlanService.saveMealPlan(plan);
+        log.info("Publishing new meal plan event");
+        applicationEventPublisher.publishEvent(new NewMealPlanEvent(plan));
     }
 }
