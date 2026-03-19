@@ -1,6 +1,7 @@
 package com.sasagui.onmangequoi.dish;
 
 import jakarta.persistence.EntityNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,9 +21,9 @@ public class DishService {
     public List<Dish> listDishes(DishSearchCriteria criteria) {
         log.info("Loading dishes with criteria {}", criteria);
         criteria = criteria == null ? new DishSearchCriteria() : criteria;
-        return dishRepository.findAll(criteria.toSpec(), Sort.by(Sort.Direction.ASC, "label")).stream()
+        return new ArrayList<>(dishRepository.findAll(criteria.toSpec(), Sort.by(Sort.Direction.ASC, "label")).stream()
                 .map(Dish::from)
-                .toList();
+                .toList());
     }
 
     public Dish getDish(long dishId) {
