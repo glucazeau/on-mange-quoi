@@ -46,7 +46,10 @@ public class MealPlan {
 
     @JsonIgnore
     public Set<Dish> getDishes() {
-        return meals.stream().map(Meal::getDish).collect(Collectors.toSet());
+        return meals.stream()
+                .map(Meal::getDish)
+                .filter(d -> !Dish.empty().equals(d))
+                .collect(Collectors.toSet());
     }
 
     public boolean isEditable() {
