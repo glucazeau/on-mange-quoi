@@ -2,6 +2,7 @@ package com.sasagui.onmangequoi.dish
 
 import com.sasagui.onmangequoi.OnMangeQuoiSpec
 import org.springframework.dao.DataIntegrityViolationException
+import org.springframework.data.domain.Sort
 import org.springframework.data.jpa.domain.Specification
 
 
@@ -11,12 +12,27 @@ class DishServiceSpec extends OnMangeQuoiSpec {
 
     def service = new DishService(repositoryMock)
 
+    def "listDishes - returns list of dishes - returned list is not immutable"() {
+        given:
+        repositoryMock.findAll(_ as Specification, _ as Sort) >> [dishEntity1, dishEntity2]
+        def dishes = service.listDishes(null)
+
+        when:
+        dishes.remove(Dish.from(dishEntity1))
+
+        then:
+        noExceptionThrown()
+
+        and:
+        dishes == [Dish.from(dishEntity2)]
+    }
+
     def "listDishes - null criteria given - calls repository with an empty criteria instance and returns results"() {
         when:
         def result = service.listDishes(null)
 
         then:
-        1 * repositoryMock.findAll(_ as Specification, _) >> [dishEntity1, dishEntity2]
+        1 * repositoryMock.findAll(_ as Specification, _ as Sort) >> [dishEntity1, dishEntity2]
 
         and:
         result == [Dish.from(dishEntity1), Dish.from(dishEntity2)]
@@ -34,7 +50,7 @@ class DishServiceSpec extends OnMangeQuoiSpec {
         1 * criteriaSpy.toSpec() >> specificationMock
 
         and:
-        1 * repositoryMock.findAll(specificationMock, _) >> [dishEntity1, dishEntity2]
+        1 * repositoryMock.findAll(specificationMock, _ as Sort) >> [dishEntity1, dishEntity2]
 
         and:
         result == [Dish.from(dishEntity1), Dish.from(dishEntity2)]

@@ -1,6 +1,7 @@
 package com.sasagui.onmangequoi.meal
 
 import com.sasagui.onmangequoi.OnMangeQuoiSpec
+import com.sasagui.onmangequoi.dish.Dish
 import com.sasagui.onmangequoi.dish.DishEntity
 import com.sasagui.onmangequoi.dish.DishRepository
 import java.time.LocalDate
@@ -66,6 +67,38 @@ class MealPlanServiceSpec extends OnMangeQuoiSpec {
             assert entities.every {it.id.weekNumber == 12 }
             assert entities[0].getDish() == dishEntity1
             assert entities[1].getDish() == dishEntity2
+        }
+    }
+
+    def "saveMealPlan - given meal plan contains 1 meal with an empty dish - meal with empty dish is not saved"() {
+        given:
+        def mealMock1 = Mock(Meal) {
+            getDish() >> Dish.empty()
+        }
+        def mealMock2 = Mock(Meal) {
+            getDish() >> dish2
+        }
+        def mealPlanMock = Mock(MealPlan) {
+            getMeals() >> [mealMock1, mealMock2]
+            getWeek() >> weekMock
+        }
+
+        when:
+        service.saveMealPlan(mealPlanMock)
+
+        then: "empty dish is ignored when loading entities"
+        0 * dishRepositoryMock.getReferenceById(-1)
+
+        and:
+        1 * dishRepositoryMock.getReferenceById(2) >> dishEntity2
+
+        and:
+        mealRepositoryMock.saveAll(_ as List<MealEntity>) >> { params ->
+            List<MealEntity> entities = params[0]
+            assert entities.size() == 1
+            assert entities.every {it.id.year == 2026 }
+            assert entities.every {it.id.weekNumber == 12 }
+            assert entities[0].getDish() == dishEntity2
         }
     }
 }

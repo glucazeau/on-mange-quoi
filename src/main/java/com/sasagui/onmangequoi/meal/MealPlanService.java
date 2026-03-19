@@ -1,6 +1,7 @@
 package com.sasagui.onmangequoi.meal;
 
 import com.sasagui.onmangequoi.calendar.Week;
+import com.sasagui.onmangequoi.dish.Dish;
 import com.sasagui.onmangequoi.dish.DishEntity;
 import com.sasagui.onmangequoi.dish.DishRepository;
 import java.util.ArrayList;
@@ -29,7 +30,12 @@ public class MealPlanService {
     public void saveMealPlan(MealPlan mealPlan) {
         log.info("Saving meal plan for week {}", mealPlan.getWeek());
         List<MealEntity> entities = new ArrayList<>();
-        for (Meal meal : mealPlan.getMeals()) {
+        log.debug("Ignoring meals with empty dish");
+        List<Meal> meals = mealPlan.getMeals().stream()
+                .filter(m -> !Dish.empty().equals(m.getDish()))
+                .toList();
+        log.info("Persisting {} meals", meals.size());
+        for (Meal meal : meals) {
             entities.add(buildMealEntity(mealPlan.getWeek(), meal));
         }
         mealRepository.saveAll(entities);
