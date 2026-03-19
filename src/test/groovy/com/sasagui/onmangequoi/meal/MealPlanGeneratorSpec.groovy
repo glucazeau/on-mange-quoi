@@ -106,13 +106,13 @@ class MealPlanGeneratorSpec extends OnMangeQuoiSpec {
         1 * mealPlanServiceMock.getMealPlan(thirdWeekBefore) >> mealPlan3
 
         and: "first call contains all dishes minus the one already planned"
-        1 * dishSelectorMock.selectDish([dish1, dish2], _ as DayOfWeek, _ as Meal, [dishMock1, dishMock2] as Set, [dishMock3, dishMock4] as Set) >> { List<Dish> dishes, DayOfWeek day, Meal meal, Set<Dish> d1, Set<Dish> d2 ->
+        1 * dishSelectorMock.selectDish([dish1, dish2], _ as DayOfWeek, _ as Meal, [dish3] as Set, [dishMock1, dishMock2] as Set, [dishMock3, dishMock4] as Set) >> { List<Dish> dishes, DayOfWeek day, Meal meal, Set<Dish> d0, Set<Dish> d1, Set<Dish> d2 ->
             assert day != MONDAY
             return dish1
         }
 
         and: "selected dish is removed from list in other calls"
-        8 * dishSelectorMock.selectDish([dish2], _ as DayOfWeek, _ as Meal, [dishMock1, dishMock2] as Set, [dishMock3, dishMock4] as Set) >> { List<Dish> dishes, DayOfWeek day, Meal meal, Set<Dish> d1, Set<Dish> d2 ->
+        8 * dishSelectorMock.selectDish([dish2], _ as DayOfWeek, _ as Meal, [dish3, dish1] as Set, [dishMock1, dishMock2] as Set, [dishMock3, dishMock4] as Set) >> { List<Dish> dishes, DayOfWeek day, Meal meal, Set<Dish> d0, Set<Dish> d1, Set<Dish> d2 ->
             assert day != MONDAY
             return dish1
         }

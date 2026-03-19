@@ -47,9 +47,14 @@ public class MealPlanGenerator {
                 mealPlan.getMeals().stream().filter(Meal::isEmpty).collect(Collectors.toSet());
         log.info("Going to plan {} meals", mealsToPlan.size());
         for (Meal meal : mealsToPlan) {
-            log.info("Planning meal {} for {}", meal.getType(), meal.getDayOfWeek());
+            log.info("Planning meal {}", meal);
             Dish selectedDish = dishSelector.selectDish(
-                    dishes, meal.getDayOfWeek(), meal, previousWeekMealPlan.getDishes(), olderWeeksDishes);
+                    dishes,
+                    meal.getDayOfWeek(),
+                    meal,
+                    mealPlan.getDishes(),
+                    previousWeekMealPlan.getDishes(),
+                    olderWeeksDishes);
             meal.setDish(selectedDish);
             dishes.remove(selectedDish);
         }
