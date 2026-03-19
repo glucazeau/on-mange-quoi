@@ -5,6 +5,7 @@ import static java.time.DayOfWeek.*
 import com.sasagui.onmangequoi.OnMangeQuoiSpec
 import com.sasagui.onmangequoi.calendar.Week
 import com.sasagui.onmangequoi.dish.Dish
+import java.time.DayOfWeek
 import java.time.Year
 
 class MealPlanSpec extends OnMangeQuoiSpec {
@@ -17,7 +18,6 @@ class MealPlanSpec extends OnMangeQuoiSpec {
         result.getDays().size() == 7
 
         then: "meal plan contains expected days"
-        def res = result.getDays()
         result.getDays()[0].getDayOfWeek() == MONDAY
         result.getDays()[1].getDayOfWeek() == TUESDAY
         result.getDays()[2].getDayOfWeek() == WEDNESDAY
@@ -38,6 +38,28 @@ class MealPlanSpec extends OnMangeQuoiSpec {
         days2.every({ it -> it.getMeals()[1].getType() == MealType.DINNER })
     }
 
+    def "from - week and meals given - meal plan contains days with given meals and empty meals for the others"() {
+        given:
+        def meals = [mealEntity1]
+
+        when:
+        def result = MealPlan.from(weekMock, meals)
+
+        then:
+        result.getDays()[0].dayOfWeek == MONDAY
+        result.getDays()[0].meals[0].type == MealType.DINNER
+        result.getDays()[0].meals[0].dish == dish1
+        result.getDays()[1].meals[0].dish == Dish.empty()
+        result.getDays()[2].meals[0].dish == Dish.empty()
+        result.getDays()[2].meals[1].dish == Dish.empty()
+        result.getDays()[3].meals[0].dish == Dish.empty()
+        result.getDays()[4].meals[0].dish == Dish.empty()
+        result.getDays()[5].meals[0].dish == Dish.empty()
+        result.getDays()[5].meals[1].dish == Dish.empty()
+        result.getDays()[6].meals[0].dish == Dish.empty()
+        result.getDays()[6].meals[1].dish == Dish.empty()
+    }
+
     def "getDishes - meal plan contains several dishes over days - returns all dishes from the plan including empty dish"() {
         given:
         MealPlan mealPlan = MealPlan.schoolWeek(weekMock)
@@ -50,5 +72,19 @@ class MealPlanSpec extends OnMangeQuoiSpec {
 
         then:
         result == [Dish.empty(),  dish1, dish2] as Set
+    }
+
+    def "isEditable - week is in the past: #weekInPast - returns #expected"() {
+        given:
+        def weekMock = Mock(Week) {
+            isInPast() >> weekInPast
+        }
+        expect:
+        new MealPlan(weekMock, []).isEditable() == expected
+
+        where:
+        weekInPast | expected
+        true       | false
+        false      | true
     }
 }

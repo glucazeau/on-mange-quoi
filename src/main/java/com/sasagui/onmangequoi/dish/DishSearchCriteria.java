@@ -1,12 +1,15 @@
 package com.sasagui.onmangequoi.dish;
 
 import jakarta.persistence.criteria.Join;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.springframework.data.jpa.domain.Specification;
 
+@Getter
 @Setter
 @ToString(onlyExplicitlyIncluded = true)
 public class DishSearchCriteria {
@@ -71,6 +74,12 @@ public class DishSearchCriteria {
         }
 
         return Specification.allOf(specs);
+    }
+
+    public static DishSearchCriteria currentMonth() {
+        DishSearchCriteria criteria = new DishSearchCriteria();
+        criteria.setMonth(LocalDate.now().getMonth().getValue());
+        return criteria;
     }
 
     private Specification<DishEntity> hasLabelLike(final String label) {

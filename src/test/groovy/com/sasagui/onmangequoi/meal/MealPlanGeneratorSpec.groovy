@@ -1,13 +1,14 @@
 package com.sasagui.onmangequoi.meal
 
 import com.sasagui.onmangequoi.OnMangeQuoiSpec
-import com.sasagui.onmangequoi.calendar.Day
 import com.sasagui.onmangequoi.calendar.Week
 import com.sasagui.onmangequoi.calendar.WeekService
 import com.sasagui.onmangequoi.dish.Dish
+import com.sasagui.onmangequoi.dish.DishSearchCriteria
 import com.sasagui.onmangequoi.dish.DishSelector
 import com.sasagui.onmangequoi.dish.DishService
 import java.time.DayOfWeek
+import java.time.LocalDateTime
 
 class MealPlanGeneratorSpec extends OnMangeQuoiSpec {
 
@@ -44,6 +45,10 @@ class MealPlanGeneratorSpec extends OnMangeQuoiSpec {
             getYear() >> 2026
             getNumber() >> 9
         }
+        def thirdWeekBefore = Mock(Week) {
+            getYear() >> 2026
+            getNumber() >> 8
+        }
 
         def dishMock1 = Mock(Dish)
         def dishMock2 = Mock(Dish)
@@ -62,11 +67,18 @@ class MealPlanGeneratorSpec extends OnMangeQuoiSpec {
             getDishes() >> [dishMock4, dishMock3]
         }
 
+        def mealPlan3 = Mock(MealPlan) {
+            getDishes() >> []
+        }
+
         when:
         def result = generator.generateMealPlan(weekMock)
 
-        then: "calls dish service to load dishes"
-        1 * dishServiceMock.listDishes(null) >> [dish1, dish2]
+        then: "calls dish service to load dishes available in current month"
+        1 * dishServiceMock.listDishes(_ as DishSearchCriteria) >> { DishSearchCriteria c ->
+            assert c.getMonth() == LocalDateTime.now().getMonth().getValue()
+            return [dish1, dish2]
+        }
 
         and: "compute previous week"
         1 * weekServiceMock.getPreviousWeek(weekMock) >> previousWeek
@@ -74,17 +86,17 @@ class MealPlanGeneratorSpec extends OnMangeQuoiSpec {
         and: "loads previous week meal plan"
         1 * mealPlanServiceMock.getMealPlan(previousWeek) >> previousWeekMealPlan
 
-        and: "compute first week before previous week"
-        1 * weekServiceMock.getWeek(2026, 10) >> firstWeekBefore
+        and: "compute three weeks before previous week"
+        1 * weekServiceMock.getPreviousWeeks(previousWeek, 3) >> [firstWeekBefore, secondWeekBefore, thirdWeekBefore]
 
         and: "loads meal plean from first week before previous week"
         1 * mealPlanServiceMock.getMealPlan(firstWeekBefore) >> mealPlan1
 
-        and: "compute second week before previous week"
-        1 * weekServiceMock.getWeek(2026, 9) >> secondWeekBefore
-
         and: "loads meal plean from second week before previous week"
         1 * mealPlanServiceMock.getMealPlan(secondWeekBefore) >> mealPlan2
+
+        and: "loads meal plean from second week before previous week"
+        1 * mealPlanServiceMock.getMealPlan(thirdWeekBefore) >> mealPlan3
 
         and: "first call contains all dishes"
         1 * dishSelectorMock.selectDish([dish1, dish2], _ as DayOfWeek, _ as Meal, [dishMock1, dishMock2] as Set, [dishMock3, dishMock4] as Set) >> dish1

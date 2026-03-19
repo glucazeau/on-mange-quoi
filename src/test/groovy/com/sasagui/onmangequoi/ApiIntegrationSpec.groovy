@@ -1,4 +1,4 @@
-package com.sasagui.onmangequoi.dish
+package com.sasagui.onmangequoi
 
 import static org.hamcrest.Matchers.hasSize
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
@@ -7,10 +7,52 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
-import com.sasagui.onmangequoi.IntegrationSpec
+import java.time.LocalDateTime
+import java.time.temporal.WeekFields
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.http.MediaType
+import org.springframework.test.context.ActiveProfiles
+import org.springframework.test.context.DynamicPropertyRegistry
+import org.springframework.test.context.DynamicPropertySource
+import org.springframework.test.web.servlet.MockMvc
+import org.testcontainers.postgresql.PostgreSQLContainer
+import spock.lang.Shared
+import spock.lang.Specification
+import spock.lang.Stepwise
 
-class DishIntegrationSpec extends IntegrationSpec {
+@ActiveProfiles("integration-test")
+@SpringBootTest
+@AutoConfigureMockMvc
+@Stepwise
+class ApiIntegrationSpec extends Specification {
+
+    static PostgreSQLContainer postgresql = new PostgreSQLContainer("postgres:16.0")
+            .withDatabaseName("brand-portal")
+            .withUsername("brand-portal")
+            .withPassword("brand-portal")
+
+    @Shared
+    PostgreSQLContainer postgresqlContainer = postgresql
+
+    @DynamicPropertySource
+    static void registerPostgresProperties(DynamicPropertyRegistry registry) {
+        registry.add("spring.datasource.url", postgresql::getJdbcUrl)
+        registry.add("spring.datasource.username", postgresql::getUsername)
+        registry.add("spring.datasource.password", postgresql::getPassword)
+    }
+
+    @Autowired
+    protected MockMvc mvc
+
+    def setupSpec() {
+        postgresqlContainer.start()
+    }
+
+    def cleanupSpec() {
+        postgresqlContainer.stop()
+    }
 
     def "GET /dishes - no request body sent - returns HTTP 200 and dishes JSON results"() {
         when:
@@ -162,6 +204,35 @@ class DishIntegrationSpec extends IntegrationSpec {
                 .andExpect(jsonPath('\$.months[2]').value(3))
     }
 
+    def "PUT /dishes/{dishId} - dish exists and empty months array sent - updates dish returns HTTP 204"() {
+        when:
+        def response = mvc.perform(put("/dishes/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""{
+                    "label": "Sushis (updated)",
+                    "slow": true,
+                    "quick": true,
+                    "fromRestaurant": false,
+                    "vegan": true,
+                    "fish": true,
+                    "kidLunch": true,
+                    "months": []
+                }"""))
+
+        then:
+        response.andExpect(status().isOk())
+    }
+
+    def "GET /dishes/{dishId} - dish exists and has been updated - dish is now linked to all 12 months"() {
+        when:
+        def response = mvc.perform(get("/dishes/1")
+                .contentType(MediaType.APPLICATION_JSON))
+
+        then:
+        response.andExpect(status().isOk())
+                .andExpect(jsonPath("\$.months", hasSize(12)))
+    }
+
     def "GET /dishes/{dishId} - dish does not exist - returns HTTP 404"() {
         when:
         def response = mvc.perform(get("/dishes/1111111")
@@ -171,4 +242,27 @@ class DishIntegrationSpec extends IntegrationSpec {
         response.andExpect(status().isNotFound())
     }
 
+    def "PUT /meals/year/{year}/week/{weekNumber}/day/{day}/meal/{meal} - meal is in the past - returns HTTP 403"() {
+        when:
+        def response = mvc.perform(put("/meals/year/2026/week/1/day/MONDAY/meal/DINNER")
+                .contentType(MediaType.APPLICATION_JSON).content("1"))
+
+        then:
+        response.andExpect(status().isForbidden())
+    }
+
+    def "PUT /meals/year/{year}/week/{weekNumber}/day/{day}/meal/{meal} - meal is in the future - returns HTTP 200 and updated meal plan"() {
+        given:
+        def now = LocalDateTime.now()
+        def year = now.year + 1
+        def week = now.get(WeekFields.of(Locale.FRANCE).weekOfYear())
+
+        when:
+        def response = mvc.perform(put("/meals/year/${year}/week/${week}/day/MONDAY/meal/DINNER")
+                .contentType(MediaType.APPLICATION_JSON).content("12"))
+
+        then:
+        response.andExpect(status().isOk())
+                .andExpect(jsonPath('\$.days[?(@.dayOfWeek == \'MONDAY\')].meals[?(@.type == \'DINNER\')].dish.id').value(12))
+    }
 }

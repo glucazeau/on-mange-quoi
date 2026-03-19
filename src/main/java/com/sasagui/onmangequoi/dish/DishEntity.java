@@ -76,7 +76,7 @@ public class DishEntity {
     private static Set<Integer> computeMonths(NewDish dish) {
         if (dish.getMonths() == null || dish.getMonths().isEmpty()) {
             log.info("Months list is empty, all 12 months will be saved");
-            return allMonths;
+            return new HashSet<>(allMonths);
         } else {
             return dish.getMonths();
         }

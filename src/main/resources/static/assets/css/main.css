@@ -1226,8 +1226,25 @@ section {
 .book-a-table .php-email-form .sent-message {
   margin-top: 24px;
 }
+
 .menu-item {
   position: relative;
+  cursor: move; /* fallback: no `url()` support or images disabled */
+  cursor: url(images/grab.cur); /* fallback: Internet Explorer */
+  cursor: -webkit-grab; /* Chrome 1-21, Safari 4+ */
+  cursor:    -moz-grab; /* Firefox 1.5-26 */
+  cursor:         grab; /* W3C standards syntax, should come least */
+}
+
+.menu-item:hover {
+  filter: brightness(85%);
+}
+
+.menu-item:active {
+  cursor: url(images/grabbing.cur);
+  cursor: -webkit-grabbing;
+  cursor:    -moz-grabbing;
+  cursor:         grabbing;
 }
 
 .menu-item .dish-edit {
@@ -1242,8 +1259,13 @@ section {
 }
 
 .menu-item:hover .dish-edit {
+  opacity: 0.8;
+}
+
+.menu-item:hover .dish-edit:hover {
   opacity: 1;
 }
+
 
 .menu .dish-edit .icon {
   display: flex;
@@ -1291,5 +1313,13 @@ section {
 
 .form-check-label-month {
   font-size: 14px;
+}
+
+.drop-zone {
+  background-color: rgba(76, 175, 80, 0.2);
+}
+
+.highlight {
+  background-color: rgba(36, 115, 50, 0.2);
 }
 /* Fin ajouts */

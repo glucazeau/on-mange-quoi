@@ -29,7 +29,19 @@ INSERT INTO dish (label, is_slow, is_quick, is_from_restaurant, is_vegan) VALUES
 ('Omelette', false, false, false, true),
 ('Rougail saucisses', false, false, false, false);
 
-
 INSERT INTO dish_month (dish_id, month_number) VALUES
 (4, 9), (4, 10), (4, 11), (4, 12), (4, 1), (4, 2), (4, 3),
 (5, 9), (5, 10), (5, 11), (5, 12), (5, 1), (5, 2), (5, 3);
+
+INSERT INTO meal (plan_year, week_number, day_of_week, meal_type, dish_id) VALUES
+(2026, 1, 2, 'DINNER', 1),
+(date_part('year', CURRENT_DATE), EXTRACT(WEEK FROM CURRENT_DATE), 1, 'DINNER', 1),
+(date_part('year', CURRENT_DATE), EXTRACT(WEEK FROM CURRENT_DATE), 2, 'DINNER', 2),
+(date_part('year', CURRENT_DATE), EXTRACT(WEEK FROM CURRENT_DATE), 3, 'LUNCH', 3),
+(date_part('year', CURRENT_DATE), EXTRACT(WEEK FROM CURRENT_DATE), 3, 'DINNER', 4),
+(date_part('year', CURRENT_DATE), EXTRACT(WEEK FROM CURRENT_DATE), 4, 'DINNER', 5),
+(date_part('year', CURRENT_DATE), EXTRACT(WEEK FROM CURRENT_DATE), 5, 'DINNER', 6),
+(date_part('year', CURRENT_DATE), EXTRACT(WEEK FROM CURRENT_DATE), 6, 'LUNCH', 7),
+(date_part('year', CURRENT_DATE), EXTRACT(WEEK FROM CURRENT_DATE), 6, 'DINNER', 8),
+(date_part('year', CURRENT_DATE), EXTRACT(WEEK FROM CURRENT_DATE), 7, 'LUNCH', 9),
+(date_part('year', CURRENT_DATE), EXTRACT(WEEK FROM CURRENT_DATE), 7, 'DINNER', 10);

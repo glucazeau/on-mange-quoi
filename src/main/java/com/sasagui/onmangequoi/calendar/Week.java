@@ -32,7 +32,7 @@ public class Week {
 
     public record WeekRef(int year, int number) {}
 
-    public boolean isOver() {
+    public boolean isInPast() {
         return LocalDate.now().isAfter(end);
     }
 

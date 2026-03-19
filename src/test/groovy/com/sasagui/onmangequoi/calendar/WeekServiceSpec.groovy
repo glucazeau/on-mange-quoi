@@ -2,7 +2,6 @@ package com.sasagui.onmangequoi.calendar
 
 import com.sasagui.onmangequoi.OnMangeQuoiSpec
 import java.time.LocalDate
-import java.time.Year
 
 class WeekServiceSpec extends OnMangeQuoiSpec {
 
@@ -70,6 +69,22 @@ class WeekServiceSpec extends OnMangeQuoiSpec {
         result.getNumber() == 11
     }
 
+    def "getPreviousWeeks - given week is #12 of 2026 - returns weeks #9, #10 and #11 of 2026"() {
+        when:
+        def result = manager.getPreviousWeeks(weekMock, 3)
+
+        then:
+        result.size() == 3
+
+        and:
+        result.every { it -> it.getYear() == 2026 }
+
+        and:
+        result[0].getNumber() == 11
+        result[1].getNumber() == 10
+        result[2].getNumber() == 9
+    }
+
     def "getNextWeek - given week is #12 of 2026 of #weekMock.getYear() - returns week #13 of 2026"() {
         when:
         def result = manager.getNextWeek(weekMock)
@@ -79,9 +94,9 @@ class WeekServiceSpec extends OnMangeQuoiSpec {
         result.getNumber() == 13
     }
 
-    def "week.isOver - week is #testLabel - returns expected"() {
+    def "week.isInPast - week is #testLabel - returns expected"() {
         expect:
-        manager.getWeek(givenYear, givenWeekNumber).isOver() == expected
+        manager.getWeek(givenYear, givenWeekNumber).isInPast() == expected
 
         where:
         givenYear                | givenWeekNumber | expected | testLabel
