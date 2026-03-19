@@ -178,4 +178,46 @@ class DishScorerConfigSpec extends OnMangeQuoiSpec {
         ].combinations()
         expected = dishLabelValue != "Poisson pané" && dayValue == DayOfWeek.SUNDAY && mealValue == MealType.DINNER ? 1 : 0
     }
+
+    def "restaurantDishWithAnotherRestaurantThisWeek - #testLabel a dish from a restaurant is in current week - returns #expected"() {
+        given:
+        def currentWeekDishMock = Mock(Dish) {
+            isFromRestaurant() >> currentWeekDishFromRestaurant
+        }
+        def scoredDishMock = Mock(Dish) {
+            isFromRestaurant() >> scoredDishFromRestaurant
+        }
+        def ctx = new DishScoringContext(scoredDishMock, Mock(Day), Mock(Meal), [currentWeekDishMock] as Set, [] as Set, [] as Set)
+
+        expect:
+        config.restaurantDishWithAnotherRestaurantThisWeek().score(ctx) == expected
+
+        where:
+        scoredDishFromRestaurant | currentWeekDishFromRestaurant | testLabel                                                                  | expected
+        true                     | true                          | "dish is from restaurant and one dish from restaurant is in this week"     | -2
+        true                     | false                         | "dish is from restaurant and no dish from restaurant is in this week"      | 0
+        false                    | true                          | "dish is not from restaurant and one dish from restaurant is in this week" | 0
+        false                    | false                         | "dish is not from restaurant and no dish from restaurant is in this week"  | 0
+    }
+
+    def "restaurantDishWithAnotherRestaurantLastWeek - #testLabel a dish from a restaurant is in last week - returns #expected"() {
+        given:
+        def lastWeekDishMock = Mock(Dish) {
+            isFromRestaurant() >> lastWeekDishFromRestaurant
+        }
+        def scoredDishMock = Mock(Dish) {
+            isFromRestaurant() >> scoredDishFromRestaurant
+        }
+        def ctx = new DishScoringContext(scoredDishMock, Mock(Day), Mock(Meal), [] as Set, [lastWeekDishMock] as Set, [] as Set)
+
+        expect:
+        config.restaurantDishWithAnotherRestaurantLastWeek().score(ctx) == expected
+
+        where:
+        scoredDishFromRestaurant | lastWeekDishFromRestaurant | testLabel                                                                   | expected
+        true                     | true                       | "dish is from restaurant and one dish from restaurant was in last week"     | -1
+        true                     | false                      | "dish is from restaurant and no dish from restaurant was in last week"      | 0
+        false                    | true                       | "dish is not from restaurant and one dish from restaurant was in last week" | 0
+        false                    | false                      | "dish is not from restaurant and no dish from restaurant was in last week"  | 0
+    }
 }
