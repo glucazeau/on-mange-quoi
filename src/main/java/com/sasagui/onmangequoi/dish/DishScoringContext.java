@@ -20,4 +20,16 @@ public class DishScoringContext {
     Set<Dish> lastWeekDishes;
 
     Set<Dish> previousWeeksDishes;
+
+    public long countCurrentWeekRestaurants() {
+        return countRestaurants(currentWeekDishes);
+    }
+
+    public long countLastWeekRestaurants() {
+        return countRestaurants(lastWeekDishes);
+    }
+
+    private long countRestaurants(Set<Dish> dishes) {
+        return dishes.stream().filter(Dish::isFromRestaurant).count();
+    }
 }

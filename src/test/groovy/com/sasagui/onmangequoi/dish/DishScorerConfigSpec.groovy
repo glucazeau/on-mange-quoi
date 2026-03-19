@@ -20,7 +20,7 @@ class DishScorerConfigSpec extends OnMangeQuoiSpec {
             isWeekend() >> isWeekendValue
         }
 
-        def ctx = new DishScoringContext(dishMock, dayMock, Mock(Meal), [] as Set, [] as Set)
+        def ctx = new DishScoringContext(dishMock, dayMock, Mock(Meal), [] as Set, [] as Set, [] as Set)
 
         expect:
         config.quickDishOnWeekDayScorer().score(ctx) == expected
@@ -43,7 +43,7 @@ class DishScorerConfigSpec extends OnMangeQuoiSpec {
             isWeekend() >> isWeekendValue
         }
 
-        def ctx = new DishScoringContext(dishMock, dayMock, Mock(Meal), [] as Set, [] as Set)
+        def ctx = new DishScoringContext(dishMock, dayMock, Mock(Meal), [] as Set, [] as Set, [] as Set)
 
         expect:
         config.slowDishOnWeekDaysScorer().score(ctx) == expected
@@ -77,7 +77,7 @@ class DishScorerConfigSpec extends OnMangeQuoiSpec {
             getType() >> mealTypeValue
         }
 
-        def ctx = new DishScoringContext(dishMock, Mock(Day), mealMock, [dish1] as Set, [] as Set)
+        def ctx = new DishScoringContext(dishMock, Mock(Day), mealMock,  [] as Set, [dish1] as Set, [] as Set)
 
         expect:
         config.veganDishForDinnerScorer().score(ctx) == expected
@@ -92,7 +92,7 @@ class DishScorerConfigSpec extends OnMangeQuoiSpec {
 
     def "dishUsedLastWeekScorer - dish was #testLabel last week - returns #expected"() {
         given:
-        def ctx = new DishScoringContext(dishValue, Mock(Day), Mock(Meal), [dish1] as Set, [] as Set)
+        def ctx = new DishScoringContext(dishValue, Mock(Day), Mock(Meal), [] as Set, [dish1] as Set, [] as Set)
 
         expect:
         config.dishUsedLastWeekScorer().score(ctx) == expected
@@ -105,7 +105,7 @@ class DishScorerConfigSpec extends OnMangeQuoiSpec {
 
     def "dishUsedOlderWeeksScorer - dish was #testLabel previous weeks - returns #expected"() {
         given:
-        def ctx = new DishScoringContext(dishValue, Mock(Day), Mock(Meal), [] as Set, [dish1] as Set)
+        def ctx = new DishScoringContext(dishValue, Mock(Day), Mock(Meal), [] as Set, [] as Set, [dish1] as Set)
 
         expect:
         config.dishUsedOlderWeeksScorer().score(ctx) == expected
@@ -118,7 +118,7 @@ class DishScorerConfigSpec extends OnMangeQuoiSpec {
 
     def "dishNotUsedLastWeekAndPreviousWeeks - dish was #testLabel last week or previous weeks - returns #expected"() {
         given:
-        def ctx = new DishScoringContext(dishValue, Mock(Day), Mock(Meal), [dish1] as Set, [dish1] as Set)
+        def ctx = new DishScoringContext(dishValue, Mock(Day), Mock(Meal), [] as Set, [dish1] as Set, [dish1] as Set)
 
         expect:
         config.dishNotUsedLastWeekAndPreviousWeeks().score(ctx) == expected
@@ -140,7 +140,7 @@ class DishScorerConfigSpec extends OnMangeQuoiSpec {
         def mealMock = Mock(Meal) {
             getType() >> mealValue
         }
-        def ctx = new DishScoringContext(dishMock, dayMock,mealMock, [] as Set, [] as Set)
+        def ctx = new DishScoringContext(dishMock, dayMock, mealMock, [] as Set, [] as Set, [] as Set)
 
         expect:
         config.kidLunchAndWednesdayLunch().score(ctx) == expected
@@ -165,7 +165,7 @@ class DishScorerConfigSpec extends OnMangeQuoiSpec {
         def mealMock = Mock(Meal) {
             getType() >> mealValue
         }
-        def ctx = new DishScoringContext(dishMock, dayMock,mealMock, [] as Set, [] as Set)
+        def ctx = new DishScoringContext(dishMock, dayMock, mealMock, [] as Set, [] as Set, [] as Set)
 
         expect:
         config.soupOnSundayDiner().score(ctx) == expected

@@ -17,11 +17,12 @@ class DishSelectorSpec extends OnMangeQuoiSpec {
         def dishes = [dish1, dish2]
         def dayMock = Mock(Day)
         def mealMock = Mock(Meal)
+        def currentWeekDishes = [] as Set
         def previousWeekDishes = [] as Set
         def olderWeeksDishes = [] as Set
 
         when:
-        def result = selector.selectDish(dishes, DayOfWeek.MONDAY, mealMock, previousWeekDishes, olderWeeksDishes)
+        def result = selector.selectDish(dishes, DayOfWeek.MONDAY, mealMock, currentWeekDishes, previousWeekDishes, olderWeeksDishes)
 
         then: "each scorer is called twice"
         2 * dishScorerMock1.score(_ as DishScoringContext) >> { DishScoringContext ctx ->
