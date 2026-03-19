@@ -85,13 +85,6 @@
                   <div class="season-img w-100">
                     <img :src="getSeasonPicture(mealPlan?.week?.start)" class="img-fluid">
                   </div>
-                  <div class="btn-actions">
-                    <button class="btn btn-sm btn-action" x-show="mealPlan.status == 'DRAFT' && !mealPlan.is_finished" x-on:click="generateWeek(mealPlan.year, mealPlan.number)"><span class="bi-arrow-clockwise"></span> Regénérer</button>
-
-                    <button class="btn btn-sm btn-action" x-show="mealPlan.status == 'DRAFT' && !mealPlan.is_finished" x-on:click="changeWeekStatus(mealPlan.year, mealPlan.number, 'save')"><span class="bi-check-circle"></span> Enregistrer</button>
-
-                    <button class="btn btn-sm btn-action" x-show="mealPlan.status == 'SAVED' && !mealPlan.is_finished" href="#"  x-on:click="changeWeekStatus(mealPlan.year, mealPlan.number, 'edit')"><span class="bi-pen"></span> Modifier</button>
-                  </div>
                 </div>
               </div>
 
@@ -494,14 +487,6 @@
           .then((json) => this.mealPlan = json);
       },
 
-      async generateWeek(year, number) {
-        await fetch(this.baseUrl + '/meal-plans/year/' + year + '/week/' + number + '?generate=true')
-          .then((response) => response.json())
-          .then((json) =>  {
-            this.setMealPlan(json)
-          });
-      },
-
       handleDrop(event) {
         const dishId = event.dataTransfer.getData('dishId');
         const dayId = this.dayId;
@@ -521,22 +506,6 @@
           this.setMealPlan(json)
         });
      },
-
-      async changeWeekStatus(year, number, action) {
-        await fetch(this.baseUrl + '/week/' + year + '/' + number, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            action: action,
-          })
-        })
-        .then((response) => response.json())
-        .then((json) =>  {
-          this.setMealPlan(json)
-        });
-      },
 
       getSeasonPicture(dateString) {
         if (!dateString) return '';
