@@ -25,18 +25,29 @@ public class DishSelector {
             Set<Dish> currentWeekDishes,
             Set<Dish> previousWeekDishes,
             Set<Dish> olderWeeksDishes) {
-        log.info("Scoring {} dishes for {} of {}", dishes.size(), day, meal);
-        List<ScoredDish> scoredDishes = dishes.stream().map(ScoredDish::new).collect(Collectors.toList());
-        for (ScoredDish scoredDish : scoredDishes) {
-            DishScoringContext context = new DishScoringContext(
-                    scoredDish.getDish(), Day.from(day), meal, currentWeekDishes, previousWeekDishes, olderWeeksDishes);
-            for (DishScorer scorer : scorers) {
-                scoredDish.adjustScore(scorer.score(context));
+
+        if (dishes.isEmpty()) {
+            log.error("No dish to score, returning empty dish");
+            return Dish.empty();
+        } else {
+            log.info("Scoring {} dishes for {} of {}", dishes.size(), day, meal);
+            List<ScoredDish> scoredDishes = dishes.stream().map(ScoredDish::new).collect(Collectors.toList());
+            for (ScoredDish scoredDish : scoredDishes) {
+                DishScoringContext context = new DishScoringContext(
+                        scoredDish.getDish(),
+                        Day.from(day),
+                        meal,
+                        currentWeekDishes,
+                        previousWeekDishes,
+                        olderWeeksDishes);
+                for (DishScorer scorer : scorers) {
+                    scoredDish.adjustScore(scorer.score(context));
+                }
             }
+            scoredDishes.sort(Collections.reverseOrder());
+            ScoredDish highestScoredDish = scoredDishes.getFirst();
+            log.info("Dish with highest score is {}", highestScoredDish);
+            return highestScoredDish.getDish();
         }
-        scoredDishes.sort(Collections.reverseOrder());
-        ScoredDish highestScoredDish = scoredDishes.getFirst();
-        log.info("Dish with highest score is {}", highestScoredDish);
-        return highestScoredDish.getDish();
     }
 }

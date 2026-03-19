@@ -15,7 +15,6 @@ class DishSelectorSpec extends OnMangeQuoiSpec {
     def "selectDish - list of dishes, day and meal given - calls each scorers for each dish and returns the highest scored"() {
         given:
         def dishes = [dish1, dish2]
-        def dayMock = Mock(Day)
         def mealMock = Mock(Meal)
         def currentWeekDishes = [] as Set
         def previousWeekDishes = [] as Set
@@ -41,5 +40,13 @@ class DishSelectorSpec extends OnMangeQuoiSpec {
         }
         and: "dish with the highest score is returned"
         result == dish2
+    }
+
+    def "selectDish - empty dish list given - returns empty dish"() {
+        when:
+        def result = selector.selectDish([], DayOfWeek.MONDAY, Mock(Meal), [] as Set, [] as Set, [] as Set)
+
+        then:
+        result == Dish.empty()
     }
 }
