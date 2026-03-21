@@ -9,3 +9,14 @@ spring:
       mode: always
   liquibase:
     enabled: false
+onmangequoi:
+  mailing:
+    from: Bob From <from@example.fr>
+    recipients:
+      - name: Bob
+        email-address: bob@example.com
+      - name: John
+        email-address: john@example.com
+    reply-to: reply@example.com
+    mail-api-base-url: https://mailing.example.com
+    mail-api-key: aaa-bbb-ccc
