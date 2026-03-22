@@ -32,6 +32,11 @@ class MealServiceSpec extends OnMangeQuoiSpec {
 
     def "putMeal - day is not in the past and meal is already set - loads dish and updates the meal entity"() {
         given:
+        def weekMock = Mock(Week) {
+            getYear() >> LocalDate.now().year + 1
+            getNumber() >> 12
+            getStart() >> LocalDate.of(LocalDate.now().year + 1, 2, 3)
+        }
         def mealEntitySpy = Spy(MealEntity)
 
         when:
@@ -42,7 +47,7 @@ class MealServiceSpec extends OnMangeQuoiSpec {
 
         and:
         1 * mealRepositoryMock.findById(_ as MealId) >> { MealId id ->
-            assert id.getYear() == 2026
+            assert id.getYear() == LocalDate.now().year + 1
             assert id.getWeekNumber() == 12
             assert id.getDayOfWeek() == DayOfWeek.FRIDAY
             assert id.getMealType() == MealType.DINNER
@@ -56,6 +61,13 @@ class MealServiceSpec extends OnMangeQuoiSpec {
     }
 
     def "putMeal - day is not in the past and meal is not set yet - loads dish and saves a new meal entity"() {
+        given:
+        def weekMock = Mock(Week) {
+            getYear() >> LocalDate.now().year + 1
+            getNumber() >> 12
+            getStart() >> LocalDate.of(LocalDate.now().year + 1, 2, 3)
+        }
+
         when:
         mealService.putMeal(weekMock, DayOfWeek.FRIDAY, MealType.DINNER, 1)
 
@@ -64,7 +76,7 @@ class MealServiceSpec extends OnMangeQuoiSpec {
 
         and:
         1 * mealRepositoryMock.findById(_ as MealId) >> { MealId id ->
-            assert id.getYear() == 2026
+            assert id.getYear() == LocalDate.now().year + 1
             assert id.getWeekNumber() == 12
             assert id.getDayOfWeek() == DayOfWeek.FRIDAY
             assert id.getMealType() == MealType.DINNER
@@ -73,7 +85,7 @@ class MealServiceSpec extends OnMangeQuoiSpec {
 
         and:
         1 * mealRepositoryMock.saveAndFlush(_ as MealEntity) >> { MealEntity m ->
-            assert m.getId().getYear() == 2026
+            assert m.getId().getYear() ==  LocalDate.now().year + 1
             assert m.getId().getWeekNumber() == 12
             assert m.getId().getDayOfWeek() == DayOfWeek.FRIDAY
             assert m.getId().getMealType() == MealType.DINNER
