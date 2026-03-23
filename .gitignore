@@ -143,3 +143,6 @@ fabric.properties
 !.idea/runConfigurations
 
 # End of https://www.toptal.com/developers/gitignore/api/intellij+all
+
+### OnMangeQuoi
+src/main/resources/application-mailing.yaml

@@ -58,7 +58,7 @@ public class Week {
             WeekRef previousWeek = getPreviousWeek(year, number);
             WeekRef nextWeek = getNextWeek(year, number);
 
-            Season season = Season.fromMonth(firstDayOfWeek.getMonth());
+            Season season = Season.fromDate(firstDayOfWeek);
 
             return new Week(year, number, currentWeek, firstDayOfWeek, lastDayOfWeek, previousWeek, nextWeek, season);
         }

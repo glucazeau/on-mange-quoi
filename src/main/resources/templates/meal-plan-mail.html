@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title th:text="'Menu de la semaine ' + ${mealPlan.week.number}"></title>
+</head>
+<body style="font-family: Arial, sans-serif; background-color: #f6f6f6; padding: 20px;">
+
+<table width="100%" cellpadding="0" cellspacing="0" style="max-width: 600px; margin: auto; background: #ffffff; border-radius: 8px; overflow: hidden;">
+
+  <!-- Header -->
+  <tr>
+    <td style="background-color: #4CAF50; color: white; text-align: center; padding: 16px; font-size: 20px;">
+      Menu de la semaine 12 🍽️
+    </td>
+  </tr>
+
+  <!-- Intro -->
+  <tr>
+    <td style="padding: 16px; font-size: 14px; color: #333;">
+      Bonjour %recipient.name%,<br/><br/>
+      voici les plats sélectionnés du <span th:text="${#temporals.format(mealPlan.week.start, 'dd/MM')}"></span> au <span th:text="${#temporals.format(mealPlan.week.end, 'dd/MM')}"></span>.<br/><br/>
+      Bon appétit ! 😘
+    </td>
+  </tr>
+
+  <!-- Meal Table -->
+  <tr>
+    <td style="padding: 0 16px 16px 16px;">
+      <table width="100%" cellpadding="8" cellspacing="0" style="border-collapse: collapse;">
+
+        <!-- Table Header -->
+        <tr style="background-color: #eeeeee; text-align: left;">
+          <th>&nbsp;</th>
+          <th>Déjeûner</th>
+          <th>Dîner</th>
+        </tr>
+
+        <!-- Loop through meals -->
+        <tr th:each="day : ${mealPlan.days}" style="border-bottom: 1px solid #dddddd;">
+          <td style="font-weight: bold;">
+            <span th:switch="${day.dayOfWeek.name()}">
+              <span th:case="'MONDAY'">Lundi</span>
+              <span th:case="'TUESDAY'">Mardi</span>
+              <span th:case="'WEDNESDAY'">Mercredi</span>
+              <span th:case="'THURSDAY'">Jeudi</span>
+              <span th:case="'FRIDAY'">Vendredi</span>
+              <span th:case="'SATURDAY'">Samedi</span>
+              <span th:case="'SUNDAY'">Dimanche</span>
+            </span>
+          </td>
+          <!-- LUNCH and DINNER -->
+          <td th:if="${#lists.size(day.meals) == 2}" th:text="${day.meals[0]?.dish.label}"></td>
+          <td th:if="${#lists.size(day.meals) == 2}" th:text="${day.meals[1]?.dish.label}"></td>
+
+          <!-- DINNER only -->
+          <td th:if="${#lists.size(day.meals) == 1}">&nbsp;</td>
+          <td th:if="${#lists.size(day.meals) == 1}" th:text="${day.meals[0]?.dish.label}"></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+
+  <!-- Footer -->
+  <tr>
+    <td style="padding: 16px; font-size: 12px; color: #777; text-align: center;">
+    </td>
+  </tr>
+
+</table>
+
+</body>
+</html>
