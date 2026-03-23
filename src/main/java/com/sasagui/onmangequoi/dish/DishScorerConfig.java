@@ -51,7 +51,7 @@ public class DishScorerConfig {
     public DishScorer veganDishForDinnerScorer() {
         return context -> {
             log.debug("Scoring vegan dish for dinner");
-            if (context.getDish().isVegan()
+            if ((context.getDish().isVegan() || context.getDish().isFish())
                     && MealType.DINNER.equals(context.getMeal().getType())) {
                 return 1;
             }

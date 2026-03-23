@@ -67,10 +67,11 @@ class DishScorerConfigSpec extends OnMangeQuoiSpec {
         score >= -1
     }
 
-    def "veganDishForDinnerScorer - dish is vegan: #isVeganValue and meal type is #mealTypeValue - returns #expected"() {
+    def "veganDishForDinnerScorer - dish is vegan: #isVeganValue and fish: #isFishValue and meal type is #mealTypeValue - returns #expected"() {
         given:
         def dishMock = Mock(Dish) {
             isVegan() >> isVeganValue
+            isFish() >> isFishValue
         }
 
         def mealMock = Mock(Meal) {
@@ -83,11 +84,15 @@ class DishScorerConfigSpec extends OnMangeQuoiSpec {
         config.veganDishForDinnerScorer().score(ctx) == expected
 
         where:
-        isVeganValue | mealTypeValue   | expected
-        true         | MealType.LUNCH  | 0
-        false        | MealType.LUNCH  | 0
-        true         | MealType.DINNER | 1
-        false        | MealType.DINNER | 0
+        isVeganValue | isFishValue | mealTypeValue   | expected
+        true         | true        | MealType.LUNCH  | 0
+        false        | false       | MealType.LUNCH  | 0
+        false        | true        | MealType.LUNCH  | 0
+        true         | false       | MealType.LUNCH  | 0
+        true         | true        | MealType.DINNER | 1
+        false        | false       | MealType.DINNER | 0
+        false        | true        | MealType.DINNER | 1
+        true         | false       | MealType.DINNER | 1
     }
 
     def "dishUsedLastWeekScorer - dish was #testLabel last week - returns #expected"() {
