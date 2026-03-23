@@ -18,6 +18,7 @@ public class Dish {
     @EqualsAndHashCode.Include
     private final long id;
 
+    @ToString.Include
     private final String label;
 
     private final boolean slow;

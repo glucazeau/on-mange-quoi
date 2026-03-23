@@ -21,7 +21,7 @@ public class MealPlanScheduler {
 
     private ApplicationEventPublisher applicationEventPublisher;
 
-    @Scheduled(cron = "0 0 6 * * MON")
+    @Scheduled(cron = "0 0 6 * * THU")
     public void generateNextWeekMealPlan() {
         Week currentWeek = weekService.getCurrentWeek();
         Week nextWeek = weekService.getNextWeek(currentWeek);

@@ -2,6 +2,7 @@ package com.sasagui.onmangequoi.dish;
 
 import com.sasagui.onmangequoi.calendar.Day;
 import com.sasagui.onmangequoi.meal.Meal;
+import jakarta.annotation.PostConstruct;
 import java.time.DayOfWeek;
 import java.util.Collections;
 import java.util.List;
@@ -17,6 +18,11 @@ import org.springframework.stereotype.Component;
 public class DishSelector {
 
     private final List<DishScorer> scorers;
+
+    @PostConstruct
+    public void logScorers() {
+        log.info("{} dish scorers configured}", scorers.size());
+    }
 
     public Dish selectDish(
             List<Dish> dishes,
