@@ -83,7 +83,7 @@
               <div class="col-xl-3" data-aos="fade-up" data-aos-delay="200">
                 <div class="icon-box week-infos">
                   <div class="season-img w-100">
-                    <img :src="getSeasonPicture(mealPlan?.week?.start)" class="img-fluid">
+                    <img :src="getSeasonPicture(mealPlan?.week?.season)" class="img-fluid">
                   </div>
                 </div>
               </div>
@@ -507,14 +507,19 @@
         });
      },
 
-      getSeasonPicture(dateString) {
-        if (!dateString) return '';
-        const d = new Date(dateString + "T00:00:00");
-        const season = Math.floor((d.getMonth() / 12) * 4) % 4;
-        return 'assets/img/' + ['winter.jpg', 'spring.jpg', 'summer.webp', 'autumn.avif'][season];
+      getSeasonPicture(season) {
+        if (!season) return "";
+        const seasonPictures = {
+          'WINTER': 'winter.jpg',
+          'SPRING': 'spring.jpg',
+          'SUMMER': 'summer.webp',
+          'AUTUMN': 'autumn.avif'
+        };
+        return 'assets/img/' + seasonPictures[season];
       },
 
       getSimpleDate(dateString) {
+        if (!dateString) return "";
         const [year, month, day] = dateString.split("-");
         return `${day}/${month}`;
       },
