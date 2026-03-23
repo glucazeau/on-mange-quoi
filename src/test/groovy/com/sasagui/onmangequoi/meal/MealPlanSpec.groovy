@@ -73,18 +73,4 @@ class MealPlanSpec extends OnMangeQuoiSpec {
         then:
         result == [dish1, dish2] as Set
     }
-
-    def "isEditable - week is in the past: #weekInPast - returns #expected"() {
-        given:
-        def weekMock = Mock(Week) {
-            isInPast() >> weekInPast
-        }
-        expect:
-        new MealPlan(weekMock, []).isEditable() == expected
-
-        where:
-        weekInPast | expected
-        true       | false
-        false      | true
-    }
 }

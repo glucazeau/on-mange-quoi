@@ -52,10 +52,6 @@ public class MealPlan {
                 .collect(Collectors.toSet());
     }
 
-    public boolean isEditable() {
-        return !week.isInPast();
-    }
-
     private static List<Meal> getSchoolWeekMeals() {
         return List.of(
                 Meal.empty(DayOfWeek.MONDAY, MealType.DINNER),
