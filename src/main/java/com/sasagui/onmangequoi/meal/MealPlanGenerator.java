@@ -43,8 +43,12 @@ public class MealPlanGenerator {
 
         Set<Dish> olderWeeksDishes = getOlderWeeksDishes(previousWeek);
 
-        Set<Meal> mealsToPlan =
-                mealPlan.getMeals().stream().filter(Meal::isEmpty).collect(Collectors.toSet());
+        List<Meal> mealsToPlan = mealPlan.getMeals().stream()
+                .filter(Meal::isEmpty)
+                .collect(Collectors.collectingAndThen(Collectors.toList(), m -> {
+                    Collections.shuffle(m);
+                    return m;
+                }));
         log.info("Going to plan {} meals", mealsToPlan.size());
         for (Meal meal : mealsToPlan) {
             log.info("Planning meal {}", meal);
