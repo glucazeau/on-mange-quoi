@@ -81,6 +81,7 @@ public class DishScorerConfig {
         };
     }
 
+    @Bean
     public DishScorer dishNotUsedLastWeekAndPreviousWeeks() {
         return context -> {
             log.debug("Scoring dish not used last week and previous weeks");
@@ -92,6 +93,7 @@ public class DishScorerConfig {
         };
     }
 
+    @Bean
     public DishScorer kidLunchAndWednesdayLunch() {
         return context -> {
             log.debug("Scoring kid lunch for Wednesday lunch");
@@ -104,6 +106,7 @@ public class DishScorerConfig {
         };
     }
 
+    @Bean
     public DishScorer soupOnSundayDiner() {
         return context -> {
             String label = context.getDish().getLabel().toLowerCase();
@@ -118,6 +121,7 @@ public class DishScorerConfig {
         };
     }
 
+    @Bean
     public DishScorer restaurantDishWithAnotherRestaurantThisWeek() {
         return context -> {
             log.debug("Scoring restaurant dish with restaurant dishes this week");
@@ -125,6 +129,7 @@ public class DishScorerConfig {
         };
     }
 
+    @Bean
     public DishScorer restaurantDishWithAnotherRestaurantLastWeek() {
         return context -> {
             log.debug("Scoring restaurant dish with restaurant dishes last week");
