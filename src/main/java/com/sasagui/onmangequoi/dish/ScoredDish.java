@@ -14,14 +14,14 @@ public class ScoredDish implements Comparable<ScoredDish> {
     private final Dish dish;
 
     @ToString.Include
-    private int score = 0;
+    private float score = 0;
 
-    public void adjustScore(int score) {
+    public void adjustScore(float score) {
         this.score = this.score + score;
     }
 
     @Override
     public int compareTo(@NotNull ScoredDish other) {
-        return Integer.compare(this.score, other.score);
+        return Float.compare(this.score, other.score);
     }
 }

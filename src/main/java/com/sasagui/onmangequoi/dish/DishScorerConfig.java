@@ -43,7 +43,7 @@ public class DishScorerConfig {
     public DishScorer randomScorer() {
         return context -> {
             log.debug("Random scoring");
-            return random.nextInt(-1, 1);
+            return random.nextFloat(-1, 1);
         };
     }
 
