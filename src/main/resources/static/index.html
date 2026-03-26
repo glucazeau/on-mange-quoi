@@ -358,7 +358,7 @@
       draggingDish: false,
 
       async init() {
-          await this.getCurrentWeek()
+          await this.getWeekFromUrlOrCurrent()
           await this.getDishes()
       },
 
@@ -471,10 +471,25 @@
         )
       },
 
-      async getCurrentWeek() {
-        await fetch(this.baseUrl + '/meal-plans/current')
+      getMealPlan(path) {
+        fetch(this.baseUrl + path)
           .then((response) => response.json())
           .then((json) => this.mealPlan = json);
+      },
+
+      async getWeekFromUrlOrCurrent() {
+        var url = new URL(globalThis.location.href);
+        var year = url.searchParams.get("year");
+        var week = url.searchParams.get("week");
+        if (year &&Number.isInteger(year) && week && Number.isInteger(week)) {
+          await this.getMealPlan('/meal-plans/year/' + year + '/week/' + week);
+        } else {
+          await this.getCurrentWeek();
+        }
+      },
+
+      async getCurrentWeek() {
+        await this.getMealPlan('/meal-plans/current')
       },
 
       setMealPlan(json) {
