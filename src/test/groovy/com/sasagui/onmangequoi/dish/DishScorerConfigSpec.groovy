@@ -5,6 +5,7 @@ import com.sasagui.onmangequoi.calendar.Day
 import com.sasagui.onmangequoi.meal.Meal
 import com.sasagui.onmangequoi.meal.MealType
 import java.time.DayOfWeek
+import org.junit.jupiter.api.MediaType
 
 class DishScorerConfigSpec extends OnMangeQuoiSpec {
 
@@ -224,5 +225,27 @@ class DishScorerConfigSpec extends OnMangeQuoiSpec {
         true                     | false                      | "dish is from restaurant and no dish from restaurant was in last week"      | 0
         false                    | true                       | "dish is not from restaurant and one dish from restaurant was in last week" | 0
         false                    | false                      | "dish is not from restaurant and no dish from restaurant was in last week"  | 0
+    }
+
+    def "tartForLunch -dish label contains 'tarte' and meal type is #mealTypeValue - returns #expected"() {
+        given:
+        def dishMock = Mock(Dish) {
+            getLabel() >> dishLabel
+        }
+        def mealMock = Mock(Meal) {
+            getType() >> mealTypeValue
+        }
+        def ctx = new DishScoringContext(dishMock, Mock(Day), mealMock, [] as Set, [] as Set, [] as Set)
+
+        expect:
+        config.tartForLunch().score(ctx) == expected
+
+        where:
+        mealTypeValue   | dishLabel             | expected
+        MealType.LUNCH  | "Tarte aux poireaux"  | -1
+        MealType.LUNCH  | "tarte aux poireaux"  | -1
+        MealType.LUNCH  | "Poulet frites"       | 0
+        MealType.DINNER | "Tarte aux poireaux"  | 0
+        MealType.DINNER | "tarte aux poireaux"  | 0
     }
 }

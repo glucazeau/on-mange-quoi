@@ -122,6 +122,19 @@ public class DishScorerConfig {
     }
 
     @Bean
+    public DishScorer tartForLunch() {
+        return context -> {
+            String label = context.getDish().getLabel().toLowerCase();
+            boolean isTart = label.contains("tarte");
+            log.debug("Scoring tarts for lunch");
+            if (isTart && MealType.LUNCH.equals(context.getMeal().getType())) {
+                return -1;
+            }
+            return 0;
+        };
+    }
+
+    @Bean
     public DishScorer restaurantDishWithAnotherRestaurantThisWeek() {
         return context -> {
             log.debug("Scoring restaurant dish with restaurant dishes this week");
