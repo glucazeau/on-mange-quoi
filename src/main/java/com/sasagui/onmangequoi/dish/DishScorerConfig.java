@@ -43,7 +43,7 @@ public class DishScorerConfig {
     public DishScorer randomScorer() {
         return context -> {
             log.debug("Random scoring");
-            return random.nextInt(-1, 1);
+            return random.nextFloat(-1, 1);
         };
     }
 
@@ -116,6 +116,19 @@ public class DishScorerConfig {
                     && DayOfWeek.SUNDAY.equals(context.getDay().getDayOfWeek())
                     && MealType.DINNER.equals(context.getMeal().getType())) {
                 return 1;
+            }
+            return 0;
+        };
+    }
+
+    @Bean
+    public DishScorer tartForLunch() {
+        return context -> {
+            String label = context.getDish().getLabel().toLowerCase();
+            boolean isTart = label.contains("tarte");
+            log.debug("Scoring tarts for lunch");
+            if (isTart && MealType.LUNCH.equals(context.getMeal().getType())) {
+                return -1;
             }
             return 0;
         };

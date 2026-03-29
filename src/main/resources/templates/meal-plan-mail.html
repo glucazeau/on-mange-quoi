@@ -11,7 +11,7 @@
   <!-- Header -->
   <tr>
     <td style="background-color: #4CAF50; color: white; text-align: center; padding: 16px; font-size: 20px;">
-      Menu de la semaine 12 🍽️
+      Menu de la semaine ${mealPlan.week.number} 🍽️
     </td>
   </tr>
 
@@ -32,7 +32,7 @@
         <!-- Table Header -->
         <tr style="background-color: #eeeeee; text-align: left;">
           <th>&nbsp;</th>
-          <th>Déjeûner</th>
+          <th>Déjeuner</th>
           <th>Dîner</th>
         </tr>
 
@@ -64,6 +64,9 @@
   <!-- Footer -->
   <tr>
     <td style="padding: 16px; font-size: 12px; color: #777; text-align: center;">
+      <a href="https://sasagui.fr/onmangequoi?year=${mealPlan.week.year}&week=${mealPlan.week.number}">
+        Pour consulter ou modifier ce menu, c'est par ici
+      </a>
     </td>
   </tr>
 
